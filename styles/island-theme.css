@@ -14,6 +14,15 @@
   --text-secondary: #3a8fb7;
   --accent: #e8a87c;
   --theme-color: #1b4d6e;
+
+  /* Type rhythm — consistent scale across sections */
+  --island-space-xs: 0.5rem;
+  --island-space-sm: 0.75rem;
+  --island-space-md: 1rem;
+  --island-space-lg: 1.5rem;
+  --island-space-xl: 2.5rem;
+  --island-ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --island-ease-land: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 .bg-grid-fixed {
@@ -40,20 +49,82 @@
 .island-section-label {
   font-family: 'Cinzel', serif;
   font-size: 10px;
-  letter-spacing: 0.35em;
+  letter-spacing: 0.38em;
   text-transform: uppercase;
   color: var(--island-sea);
+}
+
+/* Ornamental divider — unifies chapter headers */
+.island-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: var(--island-space-sm) 0 var(--island-space-md);
+  color: var(--island-coral);
+  opacity: 0.7;
+}
+
+.island-ornament::before,
+.island-ornament::after {
+  content: '';
+  flex: 1;
+  max-width: 3.5rem;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(58, 143, 183, 0.35) 50%,
+    transparent
+  );
+}
+
+.island-ornament--left::before {
+  display: none;
+}
+
+.island-ornament--left {
+  justify-content: flex-start;
+}
+
+.island-ornament--left::after {
+  max-width: 4rem;
+}
+
+.island-ornament__mark {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  line-height: 1;
+}
+
+/* Consistent intro prose */
+.island-prose {
+  font-family: 'Noto Serif TC', 'Playfair Display', serif;
+  font-size: 0.875rem;
+  line-height: 1.85;
+  letter-spacing: 0.02em;
+  color: var(--island-muted);
 }
 
 .island-btn {
   background: var(--island-deep);
   color: white;
   border-radius: 9999px;
-  transition: background 0.2s ease;
+  letter-spacing: 0.06em;
+  box-shadow:
+    0 2px 8px rgba(27, 77, 110, 0.18),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+  transition:
+    background 0.35s var(--island-ease-soft),
+    transform 0.2s var(--island-ease-soft),
+    box-shadow 0.35s var(--island-ease-soft);
 }
 
 .island-btn:hover {
   background: var(--island-sea);
+  box-shadow:
+    0 4px 16px rgba(58, 143, 183, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.1) inset;
 }
 
 .island-btn:active {
@@ -62,8 +133,11 @@
 
 .island-card {
   background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 4px 20px rgba(27, 77, 110, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 8px 32px -8px rgba(27, 77, 110, 0.08),
+    0 2px 8px rgba(27, 77, 110, 0.04);
 }
 
 /* Backdrop blur: desktop high, mobile medium — low perf stays solid */
@@ -142,10 +216,189 @@ html[data-perf='high'] .island-wave-drift-slow {
 .island-photo-leaf,
 .island-photo-pebble,
 .island-photo-crescent {
-  border: 1px solid rgba(255, 255, 255, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.38);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
-    0 22px 55px -18px rgba(0, 0, 0, 0.48);
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 28px 60px -20px rgba(0, 0, 0, 0.42),
+    0 8px 20px -8px rgba(27, 77, 110, 0.15);
+}
+
+.island-transition-quote {
+  position: relative;
+  padding-top: 0.5rem;
+  font-family: 'Noto Serif TC', 'Playfair Display', serif;
+  font-style: italic;
+  letter-spacing: 0.04em;
+}
+
+/* Typography helpers */
+.island-heading {
+  text-wrap: balance;
+}
+
+.island-heading-pretty {
+  text-wrap: pretty;
+}
+
+.island-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Focus — visible keyboard ring, no click flash */
+.island-focus:focus {
+  outline: none;
+}
+
+.island-focus:focus-visible {
+  outline: 2px solid var(--island-coral);
+  outline-offset: 3px;
+}
+
+/* Skip link */
+.island-skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 200;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  background: var(--island-deep);
+  color: white;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  transform: translateY(-150%);
+  transition: transform 0.25s var(--island-ease-soft);
+}
+
+.island-skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid var(--island-coral);
+  outline-offset: 2px;
+}
+
+/* Safe area for fixed UI */
+.island-safe-bottom {
+  padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+.island-nav-dock {
+  bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+.island-floating-rsvp {
+  bottom: max(1.5rem, env(safe-area-inset-bottom));
+  right: max(1.25rem, env(safe-area-inset-right));
+}
+
+/* Countdown / marquee */
+.island-countdown-bar {
+  background: linear-gradient(
+    90deg,
+    rgba(244, 232, 216, 0.97) 0%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(244, 232, 216, 0.97) 100%
+  );
+}
+
+/* Timeline spine */
+.island-timeline-spine {
+  position: absolute;
+  left: 1.75rem;
+  top: 1.75rem;
+  bottom: 1.75rem;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(58, 143, 183, 0.35) 8%,
+    rgba(58, 143, 183, 0.35) 92%,
+    transparent
+  );
+}
+
+@media (min-width: 768px) {
+  .island-timeline-spine {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.island-timeline-dot {
+  box-shadow:
+    0 0 0 4px rgba(244, 232, 216, 0.95),
+    0 2px 8px rgba(27, 77, 110, 0.12);
+  transition:
+    transform 0.35s var(--island-ease-soft),
+    box-shadow 0.35s var(--island-ease-soft);
+}
+
+@media (min-width: 768px) {
+  .island-card:hover {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.95) inset,
+      0 12px 40px -10px rgba(27, 77, 110, 0.12),
+      0 4px 12px rgba(27, 77, 110, 0.06);
+  }
+
+  .island-timeline-dot:hover {
+    transform: scale(1.06);
+    box-shadow:
+      0 0 0 5px rgba(244, 232, 216, 0.95),
+      0 4px 16px rgba(58, 143, 183, 0.2);
+  }
+}
+
+/* Photo portal hover */
+.island-photo-portal {
+  transition: transform 0.5s var(--island-ease-soft);
+}
+
+.island-photo-portal:hover {
+  transform: rotate(var(--photo-rotate, 0deg)) scale(1.02);
+}
+
+/* Lightbox */
+.island-lightbox {
+  overscroll-behavior: contain;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.island-lightbox__img {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 32px 80px -20px rgba(0, 0, 0, 0.55);
+}
+
+/* Calendar card polish */
+.island-calendar-card {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 20px 50px -16px rgba(27, 77, 110, 0.18),
+    0 4px 12px rgba(27, 77, 110, 0.08);
+}
+
+/* Transport card */
+.island-transport-card {
+  transition:
+    transform 0.35s var(--island-ease-soft),
+    box-shadow 0.35s var(--island-ease-soft);
+}
+
+@media (min-width: 768px) {
+  .island-transport-card:hover {
+    transform: translateY(-3px);
+  }
+}
+
+/* Section rhythm — subtle sand wash between chapters */
+.island-section-wash {
+  background: linear-gradient(
+    180deg,
+    rgba(244, 232, 216, 0) 0%,
+    rgba(244, 232, 216, 0.45) 50%,
+    rgba(244, 232, 216, 0) 100%
+  );
 }
 
 .island-photo-arch {

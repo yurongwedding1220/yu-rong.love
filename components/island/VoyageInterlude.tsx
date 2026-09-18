@@ -8,11 +8,14 @@ export const VoyageInterlude: React.FC = () => {
 
   const content = (
     <div className="mx-auto max-w-lg px-6 text-center">
-      <p className="island-section-label mb-3">{VOYAGE_NARRATIVE.interludeChapter}</p>
-      <h2 className="font-serif text-2xl text-[#1A3344] md:text-3xl">
+      <p className="island-section-label">{VOYAGE_NARRATIVE.interludeChapter}</p>
+      <div className="island-ornament" aria-hidden>
+        <span className="island-ornament__mark">✦</span>
+      </div>
+      <h2 className="island-heading font-serif text-2xl font-light tracking-wide text-[#1A3344] md:text-3xl">
         {VOYAGE_NARRATIVE.interludeTitle}
       </h2>
-      <p className="mt-4 text-sm leading-relaxed text-[#5A7380]">
+      <p className="island-prose mt-4">
         {VOYAGE_NARRATIVE.interludeBody}
       </p>
       <div className="mx-auto mt-8 flex flex-col items-center gap-2 opacity-50" aria-hidden>
@@ -36,7 +39,7 @@ export const VoyageInterlude: React.FC = () => {
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-10%' }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
       >
         {content}
       </motion.div>

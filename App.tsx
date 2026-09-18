@@ -168,7 +168,13 @@ function App() {
   ];
 
   return (
-    <main className="w-full min-h-screen bg-transparent text-[#1A3344] selection:bg-[#E8A87C] selection:text-white">
+    <main
+      id="main-content"
+      className="w-full min-h-screen bg-transparent text-[#1A3344] selection:bg-[#E8A87C] selection:text-white"
+    >
+      <a href="#photos" className="island-skip-link island-focus">
+        跳至主要內容
+      </a>
       <AnimatePresence>
         {isInitialLoading && (
           <LoadingScreen
@@ -219,7 +225,7 @@ function App() {
           </div>
         </section>
 
-        <section id="timeline" className="island-defer scroll-mt-20 px-4 py-16 md:py-24">
+        <section id="timeline" className="island-defer island-section-wash scroll-mt-20 px-4 py-16 md:py-24">
           <VoyageSectionHeader
             chapter={VOYAGE_NARRATIVE.programChapter}
             title={VOYAGE_NARRATIVE.programTitle}
@@ -247,16 +253,21 @@ function App() {
         </section>
 
         <section id="line" className="scroll-mt-20 px-4 py-16 md:py-20">
-          <div className="island-card mx-auto max-w-lg rounded-2xl p-8 text-center">
-            <p className="island-section-label mb-2">{VOYAGE_NARRATIVE.contactChapter}</p>
-            <h2 className="font-serif text-2xl text-[#1A3344]">{VOYAGE_NARRATIVE.contactTitle}</h2>
-            <p className="mt-3 text-sm text-[#5A7380]">{VOYAGE_NARRATIVE.contactIntro}</p>
+          <div className="island-card mx-auto max-w-lg rounded-2xl p-8 text-center md:p-10">
+            <p className="island-section-label">{VOYAGE_NARRATIVE.contactChapter}</p>
+            <div className="island-ornament" aria-hidden>
+              <span className="island-ornament__mark">✦</span>
+            </div>
+            <h2 className="island-heading font-serif text-2xl font-light tracking-wide text-[#1A3344]">
+              {VOYAGE_NARRATIVE.contactTitle}
+            </h2>
+            <p className="island-prose mt-4">{VOYAGE_NARRATIVE.contactIntro}</p>
             {APP_CONTENT.lineLink ? (
               <a
                 href={APP_CONTENT.lineLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="island-btn mt-6 inline-flex px-8 py-3 text-sm font-medium"
+                className="island-btn island-focus mt-6 inline-flex px-8 py-3 text-sm font-medium"
               >
                 加入 LINE 好友
               </a>
@@ -268,26 +279,29 @@ function App() {
           </div>
         </section>
 
-        <footer id="rsvp" className="scroll-mt-20 border-t border-[#3A8FB7]/15 bg-[#F4E8D8]/80 px-4 py-20 text-center">
-          <p className="island-section-label mb-2">{VOYAGE_NARRATIVE.finaleChapter}</p>
-          <h2 className="font-serif text-3xl text-[#1A3344] md:text-4xl">
+        <footer id="rsvp" className="scroll-mt-20 border-t border-[#3A8FB7]/12 bg-gradient-to-b from-[#F4E8D8]/80 to-[#F4E8D8] px-4 py-20 text-center">
+          <p className="island-section-label">{VOYAGE_NARRATIVE.finaleChapter}</p>
+          <div className="island-ornament" aria-hidden>
+            <span className="island-ornament__mark">✦</span>
+          </div>
+          <h2 className="island-heading font-serif text-3xl font-light tracking-wide text-[#1A3344] md:text-4xl">
             {VOYAGE_NARRATIVE.finaleTitle}
           </h2>
-          <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-[#5A7380]">
+          <p className="island-prose mx-auto mt-4 max-w-sm">
             {VOYAGE_NARRATIVE.finaleIntro}
           </p>
           <div className="mt-8">
             <Link
               to="/rsvp"
-              className="island-btn inline-flex px-12 py-3.5 text-sm font-semibold tracking-wide"
+              className="island-btn island-focus inline-flex px-12 py-3.5 text-sm font-semibold tracking-wide"
             >
               {VOYAGE_NARRATIVE.rsvpCta}
             </Link>
           </div>
-          <p className="mt-16 font-serif text-sm text-[#1B4D6E]/70">
+          <p className="mt-16 font-serif text-sm text-[#1B4D6E]/70" translate="no">
             {APP_CONTENT.chineseNames}
           </p>
-          <p className="mt-1 font-display text-[10px] tracking-[0.3em] text-[#3A8FB7]/80">
+          <p className="island-tabular mt-1 font-display text-[10px] tracking-[0.3em] text-[#3A8FB7]/80">
             {APP_CONTENT.date} · DOULIU
           </p>
         </footer>
@@ -300,16 +314,17 @@ function App() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 24 }}
-            className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2"
+            className="island-nav-dock fixed left-1/2 z-50 -translate-x-1/2"
           >
             <div className="island-blur flex items-center gap-1 rounded-full border border-white/70 p-1.5 shadow-lg">
               <button
                 type="button"
                 aria-label={isNavExpanded ? '收合選單' : '展開選單'}
+                aria-expanded={isNavExpanded}
                 onClick={() => setIsNavExpanded((v) => !v)}
-                className="flex h-11 w-11 items-center justify-center rounded-full text-[#1B4D6E]"
+                className="island-focus flex h-11 w-11 items-center justify-center rounded-full text-[#1B4D6E] hover:bg-white/40"
               >
-                {isNavExpanded ? <XIcon /> : <MenuIcon />}
+                <span aria-hidden>{isNavExpanded ? <XIcon /> : <MenuIcon />}</span>
               </button>
               <AnimatePresence>
                 {isNavExpanded &&
@@ -332,13 +347,13 @@ function App() {
                           scrollTo(item.id);
                           setIsNavExpanded(false);
                         }}
-                        className={`flex items-center gap-1.5 overflow-hidden rounded-full px-3 py-2 text-xs ${
+                        className={`island-focus flex items-center gap-1.5 overflow-hidden rounded-full px-3 py-2 text-xs transition-colors ${
                           isActive
                             ? 'bg-[#1B4D6E] text-white'
                             : 'text-[#1B4D6E] hover:bg-[#F4E8D8]'
                         }`}
                       >
-                        <Icon />
+                        <span aria-hidden><Icon /></span>
                         <span className="whitespace-nowrap">{item.label}</span>
                       </motion.button>
                     );
@@ -356,13 +371,13 @@ function App() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="fixed bottom-6 right-5 z-40 md:right-8"
+            className="island-floating-rsvp fixed z-40 md:right-8"
           >
             <Link
               to="/rsvp"
-              className="island-btn flex items-center gap-2 px-5 py-3 text-sm font-medium shadow-lg"
+              className="island-btn island-focus flex items-center gap-2 px-5 py-3 text-sm font-medium shadow-lg"
             >
-              <HeartIcon />
+              <span aria-hidden><HeartIcon /></span>
               {VOYAGE_NARRATIVE.rsvpCta}
             </Link>
           </motion.div>

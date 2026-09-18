@@ -15,19 +15,21 @@ export const HarborCountdownBar: React.FC<HarborCountdownBarProps> = ({
 }) => (
   <div
     id="sticky-marquee"
-    className="island-blur sticky top-0 z-30 overflow-hidden border-b border-[#3A8FB7]/15"
+    className="island-blur island-countdown-bar sticky top-0 z-30 overflow-hidden border-b border-[#3A8FB7]/12"
+    aria-live="polite"
+    aria-label={VOYAGE_NARRATIVE.countdownLabel}
   >
     {lite ? (
-      <div className="flex justify-center gap-3 px-4 py-2.5 text-center text-xs tracking-wider text-[#1B4D6E] font-display">
+      <div className="island-tabular flex justify-center gap-3 px-4 py-2.5 text-center text-xs tracking-wider text-[#1B4D6E] font-display">
         <span>{VOYAGE_NARRATIVE.countdownLabel}</span>
-        <span className="text-[#E8A87C]">✦</span>
+        <span className="text-[#E8A87C]" aria-hidden>✦</span>
         <span>{timeLeft.days} 天</span>
-        <span className="text-[#E8A87C]">✦</span>
+        <span className="text-[#E8A87C]" aria-hidden>✦</span>
         <span>{APP_CONTENT.venueName}</span>
       </div>
     ) : (
       <div
-        className={`flex whitespace-nowrap py-2.5 text-xs tracking-widest text-[#1B4D6E] ${
+        className={`island-tabular flex whitespace-nowrap py-2.5 text-xs tracking-[0.18em] text-[#1B4D6E] ${
           perf === 'medium'
             ? 'animate-[marquee_48s_linear_infinite]'
             : 'animate-[marquee_36s_linear_infinite]'
@@ -42,9 +44,9 @@ export const HarborCountdownBar: React.FC<HarborCountdownBarProps> = ({
               {String(timeLeft.minutes).padStart(2, '0')}:
               {String(timeLeft.seconds).padStart(2, '0')}
             </span>
-            <span className="text-[#E8A87C]">✦</span>
+            <span className="text-[#E8A87C]" aria-hidden>✦</span>
             <span>{APP_CONTENT.date}</span>
-            <span className="text-[#E8A87C]">✦</span>
+            <span className="text-[#E8A87C]" aria-hidden>✦</span>
             <span>
               {APP_CONTENT.venueName} · {APP_CONTENT.venueHall}
             </span>

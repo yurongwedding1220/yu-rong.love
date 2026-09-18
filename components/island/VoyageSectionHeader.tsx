@@ -20,12 +20,22 @@ export const VoyageSectionHeader: React.FC<VoyageSectionHeaderProps> = ({
 }) => {
   const alignClass = align === 'center' ? 'text-center mx-auto' : 'text-center md:text-left';
 
+  const ornamentAlign =
+    align === 'left' ? 'island-ornament island-ornament--left' : 'island-ornament';
+
   const body = (
     <div className={`max-w-3xl ${alignClass} ${className}`}>
-      <p className="island-section-label mb-2">{chapter}</p>
-      <h2 className="font-serif text-3xl text-[#1A3344] md:text-4xl">{title}</h2>
+      <p className="island-section-label">{chapter}</p>
+      <div className={ornamentAlign} aria-hidden>
+        <span className="island-ornament__mark">✦</span>
+      </div>
+      <h2 className="island-heading font-serif text-3xl font-light tracking-wide text-[#1A3344] md:text-4xl">
+        {title}
+      </h2>
       {intro && (
-        <p className={`mt-3 text-sm leading-relaxed text-[#5A7380] ${align === 'center' ? 'mx-auto max-w-md' : 'max-w-md'}`}>
+        <p
+          className={`island-prose mt-4 ${align === 'center' ? 'mx-auto max-w-md' : 'max-w-md'}`}
+        >
           {intro}
         </p>
       )}
@@ -39,7 +49,7 @@ export const VoyageSectionHeader: React.FC<VoyageSectionHeaderProps> = ({
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-10%' }}
-      transition={{ duration: 0.55 }}
+      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
     >
       {body}
     </motion.div>

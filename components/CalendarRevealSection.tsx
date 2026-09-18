@@ -17,7 +17,7 @@ const CalendarBase = ({ pulseHeart }: { pulseHeart: boolean }) => {
   for (let i = 1; i <= totalDays; i++) days.push(i);
 
   return (
-    <div className="relative flex h-full w-full flex-col bg-[#fcfaf7] p-5 shadow-inner md:p-8">
+    <div className="relative flex h-full w-full flex-col bg-[#fcfaf7] p-5 md:p-8">
       <div className="absolute top-2 left-0 right-0 z-20 flex justify-evenly px-6">
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <div
@@ -28,11 +28,11 @@ const CalendarBase = ({ pulseHeart }: { pulseHeart: boolean }) => {
       </div>
 
       <div className="relative z-10 mt-6 mb-4 flex items-baseline justify-between text-[#1B4D6E]">
-        <div className="flex items-baseline gap-2">
-          <span className="font-serif text-5xl leading-none font-medium">12</span>
-          <span className="font-serif text-2xl font-medium opacity-90">/ 20</span>
+        <div className="island-tabular flex items-baseline gap-2">
+          <span className="font-serif text-5xl leading-none font-light">12</span>
+          <span className="font-serif text-2xl font-light opacity-90">/ 20</span>
         </div>
-        <span className="font-serif text-sm tracking-[0.2em]">2026</span>
+        <span className="island-tabular font-serif text-sm tracking-[0.2em]">2026</span>
       </div>
 
       <div className="relative z-10 mb-4 h-px w-full bg-stone-200" />
@@ -45,7 +45,7 @@ const CalendarBase = ({ pulseHeart }: { pulseHeart: boolean }) => {
         ))}
       </div>
 
-      <div className="relative z-10 grid grid-cols-7 gap-x-1 gap-y-3 text-center font-serif text-stone-600">
+      <div className="island-tabular relative z-10 grid grid-cols-7 gap-x-1 gap-y-3 text-center font-serif text-stone-600">
         {days.map((d, i) => {
           if (!d) return <div key={i} />;
           const isWedding = d === 20;
@@ -111,7 +111,9 @@ const CalendarCover = () => (
     </div>
     <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
       <p className="font-display text-[10px] tracking-[0.35em] text-white/70">DECEMBER</p>
-      <p className="mt-2 font-serif text-4xl">{APP_CONTENT.coupleName}</p>
+      <p className="mt-2 font-serif text-4xl font-light tracking-wide">
+        Yu <span className="font-script text-[1.1em]">&</span> Rong
+      </p>
       <p className="mt-3 text-sm text-white/80">{APP_CONTENT.date}</p>
     </div>
   </div>
@@ -119,7 +121,7 @@ const CalendarCover = () => (
 
 /** Low-end: no scroll theatre — just show the calendar page */
 const SimpleCalendar = () => (
-  <div className="mx-auto w-full max-w-[320px] aspect-[3/4.2] overflow-hidden rounded-xl border border-[#3A8FB7]/20 bg-white shadow-md">
+  <div className="island-calendar-card mx-auto aspect-[3/4.2] w-full max-w-[320px] overflow-hidden rounded-xl border border-[#3A8FB7]/15 bg-white">
     <CalendarBase pulseHeart={false} />
   </div>
 );
@@ -138,7 +140,7 @@ const FadeRevealCalendar = ({
   return (
     <div className="mx-auto aspect-[3/4.2] w-full max-w-[320px]">
       <motion.div style={{ scale, opacity, y }} className="relative h-full w-full">
-        <div className="absolute inset-0 overflow-hidden rounded-xl border border-[#3A8FB7]/20 bg-white shadow-md">
+        <div className="island-calendar-card absolute inset-0 overflow-hidden rounded-xl border border-[#3A8FB7]/15 bg-white">
           <CalendarBase pulseHeart />
         </div>
         <motion.div

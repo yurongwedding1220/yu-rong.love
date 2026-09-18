@@ -39,11 +39,15 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
         <motion.p
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="mb-6 font-display text-[10px] tracking-[0.45em] text-white/65"
         >
           {VOYAGE_NARRATIVE.loadingHint}
         </motion.p>
+
+        <div className="island-ornament mb-6 max-w-[10rem] text-white/40" aria-hidden>
+          <span className="island-ornament__mark">✦</span>
+        </div>
 
         <motion.h1
           initial={{ opacity: 0, y: 12 }}
@@ -62,9 +66,9 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
           {APP_CONTENT.chineseNames}
         </motion.p>
 
-        <div className="mt-10 h-px w-44 overflow-hidden rounded bg-white/20">
+        <div className="mt-10 h-px w-44 overflow-hidden rounded-full bg-white/15">
           <div
-            className="h-full bg-gradient-to-r from-[#7EC8E3] to-white/90 transition-[width] duration-150 ease-linear"
+            className="h-full rounded-full bg-gradient-to-r from-[#7EC8E3] via-white/80 to-[#E8A87C]/90 transition-[width] duration-300 ease-out"
             style={{ width: `${Math.min(progress, 100)}%` }}
           />
         </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { WEDDING_GALLERY_CHAPTERS, GalleryChapter, GalleryPhoto } from '../../constants';
 import { usePerfMode, isLowPerf } from '../../hooks/usePerfMode';
@@ -181,11 +181,12 @@ const PhotoPortal: React.FC<{
     <button
       type="button"
       onClick={onClick}
-      className="island-photo-portal group relative block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+      className="island-photo-portal island-focus group relative block"
       style={{
         width: layout.photoWidth,
+        '--photo-rotate': `${layout.photoRotate}deg`,
         transform: `rotate(${layout.photoRotate}deg)`,
-      }}
+      } as React.CSSProperties}
     >
       <div
         className="absolute -inset-4 rounded-[50%] opacity-50 blur-xl transition-opacity group-hover:opacity-70"
@@ -256,11 +257,13 @@ const IslandAdventureChapter: React.FC<{
       <p className="font-display text-[9px] tracking-[0.38em] text-white/50">
         航程 · 第 {String(index + 1).padStart(2, '0')} 座島
       </p>
-      <h3 className="mt-2 font-serif text-[2.25rem] leading-[1.05] text-white drop-shadow-md md:text-[2.65rem]">
+      <h3 className="island-heading mt-2 font-serif text-[2.25rem] font-light leading-[1.05] text-white drop-shadow-md md:text-[2.65rem]">
         {chapter.title}
       </h3>
-      <p className="mt-2 font-serif text-sm tracking-wide text-white/80">{chapter.subtitle}</p>
-      <p className="mt-3 text-xs leading-[1.85] text-white/65 md:text-sm">{chapter.story}</p>
+      <p className="mt-2 font-serif text-sm tracking-[0.12em] text-white/80">{chapter.subtitle}</p>
+      <p className="island-heading-pretty mt-3 text-xs leading-[1.9] text-white/65 md:text-sm">
+        {chapter.story}
+      </p>
     </div>
   );
 
@@ -334,8 +337,8 @@ const IslandAdventureChapter: React.FC<{
         </div>
 
         {!isLast && chapter.transition && (
-          <p className="text-center font-serif text-xs leading-relaxed text-white/45 md:text-sm">
-            {chapter.transition}
+          <p className="island-transition-quote mx-auto max-w-xs text-center text-xs text-white/50 md:max-w-sm md:text-sm">
+            「{chapter.transition}」
           </p>
         )}
       </div>
@@ -347,6 +350,15 @@ export const IslandVoyageGallery: React.FC = () => {
   const lite = isLowPerf(usePerfMode());
   const animate = !lite;
   const [lightbox, setLightbox] = useState<GalleryPhoto | null>(null);
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightbox(null);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [lightbox]);
 
   if (!WEDDING_GALLERY_CHAPTERS.length) return null;
 
@@ -372,22 +384,26 @@ export const IslandVoyageGallery: React.FC = () => {
             initial={lite ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[80] flex items-center justify-center bg-[#1B4D6E]/92 p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-label={lightbox.alt}
+            className="island-lightbox fixed inset-0 z-[80] flex items-center justify-center bg-[#1B4D6E]/92 p-4 backdrop-blur-sm"
             onClick={() => setLightbox(null)}
           >
             <motion.img
               initial={lite ? false : { opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               src={`${import.meta.env.BASE_URL}${lightbox.src}`}
               alt={lightbox.alt}
-              className="max-h-[85vh] max-w-full rounded-2xl object-contain shadow-2xl"
+              className="island-lightbox__img max-h-[85vh] max-w-full rounded-2xl object-contain"
               onClick={(e) => e.stopPropagation()}
             />
             <button
               type="button"
               aria-label="關閉"
-              className="absolute right-5 top-5 rounded-full bg-white/20 px-3 py-1 text-sm text-white"
+              className="island-focus absolute right-5 top-5 rounded-full border border-white/20 bg-white/15 px-4 py-1.5 text-sm text-white backdrop-blur-sm hover:bg-white/25"
               onClick={() => setLightbox(null)}
             >
               關閉

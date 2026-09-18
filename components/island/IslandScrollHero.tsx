@@ -67,10 +67,12 @@ export const IslandScrollHero: React.FC = () => {
           <motion.h1
             initial={lite ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="font-serif text-4xl font-light tracking-wide text-white md:text-6xl"
+            transition={{ duration: 0.85, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="font-serif text-4xl font-light tracking-[0.08em] text-white md:text-6xl"
           >
-            {APP_CONTENT.coupleName}
+            Yu{' '}
+            <span className="font-script text-[1.15em] text-white/90">&</span>{' '}
+            Rong
           </motion.h1>
 
           <motion.p
@@ -86,7 +88,7 @@ export const IslandScrollHero: React.FC = () => {
             initial={lite ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.5 }}
-            className="mt-8 max-w-md font-serif text-sm leading-relaxed text-white/85 md:text-base"
+            className="island-heading-pretty mt-8 max-w-md font-serif text-sm leading-[1.9] tracking-wide text-white/85 md:text-base"
           >
             {APP_CONTENT.intro}
           </motion.p>
