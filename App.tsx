@@ -61,10 +61,8 @@ function App() {
   const lite = perf === 'low';
   const isNavigatingRef = useRef(false);
 
-  const [isInitialLoading, setIsInitialLoading] = useState(
-    () => !sessionStorage.getItem('hasVisited')
-  );
-  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [isInitialLoading, setIsInitialLoading] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(100);
   const [showNav, setShowNav] = useState(false);
   const [showRSVPButton, setShowRSVPButton] = useState(false);
   const [activeSection, setActiveSection] = useState('timeline');
@@ -169,6 +167,8 @@ function App() {
       <div className="relative z-10">
         <IslandScrollHero />
 
+        {/* Sand canvas for everything below the ocean hero */}
+        <div className="bg-[#F4E8D8]">
         {/* Countdown bar — static on low-end (no infinite marquee paint) */}
         <div
           id="sticky-marquee"
@@ -293,6 +293,7 @@ function App() {
             {APP_CONTENT.date} · DOULIU
           </p>
         </footer>
+        </div>
       </div>
 
       {/* Nav dock */}

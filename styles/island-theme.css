@@ -17,7 +17,8 @@
 }
 
 .bg-grid-fixed {
-  background: #f4e8d8 !important;
+  /* Match hero so first paint / failed layers never show empty sand */
+  background: linear-gradient(180deg, #0f3550 0%, #1B4D6E 50%, #3A8FB7 100%) !important;
 }
 
 /* Noise overlay is expensive on mobile GPUs */
