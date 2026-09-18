@@ -1,0 +1,17 @@
+{
+  "questions": [
+    {
+      "index": 1,
+      "type": "quiz",
+      "question": "政憲 & 幸容 一起去過哪一座島？（占位題，之後再換）",
+      "duration": 15,
+      "choices": [
+        { "text": "宿霧", "isCorrect": true, "answersCount": 0, "avgTime": 0, "players": [] },
+        { "text": "冰島", "isCorrect": false, "answersCount": 0, "avgTime": 0, "players": [] },
+        { "text": "濟州島", "isCorrect": false, "answersCount": 0, "avgTime": 0, "players": [] },
+        { "text": "小琉球", "isCorrect": false, "answersCount": 0, "avgTime": 0, "players": [] }
+      ]
+    }
+  ],
+  "leaderboard": []
+}

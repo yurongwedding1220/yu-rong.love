@@ -1,0 +1,201 @@
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import type { WeddingStage } from '../../types';
+import { useIsMobile } from '../../hooks/useIsMobile';
+import { chapterLabel } from '../../utils/photoTheme';
+import {
+  getStageAccent,
+  getStageDescription,
+  getStageLabel,
+  getStageNavTime,
+  stageHasFilm,
+} from '../../utils/photoStageMeta';
+
+interface PhotoStageHeaderProps {
+  stage: WeddingStage;
+  photoCount: number;
+  visibleCount?: number;
+  index: number;
+  onWatchVideo: (stageId: string) => void;
+  onExpandPhotos?: () => void;
+  compact?: boolean;
+  headerRef?: React.Ref<HTMLElement>;
+}
+
+export const PhotoStageHeader: React.FC<PhotoStageHeaderProps> = ({
+  stage,
+  photoCount,
+  visibleCount,
+  index,
+  onWatchVideo,
+  onExpandPhotos,
+  compact = false,
+  headerRef,
+}) => {
+  const isMobile = useIsMobile();
+  const [descOpen, setDescOpen] = useState(!isMobile && !compact);
+  const accent = getStageAccent(stage.id);
+  const hasFilm = stageHasFilm(stage.id);
+  const stageLabel = getStageLabel(stage.id, stage.title);
+  const navTime = getStageNavTime(stage.id, stage.time);
+  const description = getStageDescription(stage.id, stage.description);
+  const countLabel =
+    visibleCount != null && visibleCount < photoCount
+      ? `已顯示 ${visibleCount} / 共 ${photoCount} 張`
+      : `${photoCount} 張照片`;
+
+  return (
+    <motion.header
+      initial={{ opacity: 0, y: compact ? 12 : 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-10%' }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      className={`photo-stage-header relative overflow-hidden rounded-2xl border border-white/10 ${
+        compact ? 'mb-3 py-3 pl-4 pr-3' : 'mb-0 px-5 py-6 md:px-8 md:py-8'
+      }`}
+      style={{
+        background: compact
+          ? `radial-gradient(ellipse 80% 120% at 0% 50%, ${accent}22 0%, transparent 55%), linear-gradient(135deg, rgba(20,18,16,0.92) 0%, rgba(12,11,10,0.96) 100%)`
+          : `linear-gradient(135deg, color-mix(in srgb, ${accent} 12%, transparent) 0%, rgba(20,18,16,0.85) 55%, rgba(12,11,10,0.92) 100%)`,
+        boxShadow: `0 0 48px color-mix(in srgb, ${accent} 12%, transparent)`,
+      }}
+    >
+      <div
+        ref={headerRef}
+        data-stage-marker={stage.id}
+        className="pointer-events-none absolute left-0 top-0 h-px w-px"
+        aria-hidden
+      />
+      {compact && (
+        <div
+          className="absolute left-0 top-3 bottom-3 w-0.5 rounded-full"
+          style={{ background: `linear-gradient(180deg, ${accent}, transparent)` }}
+          aria-hidden
+        />
+      )}
+
+      <div
+        className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full opacity-25 blur-3xl"
+        style={{ background: accent }}
+        aria-hidden
+      />
+
+      <div
+        className={`relative flex ${
+          compact
+            ? 'items-start justify-between gap-3'
+            : 'flex-col gap-4 md:flex-row md:items-end md:justify-between'
+        }`}
+      >
+        <div className={`min-w-0 ${compact ? 'flex-1' : ''}`}>
+          <p className={`tracking-wide text-white/45 ${compact ? 'text-[10px]' : 'text-xs'}`}>
+            {compact ? chapterLabel(index, stageLabel) : `CHAPTER ${String(index + 1).padStart(2, '0')}`}
+          </p>
+          <div
+            className={`mt-1 flex min-w-0 items-baseline gap-x-2 ${
+              compact ? 'flex-nowrap' : 'flex-wrap gap-y-1 md:gap-x-3'
+            }`}
+          >
+            {navTime && (
+              <span
+                className={`shrink-0 font-mono font-light tabular-nums ${
+                  compact ? 'text-lg' : 'text-xl md:text-3xl'
+                }`}
+                style={{ color: accent }}
+              >
+                {navTime}
+              </span>
+            )}
+            <h2
+              className={`min-w-0 truncate font-serif text-white ${
+                compact ? 'text-lg' : 'text-xl md:text-3xl'
+              }`}
+            >
+              {stageLabel}
+            </h2>
+          </div>
+          {description && (
+            <div className={compact ? 'mt-1' : 'mt-2'}>
+              {compact ? (
+                <p className="truncate text-xs leading-relaxed text-white/55">{description}</p>
+              ) : descOpen || !isMobile ? (
+                <p className="max-w-xl text-sm leading-relaxed text-white/70 md:text-base">
+                  {description}
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setDescOpen(true)}
+                  className="text-xs text-white/45"
+                >
+                  {description} ▾
+                </button>
+              )}
+            </div>
+          )}
+          <p className={`text-white/40 ${compact ? 'mt-1 text-[10px]' : 'mt-2 text-xs'}`}>
+            {countLabel}
+          </p>
+        </div>
+
+        {compact && (
+          <div className="flex shrink-0 items-center gap-1.5 pt-0.5">
+            {hasFilm && (
+              <button
+                type="button"
+                onClick={() => onWatchVideo(stage.id)}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--photo-accent)]/45 bg-[var(--photo-accent)]/20 text-xs text-[var(--photo-gold-light)] transition active:scale-95 active:bg-[var(--photo-accent)]/35"
+                aria-label={`播放${stageLabel}影片`}
+                title={`播放${stageLabel}影片`}
+              >
+                ▶
+              </button>
+            )}
+            {onExpandPhotos && (
+              <button
+                type="button"
+                onClick={onExpandPhotos}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-white/5 text-sm text-white/65 transition active:scale-95 active:bg-white/10"
+                aria-label={`進入${stageLabel}章節`}
+                title={`進入${stageLabel}章節`}
+              >
+                ↗
+              </button>
+            )}
+          </div>
+        )}
+
+        {!compact && (hasFilm || onExpandPhotos) && (
+          <div className="flex shrink-0 flex-wrap items-center gap-2 self-start md:self-auto">
+            {hasFilm && (
+              <button
+                type="button"
+                onClick={() => onWatchVideo(stage.id)}
+                className="photo-film-btn group flex items-center gap-2.5 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm text-white backdrop-blur-sm transition-all hover:border-white/40 hover:bg-white/10 md:px-5 md:py-2.5"
+              >
+                <span
+                  className="flex h-8 w-8 items-center justify-center rounded-full transition-transform group-hover:scale-110"
+                  style={{ background: `color-mix(in srgb, ${accent} 55%, transparent)` }}
+                  aria-hidden
+                >
+                  ▶
+                </span>
+                <span>播放影片</span>
+              </button>
+            )}
+            {onExpandPhotos && (
+              <button
+                type="button"
+                onClick={onExpandPhotos}
+                className="photo-stage-cta flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium md:px-5 md:py-2.5"
+              >
+                進入本章
+                <span aria-hidden>↗</span>
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    </motion.header>
+  );
+};
