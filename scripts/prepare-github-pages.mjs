@@ -1,26 +1,22 @@
-import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const dist = resolve('dist');
 const indexPath = resolve(dist, 'index.html');
 const SITE_BASE = 'https://yurongwedding1220.github.io/yu-rong.love';
-const ALBUM_HERO_IMAGE =
-  'https://res.cloudinary.com/djqnqxzha/image/upload/f_auto,q_auto:good,w_1200,c_limit/wedding_20260530/260530-14.jpg';
 
 const ROUTE_OG = {
-  album: {
-    title: '政憲 & 幸容 婚禮相簿',
-    description:
-      '沿著婚禮影片時間軸，重溫照片與影像交織的每個精彩瞬間。輸入姓名或桌號，秒找屬於您的照片。',
-    url: `${SITE_BASE}/album`,
-    image: ALBUM_HERO_IMAGE,
+  rsvp: {
+    title: '政憲 & 幸容 · 出席回函',
+    description: '誠邀您填寫出席回函，與我們一同見證靠岸的這一天。',
+    url: `${SITE_BASE}/rsvp`,
+    image: `${SITE_BASE}/og-image.png`,
   },
-  photo: {
-    title: '政憲 & 幸容 婚禮相簿',
-    description:
-      '沿著婚禮影片時間軸，重溫照片與影像交織的每個精彩瞬間。輸入姓名或桌號，秒找屬於您的照片。',
-    url: `${SITE_BASE}/album`,
-    image: ALBUM_HERO_IMAGE,
+  invitation: {
+    title: '政憲 & 幸容 · 電子喜帖',
+    description: '宿霧、仙本那、蘇美、宮古——四年島旅行後，我們在斗六靠岸。',
+    url: `${SITE_BASE}/invitation`,
+    image: `${SITE_BASE}/og-image.png`,
   },
 };
 

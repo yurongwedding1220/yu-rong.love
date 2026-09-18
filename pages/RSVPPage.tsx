@@ -193,7 +193,7 @@ const RSVPPage: React.FC = () => {
                     <div className="space-y-6">
                         <div className="space-y-2">
                             <label className="block text-xl md:text-2xl font-serif text-[#2c3e50]">
-                                您的姓名 <span className="text-[#8E3535]">*</span>
+                                您的姓名 <span className="text-[#1B4D6E]">*</span>
                             </label>
                         </div>
                         <input
@@ -201,7 +201,7 @@ const RSVPPage: React.FC = () => {
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             placeholder="請輸入您的姓名"
-                            className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 focus:outline-none focus:border-[#8E3535] focus:ring-1 focus:ring-[#8E3535] transition-all bg-stone-50"
+                            className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 focus:outline-none focus:border-[#1B4D6E] focus:ring-1 focus:ring-[#1B4D6E] transition-all bg-stone-50"
                             autoFocus
                         />
                     </div>
@@ -212,7 +212,7 @@ const RSVPPage: React.FC = () => {
                     <div className="space-y-6">
                         <div className="space-y-2">
                             <label className="block text-xl md:text-2xl font-serif text-[#2c3e50]">
-                                您是哪一方的親友呢 <span className="text-[#8E3535]">*</span>
+                                您是哪一方的親友呢 <span className="text-[#1B4D6E]">*</span>
                             </label>
                         </div>
                         <div className="space-y-3">
@@ -220,9 +220,9 @@ const RSVPPage: React.FC = () => {
                                 { val: 'groom', label: '男方親友' },
                                 { val: 'bride', label: '女方親友' }
                             ].map((opt) => (
-                                <label key={opt.val} className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${formData.side === opt.val ? 'border-[#8E3535] bg-[#8E3535]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
-                                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.side === opt.val ? 'border-[#8E3535]' : 'border-stone-300'}`}>
-                                        {formData.side === opt.val && <div className="w-3 h-3 rounded-full bg-[#8E3535]" />}
+                                <label key={opt.val} className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${formData.side === opt.val ? 'border-[#1B4D6E] bg-[#1B4D6E]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
+                                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.side === opt.val ? 'border-[#1B4D6E]' : 'border-stone-300'}`}>
+                                        {formData.side === opt.val && <div className="w-3 h-3 rounded-full bg-[#1B4D6E]" />}
                                     </div>
                                     <input
                                         type="radio"
@@ -247,14 +247,14 @@ const RSVPPage: React.FC = () => {
                     <div className="space-y-6">
                         <div className="space-y-2">
                             <label className="block text-xl md:text-2xl font-serif text-[#2c3e50]">
-                                {title} <span className="text-[#8E3535]">*</span>
+                                {title} <span className="text-[#1B4D6E]">*</span>
                             </label>
                         </div>
                         <div className="space-y-3">
                             {options.map((opt) => (
-                                <label key={opt} className={`flex items-center gap-4 p-3 rounded-lg border cursor-pointer transition-all ${formData.relation === opt ? 'border-[#8E3535] bg-[#8E3535]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
-                                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.relation === opt ? 'border-[#8E3535]' : 'border-stone-300'}`}>
-                                        {formData.relation === opt && <div className="w-3 h-3 rounded-full bg-[#8E3535]" />}
+                                <label key={opt} className={`flex items-center gap-4 p-3 rounded-lg border cursor-pointer transition-all ${formData.relation === opt ? 'border-[#1B4D6E] bg-[#1B4D6E]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
+                                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.relation === opt ? 'border-[#1B4D6E]' : 'border-stone-300'}`}>
+                                        {formData.relation === opt && <div className="w-3 h-3 rounded-full bg-[#1B4D6E]" />}
                                     </div>
                                     <input
                                         type="radio"
@@ -275,13 +275,13 @@ const RSVPPage: React.FC = () => {
                     <div className="space-y-6">
                         <div className="space-y-2">
                             <label className="block text-xl md:text-2xl font-serif text-[#2c3e50]">
-                                是否一同參與我們重要的一天 <span className="text-[#8E3535]">*</span>
+                                是否一同參與我們重要的一天 <span className="text-[#1B4D6E]">*</span>
                             </label>
                         </div>
                         <div className="space-y-3">
-                            <label className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${formData.attendance === 'yes' ? 'border-[#8E3535] bg-[#8E3535]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
-                                <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.attendance === 'yes' ? 'border-[#8E3535]' : 'border-stone-300'}`}>
-                                    {formData.attendance === 'yes' && <div className="w-3 h-3 rounded-full bg-[#8E3535]" />}
+                            <label className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${formData.attendance === 'yes' ? 'border-[#1B4D6E] bg-[#1B4D6E]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
+                                <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.attendance === 'yes' ? 'border-[#1B4D6E]' : 'border-stone-300'}`}>
+                                    {formData.attendance === 'yes' && <div className="w-3 h-3 rounded-full bg-[#1B4D6E]" />}
                                 </div>
                                 <input
                                     type="radio"
@@ -293,9 +293,9 @@ const RSVPPage: React.FC = () => {
                                 <span className="text-lg text-[#2c3e50]">一定到場，一起見證幸福！</span>
                             </label>
 
-                            <label className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${formData.attendance === 'no' ? 'border-[#8E3535] bg-[#8E3535]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
-                                <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.attendance === 'no' ? 'border-[#8E3535]' : 'border-stone-300'}`}>
-                                    {formData.attendance === 'no' && <div className="w-3 h-3 rounded-full bg-[#8E3535]" />}
+                            <label className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${formData.attendance === 'no' ? 'border-[#1B4D6E] bg-[#1B4D6E]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
+                                <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.attendance === 'no' ? 'border-[#1B4D6E]' : 'border-stone-300'}`}>
+                                    {formData.attendance === 'no' && <div className="w-3 h-3 rounded-full bg-[#1B4D6E]" />}
                                 </div>
                                 <input
                                     type="radio"
@@ -314,11 +314,11 @@ const RSVPPage: React.FC = () => {
                 return (
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="block text-lg font-serif text-[#2c3e50]">成人人數 <span className="text-[#8E3535]">*</span></label>
+                            <label className="block text-lg font-serif text-[#2c3e50]">成人人數 <span className="text-[#1B4D6E]">*</span></label>
                             <select
                                 value={formData.adults}
                                 onChange={(e) => setFormData({ ...formData, adults: Number(e.target.value) })}
-                                className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 bg-stone-50 focus:border-[#8E3535] focus:outline-none"
+                                className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 bg-stone-50 focus:border-[#1B4D6E] focus:outline-none"
                             >
                                 {generateOptions(10, "人")}
                             </select>
@@ -329,7 +329,7 @@ const RSVPPage: React.FC = () => {
                             <select
                                 value={formData.children}
                                 onChange={(e) => setFormData({ ...formData, children: Number(e.target.value) })}
-                                className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 bg-stone-50 focus:border-[#8E3535] focus:outline-none"
+                                className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 bg-stone-50 focus:border-[#1B4D6E] focus:outline-none"
                             >
                                 {generateOptions(6, "人")}
                             </select>
@@ -340,7 +340,7 @@ const RSVPPage: React.FC = () => {
                             <select
                                 value={formData.highChairs}
                                 onChange={(e) => setFormData({ ...formData, highChairs: Number(e.target.value) })}
-                                className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 bg-stone-50 focus:border-[#8E3535] focus:outline-none"
+                                className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 bg-stone-50 focus:border-[#1B4D6E] focus:outline-none"
                             >
                                 {generateOptions(4, "張")}
                             </select>
@@ -351,7 +351,7 @@ const RSVPPage: React.FC = () => {
                             <select
                                 value={formData.vegetarian}
                                 onChange={(e) => setFormData({ ...formData, vegetarian: Number(e.target.value) })}
-                                className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 bg-stone-50 focus:border-[#8E3535] focus:outline-none"
+                                className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 bg-stone-50 focus:border-[#1B4D6E] focus:outline-none"
                             >
                                 {generateOptions(10, "人")}
                             </select>
@@ -364,13 +364,13 @@ const RSVPPage: React.FC = () => {
                     <div className="space-y-6">
                         <div className="space-y-2">
                             <label className="block text-xl md:text-2xl font-serif text-[#2c3e50]">
-                                您是否需要紙本喜帖？ <span className="text-[#8E3535]">*</span>
+                                您是否需要紙本喜帖？ <span className="text-[#1B4D6E]">*</span>
                             </label>
                         </div>
                         <div className="space-y-3">
-                            <label className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${formData.needPaperInvite === 'yes' ? 'border-[#8E3535] bg-[#8E3535]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
-                                <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.needPaperInvite === 'yes' ? 'border-[#8E3535]' : 'border-stone-300'}`}>
-                                    {formData.needPaperInvite === 'yes' && <div className="w-3 h-3 rounded-full bg-[#8E3535]" />}
+                            <label className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${formData.needPaperInvite === 'yes' ? 'border-[#1B4D6E] bg-[#1B4D6E]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
+                                <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.needPaperInvite === 'yes' ? 'border-[#1B4D6E]' : 'border-stone-300'}`}>
+                                    {formData.needPaperInvite === 'yes' && <div className="w-3 h-3 rounded-full bg-[#1B4D6E]" />}
                                 </div>
                                 <input
                                     type="radio"
@@ -382,9 +382,9 @@ const RSVPPage: React.FC = () => {
                                 <span className="text-lg text-[#2c3e50]">是，請寄給我</span>
                             </label>
 
-                            <label className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${formData.needPaperInvite === 'no' ? 'border-[#8E3535] bg-[#8E3535]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
-                                <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.needPaperInvite === 'no' ? 'border-[#8E3535]' : 'border-stone-300'}`}>
-                                    {formData.needPaperInvite === 'no' && <div className="w-3 h-3 rounded-full bg-[#8E3535]" />}
+                            <label className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${formData.needPaperInvite === 'no' ? 'border-[#1B4D6E] bg-[#1B4D6E]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
+                                <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.needPaperInvite === 'no' ? 'border-[#1B4D6E]' : 'border-stone-300'}`}>
+                                    {formData.needPaperInvite === 'no' && <div className="w-3 h-3 rounded-full bg-[#1B4D6E]" />}
                                 </div>
                                 <input
                                     type="radio"
@@ -403,24 +403,24 @@ const RSVPPage: React.FC = () => {
                 return (
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="block text-lg font-serif text-[#2c3e50]">郵遞區號 <span className="text-[#8E3535]">*</span></label>
+                            <label className="block text-lg font-serif text-[#2c3e50]">郵遞區號 <span className="text-[#1B4D6E]">*</span></label>
                             <input
                                 type="text"
                                 value={formData.zipCode}
                                 onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
                                 placeholder="請輸入郵遞區號"
-                                className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 focus:outline-none focus:border-[#8E3535] focus:ring-1 focus:ring-[#8E3535] bg-stone-50"
+                                className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 focus:outline-none focus:border-[#1B4D6E] focus:ring-1 focus:ring-[#1B4D6E] bg-stone-50"
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <label className="block text-lg font-serif text-[#2c3e50]">地址 <span className="text-[#8E3535]">*</span></label>
+                            <label className="block text-lg font-serif text-[#2c3e50]">地址 <span className="text-[#1B4D6E]">*</span></label>
                             <input
                                 type="text"
                                 value={formData.address}
                                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                                 placeholder="請輸入完整地址"
-                                className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 focus:outline-none focus:border-[#8E3535] focus:ring-1 focus:ring-[#8E3535] bg-stone-50"
+                                className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 focus:outline-none focus:border-[#1B4D6E] focus:ring-1 focus:ring-[#1B4D6E] bg-stone-50"
                             />
                         </div>
                     </div>
@@ -440,7 +440,7 @@ const RSVPPage: React.FC = () => {
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             placeholder="example@email.com (可留空)"
-                            className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 focus:outline-none focus:border-[#8E3535] focus:ring-1 focus:ring-[#8E3535] transition-all bg-stone-50"
+                            className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 focus:outline-none focus:border-[#1B4D6E] focus:ring-1 focus:ring-[#1B4D6E] transition-all bg-stone-50"
                             autoFocus
                         />
                         {formData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim()) && (
@@ -463,13 +463,13 @@ const RSVPPage: React.FC = () => {
                             value={formData.message}
                             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                             placeholder="想對我們說的話..."
-                            className="w-full min-h-[120px] text-lg border border-stone-200 rounded-lg px-4 py-3 focus:outline-none focus:border-[#8E3535] focus:ring-1 focus:ring-[#8E3535] transition-all bg-stone-50 resize-none"
+                            className="w-full min-h-[120px] text-lg border border-stone-200 rounded-lg px-4 py-3 focus:outline-none focus:border-[#1B4D6E] focus:ring-1 focus:ring-[#1B4D6E] transition-all bg-stone-50 resize-none"
                         />
 
                         {formData.message.trim() && (
                             <div className="space-y-4 pt-2 border-t border-stone-100">
                                 <label className="flex items-start gap-3 cursor-pointer group">
-                                    <div className={`mt-0.5 w-5 h-5 border rounded flex items-center justify-center transition-colors ${formData.publishToGuestbook ? 'bg-[#8E3535] border-[#8E3535]' : 'border-stone-300 group-hover:border-[#8E3535]'}`}>
+                                    <div className={`mt-0.5 w-5 h-5 border rounded flex items-center justify-center transition-colors ${formData.publishToGuestbook ? 'bg-[#1B4D6E] border-[#1B4D6E]' : 'border-stone-300 group-hover:border-[#1B4D6E]'}`}>
                                         {formData.publishToGuestbook && (
                                             <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -493,9 +493,9 @@ const RSVPPage: React.FC = () => {
                                         <p className="text-sm text-stone-500 mb-2">您希望留言顯示的名字是：</p>
 
                                         {/* Real Name Option */}
-                                        <label className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${!formData.useAnonymous ? 'border-[#8E3535] bg-[#8E3535]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
-                                            <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${!formData.useAnonymous ? 'border-[#8E3535]' : 'border-stone-300'}`}>
-                                                {!formData.useAnonymous && <div className="w-2 h-2 rounded-full bg-[#8E3535]" />}
+                                        <label className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${!formData.useAnonymous ? 'border-[#1B4D6E] bg-[#1B4D6E]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
+                                            <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${!formData.useAnonymous ? 'border-[#1B4D6E]' : 'border-stone-300'}`}>
+                                                {!formData.useAnonymous && <div className="w-2 h-2 rounded-full bg-[#1B4D6E]" />}
                                             </div>
                                             <input
                                                 type="radio"
@@ -508,10 +508,10 @@ const RSVPPage: React.FC = () => {
                                         </label>
 
                                         {/* Anonymous Option */}
-                                        <div className={`p-2 md:p-3 rounded-lg border transition-all ${formData.useAnonymous ? 'border-[#8E3535] bg-[#8E3535]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
+                                        <div className={`p-2 md:p-3 rounded-lg border transition-all ${formData.useAnonymous ? 'border-[#1B4D6E] bg-[#1B4D6E]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
                                             <label className="flex items-center gap-3 cursor-pointer">
-                                                <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${formData.useAnonymous ? 'border-[#8E3535]' : 'border-stone-300'}`}>
-                                                    {formData.useAnonymous && <div className="w-2 h-2 rounded-full bg-[#8E3535]" />}
+                                                <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${formData.useAnonymous ? 'border-[#1B4D6E]' : 'border-stone-300'}`}>
+                                                    {formData.useAnonymous && <div className="w-2 h-2 rounded-full bg-[#1B4D6E]" />}
                                                 </div>
                                                 <input
                                                     type="radio"
@@ -545,7 +545,7 @@ const RSVPPage: React.FC = () => {
                                                             type="text"
                                                             value={formData.nickname}
                                                             onChange={(e) => setFormData({ ...formData, nickname: e.target.value, animeSource: '' })}
-                                                            className="flex-1 min-w-0 text-base border border-stone-200 rounded px-3 py-2 focus:outline-none focus:border-[#8E3535] bg-white"
+                                                            className="flex-1 min-w-0 text-base border border-stone-200 rounded px-3 py-2 focus:outline-none focus:border-[#1B4D6E] bg-white"
                                                             placeholder="匿名 ID"
                                                         />
                                                         <button
@@ -584,13 +584,13 @@ const RSVPPage: React.FC = () => {
 
     if (currentStepName === 'success') {
         return (
-            <div className="min-h-screen bg-gradient-to-r from-[#fff0f5] to-[#f0f9ff] flex items-center justify-center p-6">
+            <div className="min-h-screen bg-gradient-to-r from-[#F4E8D8] to-[#e8f4fa] flex items-center justify-center p-6">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 md:p-10 text-center space-y-6 md:space-y-8"
                 >
-                    <div className="w-12 h-12 md:w-16 md:h-16 bg-[#8E3535]/5 rounded-full flex items-center justify-center mx-auto text-[#8E3535]">
+                    <div className="w-12 h-12 md:w-16 md:h-16 bg-[#1B4D6E]/5 rounded-full flex items-center justify-center mx-auto text-[#1B4D6E]">
                         <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
@@ -630,7 +630,7 @@ const RSVPPage: React.FC = () => {
                                 <motion.span
                                     animate={{ opacity: [0.6, 1, 0.6] }}
                                     transition={{ duration: 2.5, repeat: Infinity }}
-                                    className="font-serif text-[#8E3535] text-xs md:text-sm tracking-[0.2em] font-medium"
+                                    className="font-serif text-[#1B4D6E] text-xs md:text-sm tracking-[0.2em] font-medium"
                                 >
                                     點擊加入 LINE 好友
                                 </motion.span>
@@ -641,7 +641,7 @@ const RSVPPage: React.FC = () => {
                     <div className="pt-2">
                         <button
                             onClick={() => navigate('/')}
-                            className="text-stone-400 hover:text-[#8E3535] transition-colors font-serif text-sm tracking-widest flex items-center gap-2 mx-auto group px-4 py-2"
+                            className="text-stone-400 hover:text-[#1B4D6E] transition-colors font-serif text-sm tracking-widest flex items-center gap-2 mx-auto group px-4 py-2"
                         >
                             <span className="transform group-hover:-translate-x-1 transition-transform">←</span>
                             <span>返回婚禮邀請函</span>
@@ -655,7 +655,7 @@ const RSVPPage: React.FC = () => {
     const progress = getStepProgress();
 
     return (
-        <div className="min-h-screen bg-gradient-to-r from-[#fff0f5] to-[#f0f9ff]">
+        <div className="min-h-screen bg-gradient-to-r from-[#F4E8D8] to-[#e8f4fa]">
             <div className="min-h-screen flex flex-col relative">
 
                 {/* Header */}
@@ -663,7 +663,7 @@ const RSVPPage: React.FC = () => {
                     <div className="flex items-center gap-3">
                         <Link
                             to="/"
-                            className="w-8 h-8 flex items-center justify-center rounded-full bg-white/60 border border-[#8E3535]/20 text-[#8E3535] hover:bg-[#8E3535] hover:text-white transition-all shadow-xs group"
+                            className="w-8 h-8 flex items-center justify-center rounded-full bg-white/60 border border-[#1B4D6E]/20 text-[#1B4D6E] hover:bg-[#1B4D6E] hover:text-white transition-all shadow-xs group"
                             title="返回首頁"
                         >
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -672,7 +672,7 @@ const RSVPPage: React.FC = () => {
                         </Link>
                         <Link
                             to="/"
-                            className="font-display text-sm tracking-[0.2em] font-bold text-[#8E3535] hover:opacity-80 transition-opacity"
+                            className="font-display text-sm tracking-[0.2em] font-bold text-[#1B4D6E] hover:opacity-80 transition-opacity"
                         >
                             ✦ 政憲 & 幸容 ✦
                         </Link>
@@ -688,27 +688,27 @@ const RSVPPage: React.FC = () => {
                     {/* Wedding Info Summary */}
                     <div className="text-center space-y-2 md:space-y-4 mb-2 md:mb-4">
                         <h1 className="font-serif text-2xl md:text-4xl text-[#2c3e50]">政憲 & 幸容</h1>
-                        <p className="font-serif text-base md:text-lg text-[#8E3535]">2026.05.30 星期六</p>
+                        <p className="font-serif text-base md:text-lg text-[#1B4D6E]">2026.05.30 星期六</p>
 
                         <div className="text-[11px] md:text-sm text-stone-600 bg-white/50 block md:inline-block p-3 md:p-4 rounded-lg border border-stone-100 max-w-lg mx-auto leading-relaxed">
-                            <p className="mb-1 md:mb-2"><span className="font-bold text-[#b08d55]">時間：</span> 12:00 入席 · 12:30 準時開席</p>
-                            <p className="mb-1 md:mb-2"><span className="font-bold text-[#b08d55]">地點：</span> {APP_CONTENT.venueName}</p>
-                            <p className="hidden md:block"><span className="font-bold text-[#b08d55]">交通：</span> 高鐵新竹站轉乘計程車 (約15分) / 國道一號公道五路交流道 / 附設停車場</p>
+                            <p className="mb-1 md:mb-2"><span className="font-bold text-[#3A8FB7]">時間：</span> 12:00 入席 · 12:30 準時開席</p>
+                            <p className="mb-1 md:mb-2"><span className="font-bold text-[#3A8FB7]">地點：</span> {APP_CONTENT.venueName}</p>
+                            <p className="hidden md:block"><span className="font-bold text-[#3A8FB7]">交通：</span> 高鐵新竹站轉乘計程車 (約15分) / 國道一號公道五路交流道 / 附設停車場</p>
                         </div>
                     </div>
 
                     {/* Form Card */}
                     <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-stone-100 min-h-[350px] md:min-h-[400px] flex flex-col">
                         <div className="p-6 md:p-8 pb-0 text-center">
-                            <h2 className="text-xl md:text-2xl font-serif text-[#8E3535] tracking-wide mb-4 md:mb-6">婚禮出席回覆</h2>
-                            <div className="w-8 h-[2px] bg-[#8E3535]/30 mx-auto mb-6 md:mb-8" />
+                            <h2 className="text-xl md:text-2xl font-serif text-[#1B4D6E] tracking-wide mb-4 md:mb-6">婚禮出席回覆</h2>
+                            <div className="w-8 h-[2px] bg-[#1B4D6E]/30 mx-auto mb-6 md:mb-8" />
                         </div>
 
                         {/* Progress Bar */}
                         <div className="px-6 md:px-8">
                             <div className="w-full h-1 bg-stone-100 rounded-full overflow-hidden">
                                 <motion.div
-                                    className="h-full bg-[#8E3535]"
+                                    className="h-full bg-[#1B4D6E]"
                                     initial={{ width: 0 }}
                                     animate={{ width: `${progress}%` }}
                                     transition={{ duration: 0.5, ease: "easeInOut" }}
@@ -740,7 +740,7 @@ const RSVPPage: React.FC = () => {
                             <button
                                 onClick={handlePrev}
                                 disabled={currentStepName === 'name' || isSubmitting}
-                                className={`group flex items-center gap-1.5 text-stone-400 hover:text-[#8E3535] transition-colors font-serif text-sm md:text-[15px] tracking-wide ${currentStepName === 'name' ? 'opacity-0 pointer-events-none' : ''}`}
+                                className={`group flex items-center gap-1.5 text-stone-400 hover:text-[#1B4D6E] transition-colors font-serif text-sm md:text-[15px] tracking-wide ${currentStepName === 'name' ? 'opacity-0 pointer-events-none' : ''}`}
                             >
                                 <span className="transform group-hover:-translate-x-1 transition-transform">←</span>
                                 <span>返回</span>
@@ -750,7 +750,7 @@ const RSVPPage: React.FC = () => {
                                 onClick={handleNext}
                                 disabled={!canProceed() || isSubmitting}
                                 className={`
-                                relative overflow-hidden group px-6 md:px-8 py-2.5 md:py-3 bg-[#8E3535] text-white font-serif tracking-[0.15em] text-sm md:text-[15px]
+                                relative overflow-hidden group px-6 md:px-8 py-2.5 md:py-3 bg-[#1B4D6E] text-white font-serif tracking-[0.15em] text-sm md:text-[15px]
                                 rounded-[2px] shadow-[0_4px_14px_rgba(142,53,53,0.25)] transition-all duration-300
                                 flex items-center gap-2 md:gap-3
                                 ${(!canProceed() || isSubmitting) ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-[0_6px_20px_rgba(142,53,53,0.4)] hover:-translate-y-[1px]'}

@@ -29,13 +29,11 @@ export const WeddingCalendar: React.FC = () => {
     return () => clearTimeout(timer);
   });
 
-  // Calendar Logic for May 2026
-  // May 1st, 2026 is a Friday. 
-  // Days: 31
-  // Grid padding: 5 empty slots (Sun, Mon, Tue, Wed, Thu) before Friday.
+  // Calendar Logic for December 2026
+  // Dec 1st, 2026 is a Tuesday.
   const daysInMonth = 31;
-  const startingDay = 5; // 0=Sun, 5=Fri
-  const weddingDay = 30;
+  const startingDay = 2; // 0=Sun, 2=Tue
+  const weddingDay = 20;
 
   const calendarDays = [];
   // Add empty slots
@@ -49,10 +47,10 @@ export const WeddingCalendar: React.FC = () => {
 
   const TimerUnit = ({ value, label }: { value: number, label: string }) => (
     <div className="flex flex-col items-center">
-      <span className="font-serif text-2xl md:text-3xl text-[#8E3535] font-medium tabular-nums">
+      <span className="font-serif text-2xl md:text-3xl text-[#1B4D6E] font-medium tabular-nums">
         {String(value).padStart(2, '0')}
       </span>
-      <span className="text-[10px] text-[#b08d55] uppercase tracking-widest mt-1">
+      <span className="text-[10px] text-[#3A8FB7] uppercase tracking-widest mt-1">
         {label}
       </span>
     </div>
@@ -67,7 +65,7 @@ export const WeddingCalendar: React.FC = () => {
 
         {/* 1. Double Happiness Symbol */}
         <div className="flex justify-center mb-6">
-           <div className="w-16 h-16 md:w-20 md:h-20 bg-[#8E3535] mask-image-double-happiness flex items-center justify-center rounded-full opacity-90">
+           <div className="w-16 h-16 md:w-20 md:h-20 bg-[#1B4D6E] mask-image-double-happiness flex items-center justify-center rounded-full opacity-90">
               {/* SVG Representation of 囍 */}
               <svg viewBox="0 0 100 100" className="w-12 h-12 md:w-14 md:h-14 fill-white" xmlns="http://www.w3.org/2000/svg">
                 <path d="M22,24 h8 v-8 h8 v8 h8 v-8 h8 v8 h8 v24 h-8 v8 h8 v8 h-8 v8 h8 v8 h-18 v-8 h6 v-8 h-6 v-6 h-6 v6 h-6 v8 h6 v8 h-18 v-8 h8 v-8 h-8 v-8 h8 v-24 h-8 v-8 h-8 v-8 h8 z M28,30 v12 h6 v-12 z M48,30 v12 h6 v-12 z M28,58 v12 h6 v-12 z M48,58 v12 h6 v-12 z" />
@@ -80,7 +78,7 @@ export const WeddingCalendar: React.FC = () => {
            <h2 className="font-serif text-xl md:text-2xl text-[#1a1a1a] tracking-wide">
              2026 年 05 月 30 日 星期六
            </h2>
-           <p className="font-serif text-sm text-[#8E3535] opacity-80">
+           <p className="font-serif text-sm text-[#1B4D6E] opacity-80">
              農曆四月十四
            </p>
         </div>
@@ -88,7 +86,7 @@ export const WeddingCalendar: React.FC = () => {
         {/* 3. Calendar View */}
         <div className="mb-12">
             <div className="flex justify-between items-end mb-6 px-4 border-b border-stone-200 pb-4">
-               <span className="font-serif text-5xl md:text-6xl text-[#8E3535] leading-none">05</span>
+               <span className="font-serif text-5xl md:text-6xl text-[#1B4D6E] leading-none">05</span>
                <div className="flex flex-col text-right">
                   <span className="font-sans text-xs text-[#999] tracking-widest uppercase">May</span>
                   <span className="font-serif text-xl text-[#999]">2026</span>
@@ -99,7 +97,7 @@ export const WeddingCalendar: React.FC = () => {
             <div className="grid grid-cols-7 gap-y-4 gap-x-1 md:gap-x-2 text-center">
                {/* Days of Week */}
                {['日', '一', '二', '三', '四', '五', '六'].map(d => (
-                 <div key={d} className="text-xs text-[#b08d55] font-medium py-2">
+                 <div key={d} className="text-xs text-[#3A8FB7] font-medium py-2">
                    {d}
                  </div>
                ))}
@@ -116,7 +114,7 @@ export const WeddingCalendar: React.FC = () => {
                                initial={{ scale: 0 }}
                                whileInView={{ scale: 1 }}
                                transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                               className="absolute inset-0 bg-[#8E3535] rounded-full" 
+                               className="absolute inset-0 bg-[#1B4D6E] rounded-full" 
                              />
                            )}
                            {isWeddingDay && (

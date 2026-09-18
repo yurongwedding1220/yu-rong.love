@@ -1,0 +1,61 @@
+/* Island theme — deep ocean → sand */
+
+:root {
+  --island-deep: #1b4d6e;
+  --island-sea: #3a8fb7;
+  --island-shallow: #7ec8e3;
+  --island-sand: #f4e8d8;
+  --island-sand-deep: #e8d5bc;
+  --island-coral: #e8a87c;
+  --island-ink: #1a3344;
+  --island-muted: #5a7380;
+  --bg-color: #f4e8d8;
+  --text-primary: #1a3344;
+  --text-secondary: #3a8fb7;
+  --accent: #e8a87c;
+  --theme-color: #1b4d6e;
+}
+
+.bg-grid-fixed {
+  background: linear-gradient(180deg, #f4e8d8 0%, #faf6f0 100%) !important;
+}
+
+.bg-noise {
+  opacity: 0.08 !important;
+}
+
+::selection {
+  background: var(--island-coral);
+  color: white;
+}
+
+.island-section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--island-sea);
+}
+
+.island-btn {
+  background: var(--island-deep);
+  color: white;
+  border-radius: 9999px;
+  transition: background 0.25s ease, transform 0.15s ease;
+}
+
+.island-btn:hover {
+  background: var(--island-sea);
+}
+
+.island-btn:active {
+  transform: scale(0.97);
+}
+
+.island-card {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 4px 24px rgba(27, 77, 110, 0.06);
+}

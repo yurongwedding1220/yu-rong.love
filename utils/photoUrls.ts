@@ -1,6 +1,9 @@
 const CLOUD_NAME = 'djqnqxzha';
 
-const withExt = (id: string) => (id.includes('.') ? id : `${id}.jpg`);
+const withExt = (id: string) => {
+  if (!id) return 'placeholder.jpg';
+  return id.includes('.') ? id : `${id}.jpg`;
+};
 
 const buildUrl = (publicId: string, transforms: string) =>
   `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transforms}/${withExt(publicId)}`;
