@@ -1,14 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IslandScrollHero } from './components/island/IslandScrollHero';
-import { FeaturedPhotos } from './components/island/FeaturedPhotos';
 import { CalendarRevealSection } from './components/CalendarRevealSection';
 import { Timeline } from './components/Timeline';
-import { LocationInfo } from './components/LocationInfo';
 import { LoadingScreen } from './components/LoadingScreen';
 import { APP_CONTENT } from './constants';
 import { useIsMobile } from './hooks/useIsMobile';
+import { usePerfMode } from './hooks/usePerfMode';
+
+const FeaturedPhotos = lazy(() =>
+  import('./components/island/FeaturedPhotos').then((m) => ({ default: m.FeaturedPhotos }))
+);
+const LocationInfo = lazy(() =>
+  import('./components/LocationInfo').then((m) => ({ default: m.LocationInfo }))
+);
 
 const ClockIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
@@ -51,6 +57,8 @@ const XIcon = () => (
 function App() {
   const navigate = useNavigate();
   const isMobile = useIsMobile(768);
+  const perf = usePerfMode();
+  const lite = perf === 'low';
   const isNavigatingRef = useRef(false);
 
   const [isInitialLoading, setIsInitialLoading] = useState(
@@ -66,13 +74,14 @@ function App() {
   useEffect(() => {
     if (!isInitialLoading) return;
     let progress = 0;
+    const step = lite ? 22 : isMobile ? 14 : 8;
     const id = window.setInterval(() => {
-      progress = Math.min(100, progress + (isMobile ? 12 : 8));
+      progress = Math.min(100, progress + step);
       setLoadingProgress(progress);
       if (progress >= 100) window.clearInterval(id);
-    }, 80);
+    }, lite ? 40 : 70);
     return () => window.clearInterval(id);
-  }, [isInitialLoading, isMobile]);
+  }, [isInitialLoading, isMobile, lite]);
 
   useEffect(() => {
     const tick = () => {
@@ -85,13 +94,14 @@ function App() {
         days: Math.floor(diff / (1000 * 60 * 60 * 24)),
         hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
         minutes: Math.floor((diff / 1000 / 60) % 60),
-        seconds: Math.floor((diff / 1000) % 60),
+        seconds: lite ? 0 : Math.floor((diff / 1000) % 60),
       });
     };
     tick();
-    const id = window.setInterval(tick, 1000);
+    // Low-end: update countdown every 30s instead of every second
+    const id = window.setInterval(tick, lite ? 30000 : 1000);
     return () => window.clearInterval(id);
-  }, []);
+  }, [lite]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -150,34 +160,42 @@ function App() {
       <div className="relative z-10">
         <IslandScrollHero />
 
-        {/* Countdown marquee */}
+        {/* Countdown bar — static on low-end (no infinite marquee paint) */}
         <div
           id="sticky-marquee"
-          className="sticky top-0 z-30 overflow-hidden border-y border-[#3A8FB7]/15 bg-[#F4E8D8]/90 backdrop-blur-md"
+          className="island-blur sticky top-0 z-30 overflow-hidden border-y border-[#3A8FB7]/15"
         >
-          <div className="flex animate-[marquee_28s_linear_infinite] whitespace-nowrap py-2.5 text-xs tracking-widest text-[#1B4D6E]">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <span key={i} className="mx-8 inline-flex items-center gap-3 font-display">
-                <span>{APP_CONTENT.date}</span>
-                <span className="text-[#E8A87C]">✦</span>
-                <span>
-                  {String(timeLeft.days).padStart(2, '0')}天{' '}
-                  {String(timeLeft.hours).padStart(2, '0')}:
-                  {String(timeLeft.minutes).padStart(2, '0')}:
-                  {String(timeLeft.seconds).padStart(2, '0')}
+          {lite ? (
+            <div className="flex justify-center gap-3 px-4 py-2.5 text-center text-xs tracking-wider text-[#1B4D6E] font-display">
+              <span>{APP_CONTENT.date}</span>
+              <span className="text-[#E8A87C]">✦</span>
+              <span>倒數 {timeLeft.days} 天</span>
+            </div>
+          ) : (
+            <div className="flex animate-[marquee_36s_linear_infinite] whitespace-nowrap py-2.5 text-xs tracking-widest text-[#1B4D6E]">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <span key={i} className="mx-8 inline-flex items-center gap-3 font-display">
+                  <span>{APP_CONTENT.date}</span>
+                  <span className="text-[#E8A87C]">✦</span>
+                  <span>
+                    {String(timeLeft.days).padStart(2, '0')}天{' '}
+                    {String(timeLeft.hours).padStart(2, '0')}:
+                    {String(timeLeft.minutes).padStart(2, '0')}:
+                    {String(timeLeft.seconds).padStart(2, '0')}
+                  </span>
+                  <span className="text-[#E8A87C]">✦</span>
+                  <span>
+                    {APP_CONTENT.venueName} · {APP_CONTENT.venueHall}
+                  </span>
                 </span>
-                <span className="text-[#E8A87C]">✦</span>
-                <span>
-                  {APP_CONTENT.venueName} · {APP_CONTENT.venueHall}
-                </span>
-              </span>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        <CalendarRevealSection isMobile={isMobile} />
+        <CalendarRevealSection />
 
-        <section id="timeline" className="scroll-mt-20 px-4 py-16 md:py-24">
+        <section id="timeline" className="island-defer scroll-mt-20 px-4 py-16 md:py-24">
           <div className="mx-auto mb-4 max-w-3xl text-center">
             <p className="island-section-label mb-2">01 / Program</p>
             <h2 className="font-serif text-3xl text-[#1A3344] md:text-4xl">婚禮流程</h2>
@@ -188,17 +206,19 @@ function App() {
           <Timeline />
         </section>
 
-        <section id="location" className="scroll-mt-20 px-4 py-16 md:py-24">
+        <section id="location" className="island-defer scroll-mt-20 px-4 py-16 md:py-24">
           <div className="mx-auto mb-10 max-w-5xl text-center md:text-left">
             <p className="island-section-label mb-2">02 / Venue</p>
             <h2 className="font-serif text-3xl text-[#1A3344] md:text-4xl">交通資訊</h2>
           </div>
           <div className="mx-auto max-w-5xl">
-            <LocationInfo />
+            <Suspense fallback={<div className="h-40 rounded-2xl bg-white/40" />}>
+              <LocationInfo />
+            </Suspense>
           </div>
         </section>
 
-        <section id="photos" className="scroll-mt-20 px-4 py-16 md:py-24">
+        <section id="photos" className="island-defer scroll-mt-20 px-4 py-16 md:py-24">
           <div className="mx-auto mb-10 max-w-5xl">
             <p className="island-section-label mb-2">03 / Moments</p>
             <h2 className="font-serif text-3xl text-[#1A3344] md:text-4xl">精選瞬間</h2>
@@ -207,7 +227,9 @@ function App() {
             </p>
           </div>
           <div className="mx-auto max-w-5xl">
-            <FeaturedPhotos />
+            <Suspense fallback={<div className="h-48 rounded-2xl bg-white/40" />}>
+              <FeaturedPhotos />
+            </Suspense>
           </div>
         </section>
 
@@ -273,7 +295,7 @@ function App() {
             exit={{ opacity: 0, y: 24 }}
             className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2"
           >
-            <div className="flex items-center gap-1 rounded-full border border-white/70 bg-white/80 p-1.5 shadow-lg backdrop-blur-md">
+            <div className="island-blur flex items-center gap-1 rounded-full border border-white/70 p-1.5 shadow-lg">
               <button
                 type="button"
                 aria-label={isNavExpanded ? '收合選單' : '展開選單'}

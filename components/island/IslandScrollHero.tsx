@@ -3,113 +3,84 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { APP_CONTENT } from '../../constants';
 import { RouteLine } from './RouteLine';
 import { WaveLayers } from './WaveLayers';
+import { usePerfMode } from '../../hooks/usePerfMode';
 
 export const IslandScrollHero: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const perf = usePerfMode();
+  const lite = perf === 'low';
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
   });
 
-  const deepOpacity = useTransform(scrollYProgress, [0, 0.45], [1, 0]);
-  const seaOpacity = useTransform(scrollYProgress, [0.15, 0.55, 0.85], [0, 1, 0]);
-  const sandOpacity = useTransform(scrollYProgress, [0.5, 0.9], [0, 1]);
-  const contentY = useTransform(scrollYProgress, [0, 0.6], [0, -40]);
-  const contentFade = useTransform(scrollYProgress, [0, 0.7, 0.95], [1, 1, 0.35]);
+  // One composite layer opacity instead of three competing full-screen fades
+  const sandMix = useTransform(scrollYProgress, [0, 0.35, 0.75, 1], [0, 0.15, 0.85, 1]);
+  const contentY = useTransform(scrollYProgress, [0, 0.7], [0, lite ? -16 : -36]);
+  const contentFade = useTransform(scrollYProgress, [0, 0.75, 1], [1, 1, lite ? 0.55 : 0.4]);
 
   return (
-    <section ref={containerRef} className="relative h-[220vh] md:h-[240vh]">
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {/* Layered sky / ocean / sand */}
+    <section
+      ref={containerRef}
+      className={`relative ${lite ? 'h-[160vh]' : 'h-[200vh] md:h-[220vh]'}`}
+    >
+      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden">
+        {/* Base ocean — static paint, GPU-cheap */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0f3550] via-[#1B4D6E] to-[#3A8FB7]" />
+
+        {/* Sand wash overlays as single opacity channel */}
         <motion.div
-          className="absolute inset-0 bg-[#0f3550]"
-          style={{ opacity: deepOpacity }}
-        />
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-b from-[#1B4D6E] via-[#3A8FB7] to-[#7EC8E3]"
-          style={{ opacity: seaOpacity }}
-        />
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-b from-[#c5e4f0] via-[#e8d5bc] to-[#F4E8D8]"
-          style={{ opacity: sandOpacity }}
+          className="absolute inset-0 bg-gradient-to-b from-transparent via-[#c5e4f0]/40 to-[#F4E8D8] will-change-transform"
+          style={{ opacity: sandMix }}
         />
 
-        <WaveLayers progress={scrollYProgress} />
+        <WaveLayers progress={scrollYProgress} lite={lite} />
 
-        {/* Soft sun glow */}
-        <div
-          className="pointer-events-none absolute -top-20 right-[-10%] h-[40vh] w-[40vh] rounded-full bg-[#E8A87C]/25 blur-3xl"
-          aria-hidden
-        />
+        {!lite && (
+          <div
+            className="pointer-events-none absolute -top-16 right-[-8%] h-[32vh] w-[32vh] rounded-full bg-[#E8A87C]/20"
+            style={{ filter: 'blur(48px)' }}
+            aria-hidden
+          />
+        )}
 
         <motion.div
-          className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center"
+          className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center will-change-transform"
           style={{ y: contentY, opacity: contentFade }}
         >
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="mb-4 font-display text-[10px] tracking-[0.4em] text-white/80 md:text-xs"
-          >
+          <p className="mb-4 font-display text-[10px] tracking-[0.4em] text-white/80 md:text-xs">
             WEDDING INVITATION
-          </motion.p>
+          </p>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.35 }}
-            className="font-serif text-4xl font-light tracking-wide text-white drop-shadow-sm md:text-6xl"
-          >
+          <h1 className="font-serif text-4xl font-light tracking-wide text-white md:text-6xl">
             {APP_CONTENT.coupleName}
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-3 font-serif text-lg text-white/90 md:text-xl"
-          >
+          <p className="mt-3 font-serif text-lg text-white/90 md:text-xl">
             {APP_CONTENT.chineseNames}
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.65 }}
-            className="mt-8 max-w-md"
-          >
+          <div className="mt-8 max-w-md">
             <RouteLine light className="mb-4 justify-center" />
             <p className="font-serif text-sm leading-relaxed text-white/85 md:text-base">
               {APP_CONTENT.quote}
             </p>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.9 }}
-            className="mt-10 flex flex-col items-center gap-1"
-          >
+          <div className="mt-10 flex flex-col items-center gap-1">
             <p className="font-display text-xs tracking-[0.25em] text-white/75">
               {APP_CONTENT.date}
             </p>
             <p className="font-serif text-sm text-white/80">
               {APP_CONTENT.venueName} · {APP_CONTENT.venueHall}
             </p>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0.4, 0.8, 0.4] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2"
-          >
-            <span className="block text-[10px] tracking-[0.3em] text-white/60">
-              SCROLL
-            </span>
+          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-60">
+            <span className="block text-[10px] tracking-[0.3em] text-white/70">SCROLL</span>
             <div className="mx-auto mt-2 h-8 w-px bg-gradient-to-b from-white/60 to-transparent" />
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>

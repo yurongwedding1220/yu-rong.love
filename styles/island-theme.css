@@ -1,4 +1,4 @@
-/* Island theme — deep ocean → sand */
+/* Island theme — deep ocean → sand + perf guards */
 
 :root {
   --island-deep: #1b4d6e;
@@ -17,11 +17,19 @@
 }
 
 .bg-grid-fixed {
-  background: linear-gradient(180deg, #f4e8d8 0%, #faf6f0 100%) !important;
+  background: #f4e8d8 !important;
 }
 
+/* Noise overlay is expensive on mobile GPUs */
 .bg-noise {
-  opacity: 0.08 !important;
+  display: none !important;
+}
+
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .bg-noise {
+    display: block !important;
+    opacity: 0.05 !important;
+  }
 }
 
 ::selection {
@@ -41,7 +49,7 @@
   background: var(--island-deep);
   color: white;
   border-radius: 9999px;
-  transition: background 0.25s ease, transform 0.15s ease;
+  transition: background 0.2s ease;
 }
 
 .island-btn:hover {
@@ -53,9 +61,43 @@
 }
 
 .island-card {
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.75);
-  box-shadow: 0 4px 24px rgba(27, 77, 110, 0.06);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 20px rgba(27, 77, 110, 0.05);
+}
+
+/* Only use backdrop-blur on capable desktops */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .island-card {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .island-blur {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+
+.island-blur {
+  /* solid fallback — no blur by default */
+  background-color: rgba(244, 232, 216, 0.94);
+}
+
+/* Skip layout/paint for off-screen sections */
+.island-defer {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 720px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

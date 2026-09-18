@@ -25,13 +25,14 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            'vendor-react': ['react', 'react-dom'],
+            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
             'vendor-framer': ['framer-motion'],
-            'vendor-three': ['three', '@react-three/fiber', '@react-three/drei'],
           }
         }
       },
       chunkSizeWarningLimit: 600,
+      // Drop unused photo/three code from the thin invitation bundle
+      modulePreload: { polyfill: false },
     }
   };
 });

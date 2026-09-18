@@ -1,6 +1,5 @@
 import React from 'react';
 import { TIMELINE_EVENTS } from '../constants';
-import { motion } from 'framer-motion';
 
 const CocktailIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-5 w-5">
@@ -30,67 +29,57 @@ const getIcon = (index: number) => {
 
 export const Timeline: React.FC = () => (
   <div className="relative w-full bg-transparent px-4 py-8 md:px-0 md:py-12">
-    <div className="w-full">
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-10%' }}
-        transition={{ duration: 0.7 }}
-        className="mx-auto max-w-3xl space-y-12"
-      >
-        {TIMELINE_EVENTS.map((event, index) => {
-          const isEven = index % 2 === 0;
-          return (
+    <div className="mx-auto max-w-3xl space-y-12">
+      {TIMELINE_EVENTS.map((event, index) => {
+        const isEven = index % 2 === 0;
+        return (
+          <div
+            key={index}
+            className={`relative flex items-start gap-6 md:items-center md:gap-0 ${
+              isEven ? 'md:flex-row' : 'md:flex-row-reverse'
+            }`}
+          >
             <div
-              key={index}
-              className={`relative flex items-start gap-6 md:items-center md:gap-0 ${
-                isEven ? 'md:flex-row' : 'md:flex-row-reverse'
+              className={`hidden w-1/2 md:block ${
+                isEven ? 'pr-12 text-right' : 'pl-12 text-left'
               }`}
             >
+              <span className="font-display text-4xl font-light text-[#3A8FB7]/80">
+                {event.time}
+              </span>
+            </div>
+
+            <div className="absolute left-0 z-10 flex items-center justify-center md:left-1/2 md:-translate-x-1/2">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#3A8FB7]/30 bg-[#F4E8D8] text-[#1B4D6E] shadow-sm">
+                {getIcon(index)}
+              </div>
+            </div>
+
+            <div className="w-full pl-20 md:w-1/2 md:pl-0">
               <div
-                className={`hidden w-1/2 md:block ${
-                  isEven ? 'pr-12 text-right' : 'pl-12 text-left'
-                }`}
+                className={`relative ${isEven ? 'md:ml-12' : 'md:mr-12 md:text-right'}`}
               >
-                <span className="font-display text-4xl font-light text-[#3A8FB7]/80">
+                <span className="mb-2 block font-display text-2xl font-light text-[#3A8FB7] md:hidden">
                   {event.time}
                 </span>
-              </div>
-
-              <div className="absolute left-0 z-10 flex items-center justify-center md:left-1/2 md:-translate-x-1/2">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#3A8FB7]/30 bg-[#F4E8D8] text-[#1B4D6E] shadow-sm">
-                  {getIcon(index)}
-                </div>
-              </div>
-
-              <div className="w-full pl-20 md:w-1/2 md:pl-0">
-                <div
-                  className={`relative group ${
-                    isEven ? 'md:ml-12' : 'md:mr-12 md:text-right'
-                  }`}
-                >
-                  <span className="mb-2 block font-display text-2xl font-light text-[#3A8FB7] md:hidden">
-                    {event.time}
-                  </span>
-                  <div className="island-card rounded-xl p-6 transition-all duration-500 hover:bg-white/80">
-                    <div className={`flex flex-col ${!isEven ? 'md:items-end' : ''}`}>
-                      <span className="mb-1 font-display text-[10px] uppercase tracking-[0.2em] text-[#3A8FB7]">
-                        {event.title}
-                      </span>
-                      <h3 className="mb-3 font-serif text-xl text-[#1A3344] transition-colors group-hover:text-[#1B4D6E] md:text-2xl">
-                        {event.chineseTitle}
-                      </h3>
-                      <p className="text-sm font-light leading-relaxed text-[#5A7380]">
-                        {event.description}
-                      </p>
-                    </div>
+                <div className="island-card rounded-xl p-6">
+                  <div className={`flex flex-col ${!isEven ? 'md:items-end' : ''}`}>
+                    <span className="mb-1 font-display text-[10px] uppercase tracking-[0.2em] text-[#3A8FB7]">
+                      {event.title}
+                    </span>
+                    <h3 className="mb-3 font-serif text-xl text-[#1A3344] md:text-2xl">
+                      {event.chineseTitle}
+                    </h3>
+                    <p className="text-sm font-light leading-relaxed text-[#5A7380]">
+                      {event.description}
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
-          );
-        })}
-      </motion.div>
+          </div>
+        );
+      })}
     </div>
   </div>
 );
