@@ -17,13 +17,13 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://yurongwedding1220.github.io/yu-rong.love" />
     <meta property="og:title" content="政憲 & 幸容 婚禮邀請函" />
-    <meta property="og:description" content="宿霧、仙本那、蘇美、宮古——四年島旅行後，我們在斗六靠岸。誠邀你來見證。" />
+    <meta property="og:description" content="誠邀你來見證我們靠岸的這一天。2026年12月20日，斗六緻麗伯爵酒店。" />
     <meta property="og:image" content="https://yurongwedding1220.github.io/yu-rong.love/og-image.png" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:title" content="政憲 & 幸容 婚禮邀請函" />
-    <meta property="twitter:description" content="宿霧、仙本那、蘇美、宮古——四年島旅行後，我們在斗六靠岸。誠邀你來見證。" />
+    <meta property="twitter:description" content="誠邀你來見證我們靠岸的這一天。2026年12月20日，斗六緻麗伯爵酒店。" />
     <meta property="twitter:image" content="https://yurongwedding1220.github.io/yu-rong.love/og-image.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,7 +60,7 @@
         -moz-osx-font-smoothing: grayscale;
       }
 
-      /* Fixed Global Background — ocean first so pre-JS paint is never blank sand */
+      /* Fixed Global Background — soft sand (hero paints its own ocean) */
       .bg-grid-fixed {
         position: fixed;
         top: 0;
@@ -68,7 +68,7 @@
         width: 100vw;
         height: 100vh;
         z-index: -10;
-        background: linear-gradient(180deg, #0f3550 0%, #1B4D6E 50%, #3A8FB7 100%);
+        background: linear-gradient(180deg, #f4e8d8 0%, #faf6f0 100%);
         pointer-events: none;
       }
 
@@ -571,25 +571,15 @@
         }
       }
     </style>
-  <script type="module" crossorigin src="/yu-rong.love/assets/index-jp9uOYsp.js"></script>
+  <script type="module" crossorigin src="/yu-rong.love/assets/index-nIfoe0Pb.js"></script>
   <link rel="modulepreload" crossorigin href="/yu-rong.love/assets/vendor-react-C4ialWt7.js">
-  <link rel="modulepreload" crossorigin href="/yu-rong.love/assets/vendor-framer-DJp3a8pi.js">
-  <link rel="stylesheet" crossorigin href="/yu-rong.love/assets/index-l96ppVWz.css">
+  <link rel="modulepreload" crossorigin href="/yu-rong.love/assets/vendor-framer-CiTGFx1D.js">
+  <link rel="stylesheet" crossorigin href="/yu-rong.love/assets/index-C4qOUeth.css">
 </head>
   <body>
-    <!-- Persistent ocean background (never blank sand before React) -->
+    <!-- Persistent Gradient Background -->
     <div class="bg-grid-fixed"></div>
     <div class="bg-noise"></div>
-    <!-- Static first paint — removed when React mounts -->
-    <div id="static-hero" style="position:fixed;inset:0;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;background:linear-gradient(180deg,#0f3550 0%,#1B4D6E 45%,#2a6f94 78%,#3A8FB7 100%);color:#fff;font-family:'Noto Serif TC',serif;">
-      <p style="font-size:10px;letter-spacing:0.35em;opacity:0.85;margin:0 0 16px;">WEDDING INVITATION</p>
-      <h1 style="font-size:clamp(2rem,8vw,3.5rem);font-weight:300;margin:0;">Yu &amp; Rong</h1>
-      <p style="font-size:1.125rem;margin:12px 0 0;">政憲 ❤ 幸容</p>
-      <p style="font-size:12px;letter-spacing:0.2em;opacity:0.8;margin:28px 0 0;">宿霧 → 仙本那 → 蘇美 → 宮古</p>
-      <p style="font-size:14px;opacity:0.9;margin:16px 0 0;max-width:22rem;line-height:1.7;">宿霧、仙本那、蘇美、宮古——四年島旅行後，我們在斗六靠岸。</p>
-      <p style="font-size:12px;letter-spacing:0.2em;opacity:0.85;margin:28px 0 0;">2026年12月20日（六）</p>
-      <p style="font-size:14px;opacity:0.9;margin:8px 0 0;">緻麗伯爵酒店 · 12F 皇家宴</p>
-    </div>
     <div id="root"></div>
     <script>
       // GitHub Pages SPA 路由處理
@@ -618,23 +608,6 @@
             console.warn('無法處理重定向 URL:', redirect, e);
           }
         }
-      })();
-    </script>
-    <script>
-      // Hide static hero once React has painted
-      (function () {
-        var root = document.getElementById('root');
-        var staticHero = document.getElementById('static-hero');
-        if (!root || !staticHero) return;
-        var hide = function () {
-          if (root.childElementCount > 0) {
-            staticHero.style.display = 'none';
-          }
-        };
-        var mo = new MutationObserver(hide);
-        mo.observe(root, { childList: true, subtree: true });
-        setTimeout(hide, 800);
-        setTimeout(hide, 2500);
       })();
     </script>
   </body>
