@@ -433,7 +433,7 @@ const RSVPPage: React.FC = () => {
                             <label className="block text-xl md:text-2xl font-serif text-[#2c3e50]">
                                 您的 Email <span className="text-stone-400 text-lg md:text-xl font-normal">(選填)</span>
                             </label>
-                            <p className="text-sm text-stone-400">方便我們寄送電子喜帖與婚禮通知，如不需要可略過</p>
+                            <p className="text-sm text-stone-400">方便我們寄送婚禮通知與現場資訊，如不需要可略過</p>
                         </div>
                         <input
                             type="email"

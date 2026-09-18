@@ -2,15 +2,20 @@ import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IslandScrollHero } from './components/island/IslandScrollHero';
+import { VoyageInterlude } from './components/island/VoyageInterlude';
+import { VoyageSectionHeader } from './components/island/VoyageSectionHeader';
+import { HarborCountdownBar } from './components/island/HarborCountdownBar';
 import { CalendarRevealSection } from './components/CalendarRevealSection';
 import { Timeline } from './components/Timeline';
 import { LoadingScreen } from './components/LoadingScreen';
-import { APP_CONTENT } from './constants';
+import { APP_CONTENT, VOYAGE_NARRATIVE } from './constants';
 import { useIsMobile } from './hooks/useIsMobile';
-import { usePerfMode } from './hooks/usePerfMode';
+import { usePerfMode, isLowPerf } from './hooks/usePerfMode';
 
-const FeaturedPhotos = lazy(() =>
-  import('./components/island/FeaturedPhotos').then((m) => ({ default: m.FeaturedPhotos }))
+const IslandVoyageGallery = lazy(() =>
+  import('./components/island/IslandVoyageGallery').then((m) => ({
+    default: m.IslandVoyageGallery,
+  }))
 );
 const LocationInfo = lazy(() =>
   import('./components/LocationInfo').then((m) => ({ default: m.LocationInfo }))
@@ -36,6 +41,12 @@ const CameraIcon = () => (
   </svg>
 );
 
+const AnchorIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v6m0 0c-2.5 0-4.5 2-4.5 4.5S9.5 18 12 18s4.5-2 4.5-4.5S14.5 9 12 9zm0 9v6m-7-3h14" />
+  </svg>
+);
+
 const HeartIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
     <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
@@ -58,41 +69,37 @@ function App() {
   const navigate = useNavigate();
   const isMobile = useIsMobile(768);
   const perf = usePerfMode();
-  const lite = perf === 'low';
+  const lite = isLowPerf(perf);
   const isNavigatingRef = useRef(false);
 
-  const [isInitialLoading, setIsInitialLoading] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(100);
+  useEffect(() => {
+    document.documentElement.dataset.perf = perf;
+    return () => {
+      delete document.documentElement.dataset.perf;
+    };
+  }, [perf]);
+
+  const [isInitialLoading, setIsInitialLoading] = useState(
+    () => !sessionStorage.getItem('hasVisited')
+  );
+  const [loadingProgress, setLoadingProgress] = useState(0);
   const [showNav, setShowNav] = useState(false);
   const [showRSVPButton, setShowRSVPButton] = useState(false);
-  const [activeSection, setActiveSection] = useState('timeline');
+  const [activeSection, setActiveSection] = useState('photos');
   const [isNavExpanded, setIsNavExpanded] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
     if (!isInitialLoading) return;
     let progress = 0;
-    let cancelled = false;
-    // Don't restart when lite/isMobile flips — that was resetting to 0% and sticking
-    const step = 20;
+    const step = lite ? 22 : isMobile ? 14 : 8;
     const id = window.setInterval(() => {
       progress = Math.min(100, progress + step);
-      if (cancelled) return;
       setLoadingProgress(progress);
-      if (progress >= 100) {
-        window.clearInterval(id);
-        window.setTimeout(() => {
-          if (cancelled) return;
-          setIsInitialLoading(false);
-          sessionStorage.setItem('hasVisited', 'true');
-        }, 280);
-      }
-    }, 50);
-    return () => {
-      cancelled = true;
-      window.clearInterval(id);
-    };
-  }, [isInitialLoading]);
+      if (progress >= 100) window.clearInterval(id);
+    }, lite ? 40 : 70);
+    return () => window.clearInterval(id);
+  }, [isInitialLoading, isMobile, lite]);
 
   useEffect(() => {
     const tick = () => {
@@ -116,15 +123,21 @@ function App() {
 
   useEffect(() => {
     const onScroll = () => {
-      const y = window.scrollY;
-      setShowNav(y > window.innerHeight * 0.85);
-      setShowRSVPButton(y > window.innerHeight * 1.2);
+      const harbor = document.getElementById('harbor');
+      const timeline = document.getElementById('timeline');
+
+      setShowNav(
+        !!harbor && harbor.getBoundingClientRect().top < window.innerHeight * 0.9
+      );
+      setShowRSVPButton(
+        !!timeline && timeline.getBoundingClientRect().top < window.innerHeight * 0.75
+      );
 
       if (isNavigatingRef.current) return;
-      const sections = ['timeline', 'location', 'photos', 'line'];
-      for (const id of [...sections].reverse()) {
+      const sections = ['line', 'location', 'timeline', 'harbor', 'photos'];
+      for (const id of sections) {
         const el = document.getElementById(id);
-        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.4) {
+        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.42) {
           setActiveSection(id);
           break;
         }
@@ -147,10 +160,11 @@ function App() {
   };
 
   const navItems = [
-    { id: 'timeline', icon: ClockIcon, label: '流程' },
-    { id: 'location', icon: PinIcon, label: '地點' },
-    { id: 'photos', icon: CameraIcon, label: '精選' },
-    { id: 'rsvp', icon: HeartIcon, label: 'RSVP', isRoute: true },
+    { id: 'photos', icon: CameraIcon, label: '航程' },
+    { id: 'harbor', icon: AnchorIcon, label: '靠岸' },
+    { id: 'timeline', icon: ClockIcon, label: '宴會' },
+    { id: 'location', icon: PinIcon, label: '停泊' },
+    { id: 'rsvp', icon: HeartIcon, label: '登船', isRoute: true },
   ];
 
   return (
@@ -160,6 +174,10 @@ function App() {
           <LoadingScreen
             progress={loadingProgress}
             isMobile={isMobile}
+            onComplete={() => {
+              setIsInitialLoading(false);
+              sessionStorage.setItem('hasVisited', 'true');
+            }}
           />
         )}
       </AnimatePresence>
@@ -167,59 +185,60 @@ function App() {
       <div className="relative z-10">
         <IslandScrollHero />
 
-        {/* Sand canvas for everything below the ocean hero */}
-        <div className="bg-[#F4E8D8]">
-        {/* Countdown bar — static on low-end (no infinite marquee paint) */}
-        <div
-          id="sticky-marquee"
-          className="island-blur sticky top-0 z-30 overflow-hidden border-y border-[#3A8FB7]/15"
-        >
-          {lite ? (
-            <div className="flex justify-center gap-3 px-4 py-2.5 text-center text-xs tracking-wider text-[#1B4D6E] font-display">
-              <span>{APP_CONTENT.date}</span>
-              <span className="text-[#E8A87C]">✦</span>
-              <span>倒數 {timeLeft.days} 天</span>
-            </div>
-          ) : (
-            <div className="flex animate-[marquee_36s_linear_infinite] whitespace-nowrap py-2.5 text-xs tracking-widest text-[#1B4D6E]">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <span key={i} className="mx-8 inline-flex items-center gap-3 font-display">
-                  <span>{APP_CONTENT.date}</span>
-                  <span className="text-[#E8A87C]">✦</span>
-                  <span>
-                    {String(timeLeft.days).padStart(2, '0')}天{' '}
-                    {String(timeLeft.hours).padStart(2, '0')}:
-                    {String(timeLeft.minutes).padStart(2, '0')}:
-                    {String(timeLeft.seconds).padStart(2, '0')}
-                  </span>
-                  <span className="text-[#E8A87C]">✦</span>
-                  <span>
-                    {APP_CONTENT.venueName} · {APP_CONTENT.venueHall}
-                  </span>
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
+        <VoyageInterlude />
 
-        <CalendarRevealSection />
+        <section id="photos" className="scroll-mt-20">
+          <div className="px-4 pb-8 pt-14 md:pb-10 md:pt-20">
+            <VoyageSectionHeader
+              chapter={VOYAGE_NARRATIVE.galleryChapter}
+              title={VOYAGE_NARRATIVE.galleryTitle}
+              intro={VOYAGE_NARRATIVE.galleryIntro}
+              animate={!lite}
+              className="mx-auto max-w-5xl"
+            />
+          </div>
+          <Suspense fallback={<div className="h-[60vh] bg-[#1B4D6E]/10" />}>
+            <IslandVoyageGallery />
+          </Suspense>
+        </section>
+
+        <section
+          id="harbor"
+          className="scroll-mt-20 bg-gradient-to-b from-[#F4E8D8] to-[#F4E8D8]/60 px-4 pb-8 pt-0 md:pb-12"
+        >
+          <HarborCountdownBar timeLeft={timeLeft} lite={lite} perf={perf} />
+          <div className="pt-12 md:pt-16">
+          <VoyageSectionHeader
+            chapter={VOYAGE_NARRATIVE.harborChapter}
+            title={VOYAGE_NARRATIVE.harborTitle}
+            intro={VOYAGE_NARRATIVE.harborIntro}
+            animate={!lite}
+            className="mx-auto mb-6 max-w-5xl"
+          />
+          <CalendarRevealSection />
+          </div>
+        </section>
 
         <section id="timeline" className="island-defer scroll-mt-20 px-4 py-16 md:py-24">
-          <div className="mx-auto mb-4 max-w-3xl text-center">
-            <p className="island-section-label mb-2">01 / Program</p>
-            <h2 className="font-serif text-3xl text-[#1A3344] md:text-4xl">婚禮流程</h2>
-            <p className="mt-3 text-sm text-[#5A7380]">
-              誠摯邀請您共度這美好的午後時光。
-            </p>
-          </div>
-          <Timeline />
+          <VoyageSectionHeader
+            chapter={VOYAGE_NARRATIVE.programChapter}
+            title={VOYAGE_NARRATIVE.programTitle}
+            intro={VOYAGE_NARRATIVE.programIntro}
+            animate={!lite}
+            className="mx-auto mb-4 max-w-3xl"
+          />
+          <Timeline animate={!lite} />
         </section>
 
         <section id="location" className="island-defer scroll-mt-20 px-4 py-16 md:py-24">
-          <div className="mx-auto mb-10 max-w-5xl text-center md:text-left">
-            <p className="island-section-label mb-2">02 / Venue</p>
-            <h2 className="font-serif text-3xl text-[#1A3344] md:text-4xl">交通資訊</h2>
-          </div>
+          <VoyageSectionHeader
+            chapter={VOYAGE_NARRATIVE.berthChapter}
+            title={VOYAGE_NARRATIVE.berthTitle}
+            intro={VOYAGE_NARRATIVE.berthIntro}
+            align="left"
+            animate={!lite}
+            className="mx-auto mb-10 max-w-5xl"
+          />
           <div className="mx-auto max-w-5xl">
             <Suspense fallback={<div className="h-40 rounded-2xl bg-white/40" />}>
               <LocationInfo />
@@ -227,28 +246,11 @@ function App() {
           </div>
         </section>
 
-        <section id="photos" className="island-defer scroll-mt-20 px-4 py-16 md:py-24">
-          <div className="mx-auto mb-10 max-w-5xl">
-            <p className="island-section-label mb-2">03 / Moments</p>
-            <h2 className="font-serif text-3xl text-[#1A3344] md:text-4xl">精選瞬間</h2>
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-[#5A7380]">
-              島嶼航線上的幾個片段。正式照片上傳後會替換這裡的占位圖。
-            </p>
-          </div>
-          <div className="mx-auto max-w-5xl">
-            <Suspense fallback={<div className="h-48 rounded-2xl bg-white/40" />}>
-              <FeaturedPhotos />
-            </Suspense>
-          </div>
-        </section>
-
         <section id="line" className="scroll-mt-20 px-4 py-16 md:py-20">
           <div className="island-card mx-auto max-w-lg rounded-2xl p-8 text-center">
-            <p className="island-section-label mb-2">04 / Contact</p>
-            <h2 className="font-serif text-2xl text-[#1A3344]">聯絡我們</h2>
-            <p className="mt-3 text-sm text-[#5A7380]">
-              LINE 連結待補。有問題歡迎之後透過官方帳號聯繫。
-            </p>
+            <p className="island-section-label mb-2">{VOYAGE_NARRATIVE.contactChapter}</p>
+            <h2 className="font-serif text-2xl text-[#1A3344]">{VOYAGE_NARRATIVE.contactTitle}</h2>
+            <p className="mt-3 text-sm text-[#5A7380]">{VOYAGE_NARRATIVE.contactIntro}</p>
             {APP_CONTENT.lineLink ? (
               <a
                 href={APP_CONTENT.lineLink}
@@ -266,24 +268,20 @@ function App() {
           </div>
         </section>
 
-        <footer className="border-t border-[#3A8FB7]/15 bg-[#F4E8D8]/80 px-4 py-20 text-center">
-          <p className="font-display text-[10px] tracking-[0.4em] text-[#3A8FB7]">RSVP</p>
-          <h2 className="mt-3 font-serif text-3xl text-[#1A3344]">出席回函</h2>
+        <footer id="rsvp" className="scroll-mt-20 border-t border-[#3A8FB7]/15 bg-[#F4E8D8]/80 px-4 py-20 text-center">
+          <p className="island-section-label mb-2">{VOYAGE_NARRATIVE.finaleChapter}</p>
+          <h2 className="font-serif text-3xl text-[#1A3344] md:text-4xl">
+            {VOYAGE_NARRATIVE.finaleTitle}
+          </h2>
           <p className="mx-auto mt-4 max-w-sm text-sm leading-relaxed text-[#5A7380]">
-            您的蒞臨將是我們最大的榮幸。請盡早確認出席，讓我們好好準備。
+            {VOYAGE_NARRATIVE.finaleIntro}
           </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <div className="mt-8">
             <Link
               to="/rsvp"
-              className="island-btn inline-flex px-10 py-3.5 text-sm font-semibold tracking-wide"
+              className="island-btn inline-flex px-12 py-3.5 text-sm font-semibold tracking-wide"
             >
-              填寫出席回函
-            </Link>
-            <Link
-              to="/invitation"
-              className="inline-flex rounded-full border border-[#1B4D6E]/25 px-8 py-3.5 text-sm text-[#1B4D6E] transition-colors hover:bg-white/60"
-            >
-              查看電子喜帖
+              {VOYAGE_NARRATIVE.rsvpCta}
             </Link>
           </div>
           <p className="mt-16 font-serif text-sm text-[#1B4D6E]/70">
@@ -293,7 +291,6 @@ function App() {
             {APP_CONTENT.date} · DOULIU
           </p>
         </footer>
-        </div>
       </div>
 
       {/* Nav dock */}
@@ -366,7 +363,7 @@ function App() {
               className="island-btn flex items-center gap-2 px-5 py-3 text-sm font-medium shadow-lg"
             >
               <HeartIcon />
-              出席回函
+              {VOYAGE_NARRATIVE.rsvpCta}
             </Link>
           </motion.div>
         )}

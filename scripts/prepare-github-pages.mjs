@@ -7,15 +7,9 @@ const SITE_BASE = 'https://yurongwedding1220.github.io/yu-rong.love';
 
 const ROUTE_OG = {
   rsvp: {
-    title: '政憲 & 幸容 · 出席回函',
-    description: '誠邀您填寫出席回函，與我們一同見證靠岸的這一天。',
+    title: '政憲 & 幸容 · 確認登船',
+    description: '誠邀您確認出席，與我們一同見證靠岸的這一天。',
     url: `${SITE_BASE}/rsvp`,
-    image: `${SITE_BASE}/og-image.png`,
-  },
-  invitation: {
-    title: '政憲 & 幸容 · 電子喜帖',
-    description: '宿霧、仙本那、蘇美、宮古——四年島旅行後，我們在斗六靠岸。',
-    url: `${SITE_BASE}/invitation`,
     image: `${SITE_BASE}/og-image.png`,
   },
 };

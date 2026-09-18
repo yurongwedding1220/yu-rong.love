@@ -17,8 +17,7 @@
 }
 
 .bg-grid-fixed {
-  /* Match hero so first paint / failed layers never show empty sand */
-  background: linear-gradient(180deg, #0f3550 0%, #1B4D6E 50%, #3A8FB7 100%) !important;
+  background: #f4e8d8 !important;
 }
 
 /* Noise overlay is expensive on mobile GPUs */
@@ -67,29 +66,106 @@
   box-shadow: 0 4px 20px rgba(27, 77, 110, 0.05);
 }
 
-/* Only use backdrop-blur on capable desktops */
+/* Backdrop blur: desktop high, mobile medium — low perf stays solid */
 @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
-  .island-card {
+  html[data-perf='high'] .island-card,
+  html[data-perf='medium'] .island-card {
     background: rgba(255, 255, 255, 0.55);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
   }
 
-  .island-blur {
+  html[data-perf='high'] .island-blur,
+  html[data-perf='medium'] .island-blur {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
   }
 }
 
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  html[data-perf='medium'] .island-blur {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    background-color: rgba(244, 232, 216, 0.9);
+  }
+}
+
 .island-blur {
-  /* solid fallback — no blur by default */
   background-color: rgba(244, 232, 216, 0.94);
+}
+
+/* GPU-friendly wave drift — medium/high only */
+@keyframes island-wave-drift {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-1.5%);
+  }
+}
+
+@keyframes island-wave-drift-slow {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(1.2%);
+  }
+}
+
+html[data-perf='medium'] .island-wave-drift,
+html[data-perf='high'] .island-wave-drift {
+  animation: island-wave-drift 9s ease-in-out infinite;
+}
+
+html[data-perf='medium'] .island-wave-drift-slow,
+html[data-perf='high'] .island-wave-drift-slow {
+  animation: island-wave-drift-slow 12s ease-in-out infinite;
 }
 
 /* Skip layout/paint for off-screen sections */
 .island-defer {
   content-visibility: auto;
   contain-intrinsic-size: 1px 720px;
+}
+
+/* 婚紗藝廊：連續捲動，不做吸附卡位 */
+.island-chapter-flow {
+  scroll-margin-top: 0;
+}
+
+/* 每座島不同有機照片形狀 */
+.island-photo-arch,
+.island-photo-capsule,
+.island-photo-leaf,
+.island-photo-pebble,
+.island-photo-crescent {
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 22px 55px -18px rgba(0, 0, 0, 0.48);
+}
+
+.island-photo-arch {
+  border-radius: 50% 50% 40% 40% / 12% 12% 88% 88%;
+}
+
+.island-photo-capsule {
+  border-radius: 46% 46% 54% 54% / 6% 6% 94% 94%;
+}
+
+.island-photo-leaf {
+  border-radius: 62% 38% 55% 45% / 50% 58% 42% 50%;
+}
+
+.island-photo-pebble {
+  border-radius: 44% 56% 48% 52% / 42% 38% 62% 58%;
+}
+
+.island-photo-crescent {
+  border-radius: 58% 42% 62% 38% / 38% 62% 38% 62%;
 }
 
 @media (prefers-reduced-motion: reduce) {

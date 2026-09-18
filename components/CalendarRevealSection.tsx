@@ -6,7 +6,7 @@ import {
   MotionValue,
 } from 'framer-motion';
 import { APP_CONTENT, CALENDAR_COVER_IMAGE } from '../constants';
-import { usePerfMode } from '../hooks/usePerfMode';
+import { usePerfMode, isLowPerf, isHighPerf } from '../hooks/usePerfMode';
 
 /** December 2026: 1st is Tuesday → 2 empty slots. Wedding day = 20 */
 const CalendarBase = ({ pulseHeart }: { pulseHeart: boolean }) => {
@@ -124,6 +124,34 @@ const SimpleCalendar = () => (
   </div>
 );
 
+/** Medium: scroll-driven fade + scale — no 3D flip */
+const FadeRevealCalendar = ({
+  scrollYProgress,
+}: {
+  scrollYProgress: MotionValue<number>;
+}) => {
+  const scale = useTransform(scrollYProgress, [0, 0.45], [0.88, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.25], [0.5, 1]);
+  const coverOpacity = useTransform(scrollYProgress, [0.15, 0.55], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 0.45], [24, 0]);
+
+  return (
+    <div className="mx-auto aspect-[3/4.2] w-full max-w-[320px]">
+      <motion.div style={{ scale, opacity, y }} className="relative h-full w-full">
+        <div className="absolute inset-0 overflow-hidden rounded-xl border border-[#3A8FB7]/20 bg-white shadow-md">
+          <CalendarBase pulseHeart />
+        </div>
+        <motion.div
+          style={{ opacity: coverOpacity }}
+          className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl shadow-lg"
+        >
+          <CalendarCover />
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+};
+
 const FlippingCalendar = ({
   scrollYProgress,
 }: {
@@ -174,7 +202,7 @@ const FlippingCalendar = ({
             >
               <span className="font-display text-5xl tracking-widest text-[#3A8FB7]">Y & R</span>
               <div className="my-4 h-px w-16 bg-[#3A8FB7]" />
-              <span className="font-serif text-sm italic text-[#3A8FB7]">Island Route</span>
+              <span className="font-serif text-sm italic text-[#3A8FB7]">靠岸</span>
             </div>
           </div>
         </motion.div>
@@ -183,7 +211,7 @@ const FlippingCalendar = ({
   );
 };
 
-export const CalendarRevealSection: React.FC<{ isMobile?: boolean }> = () => {
+export const CalendarRevealSection: React.FC = () => {
   const perf = usePerfMode();
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -191,7 +219,7 @@ export const CalendarRevealSection: React.FC<{ isMobile?: boolean }> = () => {
     offset: ['start start', 'end end'],
   });
 
-  if (perf === 'low') {
+  if (isLowPerf(perf)) {
     return (
       <div className="relative w-full bg-transparent py-16 md:py-20">
         <div className="w-full px-6">
@@ -201,11 +229,17 @@ export const CalendarRevealSection: React.FC<{ isMobile?: boolean }> = () => {
     );
   }
 
+  const sectionHeight = isHighPerf(perf) ? 'h-[160vh]' : 'h-[130vh]';
+
   return (
-    <div ref={containerRef} className="relative h-[160vh] w-full bg-transparent">
+    <div ref={containerRef} className={`relative ${sectionHeight} w-full bg-transparent`}>
       <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
         <div className="relative z-10 w-full px-6">
-          <FlippingCalendar scrollYProgress={scrollYProgress} />
+          {isHighPerf(perf) ? (
+            <FlippingCalendar scrollYProgress={scrollYProgress} />
+          ) : (
+            <FadeRevealCalendar scrollYProgress={scrollYProgress} />
+          )}
         </div>
       </div>
     </div>
