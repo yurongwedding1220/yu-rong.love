@@ -1,0 +1,1 @@
+const _=[],E=_.flatMap(t=>t.photos),o=_.map(t=>({id:t.id,time:t.time,title:t.title})),I="",i=[];export{E as ALL_WEDDING_PHOTOS,I as HERO_COVER_PUBLIC_ID,i as HERO_COVER_PUBLIC_IDS,o as STAGE_NAV_ITEMS,_ as WEDDING_STAGES};

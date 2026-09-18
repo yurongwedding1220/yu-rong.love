@@ -1,0 +1,30 @@
+{
+  "name": "政憲 & 幸容 婚禮邀請函",
+  "short_name": "政憲 & 幸容",
+  "description": "誠摯邀請您參加政憲與幸容的婚禮",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fcf9f2",
+  "theme_color": "#8E3535",
+  "icons": [
+    {
+      "src": "android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
