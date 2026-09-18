@@ -74,14 +74,27 @@ function App() {
   useEffect(() => {
     if (!isInitialLoading) return;
     let progress = 0;
-    const step = lite ? 22 : isMobile ? 14 : 8;
+    let cancelled = false;
+    // Don't restart when lite/isMobile flips — that was resetting to 0% and sticking
+    const step = 20;
     const id = window.setInterval(() => {
       progress = Math.min(100, progress + step);
+      if (cancelled) return;
       setLoadingProgress(progress);
-      if (progress >= 100) window.clearInterval(id);
-    }, lite ? 40 : 70);
-    return () => window.clearInterval(id);
-  }, [isInitialLoading, isMobile, lite]);
+      if (progress >= 100) {
+        window.clearInterval(id);
+        window.setTimeout(() => {
+          if (cancelled) return;
+          setIsInitialLoading(false);
+          sessionStorage.setItem('hasVisited', 'true');
+        }, 280);
+      }
+    }, 50);
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+    };
+  }, [isInitialLoading]);
 
   useEffect(() => {
     const tick = () => {
@@ -149,10 +162,6 @@ function App() {
           <LoadingScreen
             progress={loadingProgress}
             isMobile={isMobile}
-            onComplete={() => {
-              setIsInitialLoading(false);
-              sessionStorage.setItem('hasVisited', 'true');
-            }}
           />
         )}
       </AnimatePresence>
