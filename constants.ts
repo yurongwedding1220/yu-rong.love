@@ -45,8 +45,14 @@ export const VOYAGE_NARRATIVE = {
   finaleChapter: '終章 · 登船',
   finaleTitle: '這趟航程，希望你能同行',
   finaleIntro: '您的蒞臨是我們最大的榮幸。請盡早確認出席，讓我們好好準備。',
+  guestbookChapter: '第六章 · 祝福',
+  guestbookTitle: '祝福留言',
+  guestbookIntro: '寫下你想對新人說的話，我們會珍惜每一份心意。填寫 RSVP 時也可同步發佈到留言板。',
   rsvpCta: '確認登船',
 };
+
+/** 留言板主貼文封面（占位，可替換為婚紗照） */
+export const THREADS_POST_IMAGE = 'featured/placeholder-1.svg';
 
 export const TIMELINE_EVENTS = [
   {

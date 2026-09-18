@@ -171,6 +171,7 @@ const RSVPPage: React.FC = () => {
             console.warn('Google Script URL is not configured or invalid.');
         }
 
+        sessionStorage.setItem('guestbook_refresh', '1');
         setIsSubmitting(false);
         setCurrentStepName('success');
     };

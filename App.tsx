@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { IslandScrollHero } from './components/island/IslandScrollHero';
 import { VoyageInterlude } from './components/island/VoyageInterlude';
@@ -19,6 +19,9 @@ const IslandVoyageGallery = lazy(() =>
 );
 const LocationInfo = lazy(() =>
   import('./components/LocationInfo').then((m) => ({ default: m.LocationInfo }))
+);
+const GuestBook = lazy(() =>
+  import('./components/GuestBook').then((m) => ({ default: m.GuestBook }))
 );
 
 const ClockIcon = () => (
@@ -47,6 +50,12 @@ const AnchorIcon = () => (
   </svg>
 );
 
+const PenIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+  </svg>
+);
+
 const HeartIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
     <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
@@ -67,6 +76,7 @@ const XIcon = () => (
 
 function App() {
   const navigate = useNavigate();
+  const location = useLocation();
   const isMobile = useIsMobile(768);
   const perf = usePerfMode();
   const lite = isLowPerf(perf);
@@ -88,6 +98,8 @@ function App() {
   const [activeSection, setActiveSection] = useState('photos');
   const [isNavExpanded, setIsNavExpanded] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [isGuestBookExpanded, setIsGuestBookExpanded] = useState(false);
+  const [guestBookRefresh, setGuestBookRefresh] = useState(0);
 
   useEffect(() => {
     if (!isInitialLoading) return;
@@ -134,7 +146,7 @@ function App() {
       );
 
       if (isNavigatingRef.current) return;
-      const sections = ['line', 'location', 'timeline', 'harbor', 'photos'];
+      const sections = ['line', 'guestbook', 'location', 'timeline', 'harbor', 'photos'];
       for (const id of sections) {
         const el = document.getElementById(id);
         if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.42) {
@@ -147,6 +159,14 @@ function App() {
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  useEffect(() => {
+    if (location.pathname !== '/') return;
+    if (sessionStorage.getItem('guestbook_refresh')) {
+      sessionStorage.removeItem('guestbook_refresh');
+      setGuestBookRefresh((v) => v + 1);
+    }
+  }, [location.pathname]);
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
@@ -164,6 +184,7 @@ function App() {
     { id: 'harbor', icon: AnchorIcon, label: '靠岸' },
     { id: 'timeline', icon: ClockIcon, label: '宴會' },
     { id: 'location', icon: PinIcon, label: '停泊' },
+    { id: 'guestbook', icon: PenIcon, label: '祝福' },
     { id: 'rsvp', icon: HeartIcon, label: '登船', isRoute: true },
   ];
 
@@ -252,6 +273,23 @@ function App() {
           </div>
         </section>
 
+        <section id="guestbook" className="island-defer scroll-mt-20 px-4 py-16 md:py-24">
+          <VoyageSectionHeader
+            chapter={VOYAGE_NARRATIVE.guestbookChapter}
+            title={VOYAGE_NARRATIVE.guestbookTitle}
+            intro={VOYAGE_NARRATIVE.guestbookIntro}
+            animate={!lite}
+            className="mx-auto mb-10 max-w-3xl"
+          />
+          <Suspense fallback={<div className="mx-auto h-64 max-w-[600px] rounded-2xl bg-white/40" />}>
+            <GuestBook
+              onExpandChange={setIsGuestBookExpanded}
+              refreshTrigger={guestBookRefresh}
+              onWriteMessage={() => navigate('/rsvp')}
+            />
+          </Suspense>
+        </section>
+
         <section id="line" className="scroll-mt-20 px-4 py-16 md:py-20">
           <div className="island-card mx-auto max-w-lg rounded-2xl p-8 text-center md:p-10">
             <p className="island-section-label">{VOYAGE_NARRATIVE.contactChapter}</p>
@@ -309,7 +347,7 @@ function App() {
 
       {/* Nav dock */}
       <AnimatePresence>
-        {showNav && (
+        {showNav && !isGuestBookExpanded && (
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -366,7 +404,7 @@ function App() {
 
       {/* Floating RSVP */}
       <AnimatePresence>
-        {showRSVPButton && !isNavExpanded && (
+        {showRSVPButton && !isNavExpanded && !isGuestBookExpanded && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}

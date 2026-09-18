@@ -3,14 +3,14 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GuestBookEntry } from '../types';
-import { WEDDING_PHOTOS, APP_CONTENT, THREADS_POST_IMAGE } from '../constants';
+import { APP_CONTENT, THREADS_POST_IMAGE } from '../constants';
 
 // --- Mock Data for Fallback ---
 const MOCK_ENTRIES: GuestBookEntry[] = [
     {
         id: 'mock-1',
         name: 'Emily Chen',
-        message: '恭喜 政憲 & 幸容！祝你們永浴愛河，白頭偕老！💖 婚禮當天見～',
+        message: '恭喜政憲 & 幸容！航程靠岸日見～祝你們永浴愛河！💖',
         timestamp: Date.now() - 1000 * 60 * 30, // 30 mins ago
         likes: 12,
         isLiked: false
@@ -122,25 +122,27 @@ const CouplePost: React.FC<CouplePostProps> = ({ likes, isLiked, onLike, onComme
                 <div className="flex justify-between items-start">
                     <div>
                         <h3 className="text-[15px] font-bold text-black leading-none">yu-rong.love</h3>
-                        <div className="text-[13px] text-stone-500 mt-0.5 flex items-center gap-1">
-                            <span>政憲</span>
-                            <MiniHeartIcon />
-                            <span>幸容</span>
-                        </div>
+                        <p className="text-[13px] text-stone-500 mt-0.5">{APP_CONTENT.chineseNames}</p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <span className="text-[13px] text-stone-400">2026-05-30</span>
+                        <span className="text-[13px] text-stone-400">2026-12-20</span>
                         <ThreadsMoreIcon />
                     </div>
                 </div>
 
-                <p className="text-[15px] text-black mt-2 leading-relaxed whitespace-pre-line">
-                    我們要結婚啦！💍🤵👰‍♀️ {"\n"}
-                    誠摯邀請大家來參加我們的婚禮，見證我們的幸福時刻！
+                <p className="text-[15px] text-[#1A3344] mt-2 leading-relaxed whitespace-pre-line">
+                    {APP_CONTENT.intro}
+                    {'\n'}
+                    {APP_CONTENT.date} · {APP_CONTENT.venueName}
                 </p>
 
-                <div className="mt-3 rounded-xl overflow-hidden border border-stone-100 shadow-sm relative bg-stone-100 h-[280px] sm:h-[340px] md:h-[400px]">
-                    <img src={THREADS_POST_IMAGE} alt="Wedding" className="w-full h-full object-cover object-[center_65%]" />
+                <div className="mt-3 rounded-xl overflow-hidden border border-[#3A8FB7]/15 shadow-sm relative bg-[#F4E8D8] h-[240px] sm:h-[300px] md:h-[340px]">
+                    <img
+                        src={`${import.meta.env.BASE_URL}${THREADS_POST_IMAGE}`}
+                        alt={`${APP_CONTENT.chineseNames} 婚禮`}
+                        className="w-full h-full object-cover object-center"
+                        loading="lazy"
+                    />
                 </div>
 
                 <div className="flex items-center gap-4 mt-3 text-black">
@@ -194,7 +196,7 @@ const GuestEntry: React.FC<GuestEntryProps> = ({ entry, isLast, onLike }) => {
 
     if (Math.abs(daysDiff) === 0) {
         relativeTag = "婚禮當日";
-        tagStyle = "bg-[#8E3535]/10 text-[#8E3535]";
+        tagStyle = 'bg-[#1B4D6E]/10 text-[#1B4D6E]';
     } else if (daysDiff > 0) {
         relativeTag = `婚禮前 ${daysDiff} 天`;
         tagStyle = "bg-amber-50 text-amber-600";
@@ -448,7 +450,7 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
     return (
         <>
             {/* === PREVIEW CARD === */}
-            <div className="w-full max-w-[600px] mx-auto bg-white rounded-2xl md:rounded-3xl shadow-xl overflow-hidden border border-stone-100">
+            <div className="island-card w-full max-w-[600px] mx-auto overflow-hidden rounded-2xl md:rounded-3xl">
                 <div className="p-4 md:p-6 pb-2">
                     <CouplePost
                         likes={mainPostLikes}
@@ -470,8 +472,8 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
                     <div className="mt-2 min-h-[100px]">
                         {loading ? (
                             <div className="flex flex-col items-center justify-center py-8 text-stone-400 gap-2">
-                                <div className="w-5 h-5 border-2 border-stone-200 border-t-[#8E3535] rounded-full animate-spin" />
-                                <span className="text-xs">載入祝福中...</span>
+                                <div className="w-5 h-5 border-2 border-stone-200 border-t-[#1B4D6E] rounded-full animate-spin" />
+                                <span className="text-xs">載入祝福中…</span>
                             </div>
                         ) : (errorType === 'permission' || errorType === 'fetch') ? (
                             <div className="text-center py-8 text-stone-400 text-sm flex flex-col items-center gap-3">
@@ -486,7 +488,13 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
                                     </ul>
                                 </div>
                                 <span className="text-xs text-stone-400">目前顯示測試資料</span>
-                                <button onClick={() => fetchEntries()} className="text-[#8E3535] text-xs underline hover:text-[#7a2e2e]">重試連線</button>
+                                <button
+                                    type="button"
+                                    onClick={() => fetchEntries()}
+                                    className="island-focus text-[#1B4D6E] text-xs underline hover:text-[#3A8FB7]"
+                                >
+                                    重試連線
+                                </button>
                             </div>
                         ) : entries.length === 0 ? (
                             <div className="text-center py-8 text-stone-400 text-sm">
@@ -505,14 +513,15 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
                     </div>
 
                     {/* "View All" Button */}
-                    <div
-                        className="py-6 text-center border-t border-stone-50 mt-2 cursor-pointer hover:bg-stone-50 transition-colors group"
+                    <button
+                        type="button"
+                        className="island-focus w-full py-6 text-center border-t border-stone-50 mt-2 hover:bg-[#F4E8D8]/50 transition-colors group"
                         onClick={() => setIsExpanded(true)}
                     >
-                        <span className="text-[14px] text-stone-500 group-hover:text-black font-medium">
+                        <span className="text-[14px] text-stone-500 group-hover:text-[#1A3344] font-medium">
                             查看全部 {entries.length} 則留言
                         </span>
-                    </div>
+                    </button>
                 </div>
             </div>
 
@@ -536,8 +545,10 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
                             {/* Header */}
                             <div className="flex-none h-14 border-b border-stone-100 flex items-center justify-between px-4 sticky top-0 bg-white/95 backdrop-blur-sm z-50">
                                 <button
+                                    type="button"
+                                    aria-label="關閉留言板"
                                     onClick={() => setIsExpanded(false)}
-                                    className="p-2 -ml-2 text-black hover:bg-stone-50 rounded-full"
+                                    className="island-focus p-2 -ml-2 text-black hover:bg-stone-50 rounded-full"
                                 >
                                     <ThreadsBackIcon />
                                 </button>
@@ -582,7 +593,7 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
                                     <div className="pb-8">
                                         {loading ? (
                                             <div className="flex justify-center py-10">
-                                                <div className="w-6 h-6 border-2 border-stone-200 border-t-[#8E3535] rounded-full animate-spin" />
+                                                <div className="w-6 h-6 border-2 border-stone-200 border-t-[#1B4D6E] rounded-full animate-spin" />
                                             </div>
                                         ) : (
                                             sortedEntries.map((entry, idx) => (
@@ -604,12 +615,13 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
 
                             {/* Fixed Reply Bar (Threads Style) */}
                             <div className="flex-none p-3 border-t border-stone-100 bg-white pb-safe z-50">
-                                <div
+                                <button
+                                    type="button"
                                     onClick={handleWriteMessage}
-                                    className="w-full max-w-[600px] mx-auto bg-stone-100 rounded-full h-11 flex items-center px-4 text-stone-400 text-[15px] cursor-pointer hover:bg-stone-200/70 transition-colors"
+                                    className="island-focus w-full max-w-[600px] mx-auto bg-[#F4E8D8]/80 rounded-full h-11 flex items-center px-4 text-[#5A7380] text-[15px] hover:bg-[#F4E8D8] transition-colors"
                                 >
-                                    回覆 yu-rong.love...
-                                </div>
+                                    寫下祝福，或前往 RSVP 同步發佈…
+                                </button>
                             </div>
 
                         </motion.div>
