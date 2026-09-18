@@ -13,7 +13,8 @@ export const APP_CONTENT = {
   venueAddress: '雲林縣斗六市中山路 6 號',
   venueDescription: '座落斗六市中心，婚宴於 12 樓皇家宴會廳舉行。',
   intro: '誠邀你來見證我們靠岸的這一天。',
-  googleScriptUrl: '',
+  googleScriptUrl:
+    'https://script.google.com/macros/s/AKfycbyHpBAbJVEftXr2cunc1M7sMlcZSxxLc-4GGvwpK3ZRZL_n0Aqo0FF5XX5Hsy0LLZOO/exec',
   lineLink: '',
   lineQrCode: 'qrcode.png',
   mapsQuery: '緻麗伯爵酒店 斗六',
