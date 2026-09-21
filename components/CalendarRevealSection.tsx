@@ -94,27 +94,35 @@ const HeartSvg = () => (
 );
 
 const CalendarCover = () => (
-  <div className="relative h-full w-full overflow-hidden rounded-[2px] border-[0.5px] border-white/20 bg-[#1B4D6E]">
+  <div className="relative h-full w-full overflow-hidden rounded-[2px] border border-white/25 bg-[#0f3550]">
+    {/* 實心底色，避免任何半透明透出底下日期 */}
+    <div className="absolute inset-0 bg-[#0f3550]" aria-hidden />
     <div className="absolute inset-0">
       {CALENDAR_COVER_IMAGE ? (
         <img
-          src={CALENDAR_COVER_IMAGE}
+          src={`${import.meta.env.BASE_URL}${CALENDAR_COVER_IMAGE}`}
           alt=""
           className="h-full w-full object-cover object-center"
-          loading="lazy"
+          loading="eager"
           decoding="async"
+          draggable={false}
         />
       ) : (
-        <div className="h-full w-full bg-gradient-to-b from-[#1B4D6E] via-[#3A8FB7] to-[#F4E8D8]" />
+        <div className="h-full w-full bg-gradient-to-b from-[#0f3550] via-[#1B4D6E] to-[#3A8FB7]" />
       )}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
+      {/* 輕陰影即可，勿用大面積 transparent，否則會透出月曆 */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-black/45" />
     </div>
-    <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-      <p className="font-display text-[10px] tracking-[0.35em] text-white/70">DECEMBER</p>
-      <p className="mt-2 font-serif text-4xl font-light tracking-wide">
+    <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
+      <p className="font-display text-[10px] tracking-[0.35em] text-white/80">DECEMBER</p>
+      <p className="mt-3 font-serif text-4xl font-light tracking-wide drop-shadow-sm">
         Yu <span className="font-script text-[1.1em]">&</span> Rong
       </p>
-      <p className="mt-3 text-sm text-white/80">{APP_CONTENT.date}</p>
+      <div className="my-4 h-px w-12 bg-[#E8A87C]/70" aria-hidden />
+      <p className="font-serif text-sm tracking-wide text-white/90">{APP_CONTENT.date}</p>
+      <p className="mt-2 font-display text-[9px] tracking-[0.28em] text-[#E8A87C]/90">
+        SAVE THE DATE
+      </p>
     </div>
   </div>
 );
@@ -132,20 +140,20 @@ const FadeRevealCalendar = ({
 }: {
   scrollYProgress: MotionValue<number>;
 }) => {
-  const scale = useTransform(scrollYProgress, [0, 0.45], [0.88, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 0.25], [0.5, 1]);
-  const coverOpacity = useTransform(scrollYProgress, [0.15, 0.55], [1, 0]);
-  const y = useTransform(scrollYProgress, [0, 0.45], [24, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.5], [0.94, 1]);
+  // 整卡保持不透明，避免「還沒滑到就透出日期」
+  const coverOpacity = useTransform(scrollYProgress, [0.42, 0.72], [1, 0]);
+  const y = useTransform(scrollYProgress, [0, 0.5], [16, 0]);
 
   return (
     <div className="mx-auto aspect-[3/4.2] w-full max-w-[320px]">
-      <motion.div style={{ scale, opacity, y }} className="relative h-full w-full">
+      <motion.div style={{ scale, y }} className="relative h-full w-full">
         <div className="island-calendar-card absolute inset-0 overflow-hidden rounded-xl border border-[#3A8FB7]/15 bg-white">
           <CalendarBase pulseHeart />
         </div>
         <motion.div
           style={{ opacity: coverOpacity }}
-          className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl shadow-lg"
+          className="pointer-events-none absolute inset-0 z-10 overflow-hidden rounded-xl shadow-lg"
         >
           <CalendarCover />
         </motion.div>
@@ -159,15 +167,15 @@ const FlippingCalendar = ({
 }: {
   scrollYProgress: MotionValue<number>;
 }) => {
-  const scale = useTransform(scrollYProgress, [0, 0.35], [0.9, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 0.12], [0.6, 1]);
-  const rotateX = useTransform(scrollYProgress, [0.35, 0.7], [0, 175]);
-  const coverOpacity = useTransform(scrollYProgress, [0.35, 0.55], [1, 1]);
+  const scale = useTransform(scrollYProgress, [0, 0.35], [0.94, 1]);
+  const rotateX = useTransform(scrollYProgress, [0.4, 0.78], [0, 175]);
+  // 翻到一半才淡出封面，避免早期露出內頁
+  const coverOpacity = useTransform(scrollYProgress, [0.55, 0.78], [1, 0]);
 
   return (
     <div className="perspective-[1600px] mx-auto aspect-[3/4.2] w-full max-w-[340px]">
       <motion.div
-        style={{ scale, opacity, transformStyle: 'preserve-3d' }}
+        style={{ scale, transformStyle: 'preserve-3d' }}
         className="relative h-full w-full"
       >
         <div className="absolute inset-0 origin-bottom rounded-[6px] bg-[#fdfbf7]">
@@ -235,7 +243,7 @@ export const CalendarRevealSection: React.FC = () => {
 
   return (
     <div ref={containerRef} className={`relative ${sectionHeight} w-full bg-transparent`}>
-      <div className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden">
+      <div className="sticky top-0 flex h-[100svh] flex-col items-center justify-center overflow-hidden">
         <div className="relative z-10 w-full px-6">
           {isHighPerf(perf) ? (
             <FlippingCalendar scrollYProgress={scrollYProgress} />

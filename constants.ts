@@ -182,5 +182,5 @@ export const WEDDING_GALLERY_CHAPTERS: GalleryChapter[] = [
   },
 ];
 
-/** 月曆封面占位（無 Cloudinary 時用漸層／空字串） */
-export const CALENDAR_COVER_IMAGE = '';
+/** 月曆封面占位（海島主題；可換成婚紗照） */
+export const CALENDAR_COVER_IMAGE = 'calendar-cover.png';
