@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { usePerfMode, isLowPerf } from '../../hooks/usePerfMode';
 import { WaveBubbles } from './IslandSeaMotifs';
 
-export type WaveDividerPreset = 'surface' | 'shallow' | 'underwater' | 'abyss';
+export type WaveDividerPreset = 'surface' | 'shallow' | 'descent' | 'underwater' | 'abyss';
 
 const WAVE_PRESETS: Record<WaveDividerPreset, { fill: string; toColor: string }> = {
   surface: {
@@ -13,6 +13,10 @@ const WAVE_PRESETS: Record<WaveDividerPreset, { fill: string; toColor: string }>
   shallow: {
     fill: 'rgba(58, 143, 183, 0.28)',
     toColor: 'rgba(244, 232, 216, 0.4)',
+  },
+  descent: {
+    fill: 'rgba(244, 232, 216, 0.5)',
+    toColor: 'rgba(58, 143, 183, 0.32)',
   },
   underwater: {
     fill: 'rgba(15, 53, 80, 0.55)',
@@ -62,7 +66,7 @@ export const IslandWaveDivider: React.FC<IslandWaveDividerProps> = ({
           background: `linear-gradient(to bottom, transparent 0%, ${waveTo} 100%)`,
         }}
       />
-      {!lite && preset !== 'underwater' && preset !== 'abyss' && (
+      {!lite && preset !== 'descent' && preset !== 'underwater' && preset !== 'abyss' && (
         <WaveBubbles className="island-wave-divider__bubbles h-full w-full" />
       )}
       <svg

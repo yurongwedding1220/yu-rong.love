@@ -55,6 +55,15 @@ export function blendChapterPalette(
 }
 
 /** 半透明漸層底色 — 讓全頁固定背景透出，只做色調偏移 */
-export function chapterTintGradient(palette: IslandPalette): string {
-  return `linear-gradient(188deg, ${palette.glow}1a 0%, ${palette.sea}42 38%, ${palette.deep}52 88%)`;
+export function chapterTintGradient(palette: IslandPalette, strength = 1): string {
+  const glowA = Math.min(255, Math.round(0x1a * strength))
+    .toString(16)
+    .padStart(2, '0');
+  const seaA = Math.min(255, Math.round(0x42 * strength))
+    .toString(16)
+    .padStart(2, '0');
+  const deepA = Math.min(255, Math.round(0x52 * strength))
+    .toString(16)
+    .padStart(2, '0');
+  return `linear-gradient(188deg, ${palette.glow}${glowA} 0%, ${palette.sea}${seaA} 38%, ${palette.deep}${deepA} 88%)`;
 }

@@ -12,8 +12,9 @@ const LINE = {
 
 const DEPTH_CAPTIONS: { max: number; text: string }[] = [
   { max: 0.2, text: '望向夕陽海面' },
-  { max: 0.45, text: '浪花輕撫沙灘' },
-  { max: 0.7, text: '潛入清澈浅海' },
+  { max: 0.4, text: '浪花輕撫沙灘' },
+  { max: 0.54, text: '緩緩潛入海中' },
+  { max: 0.76, text: '潛入清澈浅海' },
   { max: 1, text: '深海中有我們的約定' },
 ];
 
@@ -66,30 +67,39 @@ const FoamWaveSvg: React.FC = () => (
 
 /**
  * 全頁固定背景：捲動越深，從夕陽海面漸入水下世界。
+ * 小島／靠岸段保留海面＋暖沙；入水從 depth≈0.46 才開始。
  */
 export const IslandDepthJourney: React.FC = () => {
   const depth = useScrollDepth();
   const lite = isLowPerf(usePerfMode());
 
-  /*
-   * Hero 負責首屏夕陽；旅程層在 depth≥0.12 才接手。
-   * 進入閱讀區（depth≥0.5）後，淡出淺層與裝飾，只保留深海漸層，避免背景雜亂。
-   */
-  const contentCalm = depthFade(depth, 0.48, 0.62);
-  const layerFadeOut = 1 - depthFade(depth, 0.38, 0.56);
+  /* 小島＋靠岸段結束後才淡出淺層（≈0.42–0.54） */
+  const layerFadeOut = 1 - depthFade(depth, 0.42, 0.54);
 
   const sunsetOp = depthPeak(depth, 0.1, 0.2, 0.38) * layerFadeOut;
-  const surfaceOp = depthPeak(depth, 0.05, 0.22, 0.48) * layerFadeOut;
-  const beachOp = depthPeak(depth, 0.12, 0.28, 0.42) * layerFadeOut;
-  const foamOp = depthPeak(depth, 0.18, 0.32, 0.52) * layerFadeOut;
-  const shallowOp = depthFade(depth, 0.28, 0.55) * layerFadeOut;
-  const deepOp = depthFade(depth, 0.5, 0.95);
-  const raysOp = (1 - depthFade(depth, 0.35, 0.55)) * shallowOp;
+  const surfaceOp = depthPeak(depth, 0.05, 0.22, 0.5) * layerFadeOut;
+  const shallowOp = depthFade(depth, 0.2, 0.46) * layerFadeOut;
 
-  const decorFadeOut = 1 - depthFade(depth, 0.5, 0.64);
-  const seaweedOp = depthFade(depth, 0.42, 0.58) * decorFadeOut;
-  const fishOp = depthFade(depth, 0.48, 0.6) * decorFadeOut;
-  const coralOp = depthFade(depth, 0.55, 0.68) * decorFadeOut * 0.5;
+  const beachBase = depthPeak(depth, 0.12, 0.28, 0.48);
+  const beachWarm = depthFade(depth, 0.28, 0.38) * (1 - depthFade(depth, 0.4, 0.52));
+  const beachOp = (beachBase + beachWarm * 0.8) * layerFadeOut;
+
+  const warmOp = depthFade(depth, 0.27, 0.34) * (1 - depthFade(depth, 0.4, 0.54));
+  const foamOp = depthPeak(depth, 0.18, 0.32, 0.54) * layerFadeOut;
+
+  /* 入水過渡：靠岸後、Timeline 前（0.42–0.56） */
+  const submergeOp = depthFade(depth, 0.42, 0.52) * (1 - depthFade(depth, 0.52, 0.6));
+
+  const deepOp = depthFade(depth, 0.54, 0.92);
+  const raysOp = (1 - depthFade(depth, 0.38, 0.58)) * shallowOp * (1 - depthFade(depth, 0.54, 0.64));
+
+  const contentCalm = depthFade(depth, 0.54, 0.68);
+  const decorFadeOut = 1 - depthFade(depth, 0.6, 0.74);
+
+  /* 裝飾：入水後才出現，閱讀區再淡出 */
+  const seaweedOp = depthFade(depth, 0.5, 0.6) * decorFadeOut;
+  const fishOp = depthFade(depth, 0.56, 0.66) * decorFadeOut;
+  const coralOp = depthFade(depth, 0.62, 0.74) * decorFadeOut * 0.5;
 
   const foamTop = `${Math.max(28, 52 - depth * 30)}vh`;
 
@@ -106,17 +116,17 @@ export const IslandDepthJourney: React.FC = () => {
         <div className="island-depth-layer island-depth-surface" style={{ opacity: surfaceOp * 0.9 }} />
         <div className="island-depth-layer island-depth-sunset" style={{ opacity: sunsetOp }} />
 
-        <div className="island-depth-sun" style={{ opacity: sunsetOp }} />
+        <div className="island-depth-layer island-depth-warm" style={{ opacity: warmOp * 0.88 }} />
+        <div className="island-depth-layer island-depth-submerge" style={{ opacity: submergeOp * 0.9 }} />
 
         <div
-          className="island-depth-layer island-depth-beach"
-          style={{ opacity: beachOp }}
+          className="island-depth-sun"
+          style={{ opacity: Math.min(1, sunsetOp + warmOp * 0.35) }}
         />
 
-        <div
-          className="island-depth-foam"
-          style={{ opacity: foamOp, top: foamTop }}
-        >
+        <div className="island-depth-layer island-depth-beach" style={{ opacity: beachOp }} />
+
+        <div className="island-depth-foam" style={{ opacity: foamOp, top: foamTop }}>
           <FoamWaveSvg />
         </div>
 

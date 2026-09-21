@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
 
-/** 章節深度相位 → 目標深度值（對齊 DOM 標記，不單靠全頁比例） */
+/**
+ * 全頁深度相位 — 對應捲動敘事：
+ * 夕陽 → 海面 → 小島 → 靠岸 → 入水過渡 → 水下 → 更深 → 深淵
+ */
 export type DepthPhase =
   | 'sunset'
   | 'surface'
   | 'shallow'
+  | 'harbor'
+  | 'descent'
   | 'underwater'
   | 'deeper'
   | 'abyss';
@@ -12,9 +17,11 @@ export type DepthPhase =
 export const DEPTH_PHASE_TARGET: Record<DepthPhase, number> = {
   sunset: 0.02,
   surface: 0.18,
-  shallow: 0.35,
-  underwater: 0.62,
-  deeper: 0.78,
+  shallow: 0.34,
+  harbor: 0.36,
+  descent: 0.46,
+  underwater: 0.56,
+  deeper: 0.72,
   abyss: 0.95,
 };
 
@@ -24,9 +31,9 @@ function isDepthPhase(v: string | null): v is DepthPhase {
   return !!v && (PHASES as string[]).includes(v);
 }
 
-/** 依 [data-depth-phase] 章節位置插值深度；無標記時退回全頁比例 */
+/** 依 [data-depth-phase] / [data-depth-value] 章節位置插值深度 */
 function computeAnchoredDepth(): number {
-  const nodes = document.querySelectorAll<HTMLElement>('[data-depth-phase]');
+  const nodes = document.querySelectorAll<HTMLElement>('[data-depth-phase], [data-depth-value]');
   if (nodes.length === 0) {
     const max = document.documentElement.scrollHeight - window.innerHeight;
     return max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
@@ -87,7 +94,7 @@ export function useScrollDepth(): number {
       setDepth(clamped);
       document.documentElement.style.setProperty('--scroll-depth', String(clamped));
       document.documentElement.dataset.depthChrome =
-        clamped >= 0.4 ? 'underwater' : 'surface';
+        clamped >= 0.52 ? 'underwater' : 'surface';
     };
 
     const onScroll = () => {

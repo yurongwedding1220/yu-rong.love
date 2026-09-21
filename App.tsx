@@ -261,7 +261,7 @@ function App() {
 
         <section
           id="harbor"
-          data-depth-phase="shallow"
+          data-depth-phase="harbor"
           className="island-section-submerge relative scroll-mt-20 overflow-hidden px-4 pb-8 pt-0 md:pb-12"
         >
           <div className="relative z-[1]">
@@ -277,9 +277,12 @@ function App() {
           <CalendarRevealSection />
           </div>
           </div>
+          <div data-depth-value="0.4" className="island-depth-anchor" aria-hidden />
         </section>
 
-        <IslandWaveDivider preset="underwater" animate={!lite} />
+        <div data-depth-phase="descent" className="island-depth-anchor" aria-hidden />
+
+        <IslandWaveDivider preset="descent" animate={!lite} />
 
         <section
           id="timeline"
@@ -302,7 +305,7 @@ function App() {
 
         <section
           id="location"
-          data-depth-phase="deeper"
+          data-depth-value="0.72"
           className="island-defer island-section-underwater scroll-mt-20 px-4 py-16 md:py-24"
         >
           <VoyageSectionHeader
@@ -324,7 +327,7 @@ function App() {
 
         <section
           id="guestbook"
-          data-depth-phase="deeper"
+          data-depth-value="0.82"
           className="island-defer island-section-underwater island-chrome-pad relative scroll-mt-20 overflow-hidden px-4 py-16 md:py-24"
         >
           <div className="relative z-[1]">
@@ -349,7 +352,7 @@ function App() {
 
         <section
           id="line"
-          data-depth-phase="deeper"
+          data-depth-value="0.88"
           className="island-section-underwater island-chrome-pad scroll-mt-20 px-4 py-16 md:py-20"
         >
           <IslandSectionReveal animate={!lite}>
