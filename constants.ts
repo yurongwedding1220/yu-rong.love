@@ -22,7 +22,7 @@ export const APP_CONTENT = {
 
 /** 全站航程敘事文案 */
 export const VOYAGE_NARRATIVE = {
-  loadingHint: '船即將離港…',
+  loadingHint: '船即將入港…',
   countdownLabel: '距靠岸還有',
   interludeChapter: '第一章 · 啟程',
   interludeTitle: '航程開始',
