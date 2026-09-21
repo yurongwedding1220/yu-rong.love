@@ -17,7 +17,7 @@ const CalendarBase = ({ pulseHeart }: { pulseHeart: boolean }) => {
   for (let i = 1; i <= totalDays; i++) days.push(i);
 
   return (
-    <div className="relative flex h-full w-full flex-col bg-[#fcfaf7] p-5 md:p-8">
+    <div className="relative flex h-full w-full flex-col bg-[var(--island-paper)] p-5 md:p-8">
       <div className="absolute top-2 left-0 right-0 z-20 flex justify-evenly px-6">
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <div
@@ -35,7 +35,7 @@ const CalendarBase = ({ pulseHeart }: { pulseHeart: boolean }) => {
         <span className="island-tabular font-serif text-sm tracking-[0.2em]">2026</span>
       </div>
 
-      <div className="relative z-10 mb-4 h-px w-full bg-stone-200" />
+      <div className="relative z-10 mb-4 h-px w-full bg-[#3A8FB7]/15" />
 
       <div className="relative z-10 mb-3 grid grid-cols-7 text-center">
         {['日', '一', '二', '三', '四', '五', '六'].map((d) => (
@@ -45,7 +45,7 @@ const CalendarBase = ({ pulseHeart }: { pulseHeart: boolean }) => {
         ))}
       </div>
 
-      <div className="island-tabular relative z-10 grid grid-cols-7 gap-x-1 gap-y-3 text-center font-serif text-stone-600">
+      <div className="island-tabular relative z-10 grid grid-cols-7 gap-x-1 gap-y-3 text-center font-serif text-[#5A7380]">
         {days.map((d, i) => {
           if (!d) return <div key={i} />;
           const isWedding = d === 20;
@@ -71,7 +71,7 @@ const CalendarBase = ({ pulseHeart }: { pulseHeart: boolean }) => {
                   </span>
                 </div>
               ) : (
-                <span className="text-sm font-medium text-stone-600">{d}</span>
+                <span className="text-sm font-medium text-[#5A7380]">{d}</span>
               )}
             </div>
           );
@@ -140,7 +140,7 @@ const CalendarCover = () => (
 
 /** Low-end: no scroll theatre — just show the calendar page */
 const SimpleCalendar = () => (
-  <div className="island-calendar-card mx-auto aspect-[3/4.2] w-full max-w-[320px] overflow-hidden rounded-xl border border-[#3A8FB7]/15 bg-white">
+  <div className="island-calendar-card island-card--elevated island-card--sea mx-auto aspect-[3/4.2] w-full max-w-[320px] overflow-hidden rounded-xl border border-[#3A8FB7]/15 bg-[var(--island-paper)]">
     <CalendarBase pulseHeart={false} />
   </div>
 );
@@ -159,7 +159,7 @@ const FadeRevealCalendar = ({
   return (
     <div className="mx-auto aspect-[3/4.2] w-full max-w-[320px]">
       <motion.div style={{ scale, y }} className="relative h-full w-full">
-        <div className="island-calendar-card absolute inset-0 overflow-hidden rounded-xl border border-[#3A8FB7]/15 bg-white">
+        <div className="island-calendar-card island-card--elevated island-card--sea absolute inset-0 overflow-hidden rounded-xl border border-[#3A8FB7]/15 bg-[var(--island-paper)]">
           <CalendarBase pulseHeart />
         </div>
         <motion.div
@@ -189,7 +189,7 @@ const FlippingCalendar = ({
         style={{ scale, transformStyle: 'preserve-3d' }}
         className="relative h-full w-full"
       >
-        <div className="absolute inset-0 origin-bottom rounded-[6px] bg-[#fdfbf7]">
+        <div className="absolute inset-0 origin-bottom rounded-[6px] bg-[var(--island-paper)]">
           <CalendarBase pulseHeart />
         </div>
 
@@ -210,7 +210,7 @@ const FlippingCalendar = ({
             <CalendarCover />
           </div>
           <div
-            className="absolute inset-0 flex items-center justify-center rounded-[6px] border border-stone-200 bg-[#f4f1ea]"
+            className="absolute inset-0 flex items-center justify-center rounded-[6px] border border-[#3A8FB7]/15 bg-[var(--island-paper-muted)]"
             style={{
               backfaceVisibility: 'hidden',
               WebkitBackfaceVisibility: 'hidden',

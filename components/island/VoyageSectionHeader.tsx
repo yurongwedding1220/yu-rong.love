@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { usePerfMode, isLowPerf } from '../../hooks/usePerfMode';
+import { IslandOrnament } from './IslandOrnament';
 
 type VoyageSectionHeaderProps = {
   chapter: string;
@@ -24,8 +25,10 @@ export const VoyageSectionHeader: React.FC<VoyageSectionHeaderProps> = ({
   const perf = usePerfMode();
   const shouldAnimate = animate && !isLowPerf(perf);
   const alignClass = align === 'center' ? 'text-center mx-auto' : 'text-center md:text-left';
-  const ornamentAlign =
-    align === 'left' ? 'island-ornament island-ornament--left' : 'island-ornament';
+
+  const ornament = (
+    <IslandOrnament seed={`${chapter}-${title}`} align={align} />
+  );
 
   const body = (
     <div className={`max-w-3xl ${alignClass} ${className}`}>
@@ -41,17 +44,15 @@ export const VoyageSectionHeader: React.FC<VoyageSectionHeaderProps> = ({
             {chapter}
           </motion.p>
           <motion.div
-            className={ornamentAlign}
-            aria-hidden
             initial={{ opacity: 0, scale: 0.85 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: '-8%' }}
             transition={{ duration: 0.4, delay: 0.06, ease: EASE }}
           >
-            <span className="island-ornament__mark">✦</span>
+            {ornament}
           </motion.div>
           <motion.h2
-            className="island-heading font-serif text-3xl font-light tracking-wide text-[#1A3344] md:text-5xl"
+            className="island-heading font-serif text-3xl font-light tracking-wide md:text-5xl"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-8%' }}
@@ -74,10 +75,8 @@ export const VoyageSectionHeader: React.FC<VoyageSectionHeaderProps> = ({
       ) : (
         <>
           <p className="island-section-label">{chapter}</p>
-          <div className={ornamentAlign} aria-hidden>
-            <span className="island-ornament__mark">✦</span>
-          </div>
-          <h2 className="island-heading font-serif text-3xl font-light tracking-wide text-[#1A3344] md:text-5xl">
+          {ornament}
+          <h2 className="island-heading font-serif text-3xl font-light tracking-wide md:text-5xl">
             {title}
           </h2>
           {intro && (

@@ -7,6 +7,8 @@ import { VoyageSectionHeader } from './components/island/VoyageSectionHeader';
 import { HarborCountdownBar } from './components/island/HarborCountdownBar';
 import { IslandWaveDivider } from './components/island/IslandWaveDivider';
 import { IslandSectionReveal } from './components/island/IslandSectionReveal';
+import { IslandOrnament } from './components/island/IslandOrnament';
+import { IslandDepthJourney } from './components/island/IslandDepthJourney';
 import { CalendarRevealSection } from './components/CalendarRevealSection';
 import { Timeline } from './components/Timeline';
 import { LoadingScreen } from './components/LoadingScreen';
@@ -217,6 +219,8 @@ function App() {
       <a href="#photos" className="island-skip-link island-focus">
         跳至主要內容
       </a>
+      <IslandDepthJourney />
+
       <AnimatePresence>
         {isInitialLoading && (
           <LoadingScreen
@@ -235,7 +239,11 @@ function App() {
 
         <VoyageInterlude />
 
-        <section id="photos" className="scroll-mt-20">
+        <section
+          id="photos"
+          data-depth-phase="shallow"
+          className="island-section-shallow scroll-mt-20"
+        >
           <div className="px-4 pb-8 pt-14 md:pb-10 md:pt-20">
             <VoyageSectionHeader
               chapter={VOYAGE_NARRATIVE.galleryChapter}
@@ -245,17 +253,19 @@ function App() {
               className="mx-auto max-w-5xl"
             />
           </div>
-          <Suspense fallback={<div className="h-[60vh] bg-[#1B4D6E]/10" />}>
+          <Suspense fallback={<div className="h-[60vh] bg-[var(--island-deep)]/10" />}>
             <IslandVoyageGallery />
           </Suspense>
         </section>
 
-        <IslandWaveDivider fill="#F4E8D8" toColor="#F4E8D8" animate={!lite} />
+        <IslandWaveDivider preset="shallow" animate={!lite} />
 
         <section
           id="harbor"
-          className="scroll-mt-20 bg-gradient-to-b from-[#F4E8D8] to-[#F4E8D8]/60 px-4 pb-8 pt-0 md:pb-12"
+          data-depth-phase="shallow"
+          className="island-section-submerge relative scroll-mt-20 overflow-hidden px-4 pb-8 pt-0 md:pb-12"
         >
+          <div className="relative z-[1]">
           <HarborCountdownBar timeLeft={timeLeft} lite={lite} perf={perf} />
           <div className="pt-12 md:pt-16">
           <VoyageSectionHeader
@@ -267,24 +277,31 @@ function App() {
           />
           <CalendarRevealSection />
           </div>
+          </div>
         </section>
 
-        <IslandWaveDivider fill="#F4E8D8" toColor="rgba(244,232,216,0.45)" animate={!lite} />
+        <IslandWaveDivider preset="underwater" animate={!lite} />
 
-        <section id="timeline" className="island-defer island-section-wash scroll-mt-20 px-4 py-16 md:py-24">
-          <VoyageSectionHeader
-            chapter={VOYAGE_NARRATIVE.programChapter}
-            title={VOYAGE_NARRATIVE.programTitle}
-            intro={VOYAGE_NARRATIVE.programIntro}
-            animate={!lite}
-            className="mx-auto mb-4 max-w-3xl"
-          />
-          <Timeline animate={!lite} />
+        <section
+          id="timeline"
+          data-depth-phase="underwater"
+          className="island-defer island-section-underwater relative scroll-mt-20 overflow-hidden px-4 py-16 md:py-24"
+        >
+          <div className="relative z-[1]">
+            <VoyageSectionHeader
+              chapter={VOYAGE_NARRATIVE.programChapter}
+              title={VOYAGE_NARRATIVE.programTitle}
+              intro={VOYAGE_NARRATIVE.programIntro}
+              animate={!lite}
+              className="mx-auto mb-4 max-w-3xl"
+            />
+            <Timeline animate={!lite} />
+          </div>
         </section>
 
-        <IslandWaveDivider fill="rgba(244,232,216,0.6)" toColor="#F4E8D8" animate={!lite} />
+        <IslandWaveDivider preset="underwater" animate={!lite} />
 
-        <section id="location" className="island-defer scroll-mt-20 px-4 py-16 md:py-24">
+        <section id="location" className="island-defer island-section-underwater scroll-mt-20 px-4 py-16 md:py-24">
           <VoyageSectionHeader
             chapter={VOYAGE_NARRATIVE.berthChapter}
             title={VOYAGE_NARRATIVE.berthTitle}
@@ -294,15 +311,16 @@ function App() {
             className="mx-auto mb-10 max-w-5xl"
           />
           <div className="mx-auto max-w-5xl">
-            <Suspense fallback={<div className="h-40 rounded-2xl bg-white/40" />}>
+            <Suspense fallback={<div className="h-40 rounded-2xl bg-[var(--island-paper)]/40" />}>
               <LocationInfo />
             </Suspense>
           </div>
         </section>
 
-        <IslandWaveDivider fill="#F4E8D8" toColor="rgba(244,232,216,0.5)" animate={!lite} />
+        <IslandWaveDivider preset="abyss" animate={!lite} />
 
-        <section id="guestbook" className="island-defer island-chrome-pad scroll-mt-20 px-4 py-16 md:py-24">
+        <section id="guestbook" className="island-defer island-section-underwater island-chrome-pad relative scroll-mt-20 overflow-hidden px-4 py-16 md:py-24">
+          <div className="relative z-[1]">
           <VoyageSectionHeader
             chapter={VOYAGE_NARRATIVE.guestbookChapter}
             title={VOYAGE_NARRATIVE.guestbookTitle}
@@ -311,7 +329,7 @@ function App() {
             className="mx-auto mb-10 max-w-3xl"
           />
           <IslandSectionReveal animate={!lite}>
-            <Suspense fallback={<div className="mx-auto h-64 max-w-[600px] rounded-2xl bg-white/40" />}>
+            <Suspense fallback={<div className="mx-auto h-64 max-w-[600px] rounded-2xl bg-[var(--island-paper)]/40" />}>
               <GuestBook
                 onExpandChange={setIsGuestBookExpanded}
                 refreshTrigger={guestBookRefresh}
@@ -319,16 +337,15 @@ function App() {
               />
             </Suspense>
           </IslandSectionReveal>
+          </div>
         </section>
 
-        <section id="line" className="island-chrome-pad scroll-mt-20 px-4 py-16 md:py-20">
+        <section id="line" className="island-section-underwater island-chrome-pad scroll-mt-20 px-4 py-16 md:py-20">
           <IslandSectionReveal animate={!lite}>
-            <div className="island-card mx-auto max-w-lg rounded-2xl p-8 text-center md:p-10">
+            <div className="island-card island-card--sea relative z-[1] mx-auto max-w-lg rounded-2xl p-8 text-center md:p-10">
               <p className="island-section-label">{VOYAGE_NARRATIVE.contactChapter}</p>
-              <div className="island-ornament" aria-hidden>
-                <span className="island-ornament__mark">✦</span>
-              </div>
-              <h2 className="island-heading font-serif text-2xl font-light tracking-wide text-[#1A3344] md:text-3xl">
+              <IslandOrnament seed="contact" motif="anchor" />
+              <h2 className="island-heading font-serif text-2xl font-light tracking-wide md:text-3xl">
                 {VOYAGE_NARRATIVE.contactTitle}
               </h2>
               <p className="island-prose mt-4">{VOYAGE_NARRATIVE.contactIntro}</p>
@@ -342,7 +359,7 @@ function App() {
                   加入 LINE 好友
                 </a>
               ) : (
-                <div className="mt-6 inline-flex rounded-full border border-dashed border-[#3A8FB7]/40 px-6 py-2.5 text-xs tracking-wider text-[#3A8FB7]">
+                <div className="mt-6 inline-flex rounded-full border border-dashed border-[var(--island-sea)]/40 px-6 py-2.5 text-xs tracking-wider text-[var(--island-sea)]">
                   LINE 即將開放
                 </div>
               )}
@@ -350,13 +367,15 @@ function App() {
           </IslandSectionReveal>
         </section>
 
-        <footer id="rsvp" className="island-chrome-pad scroll-mt-20 border-t border-[#3A8FB7]/12 bg-gradient-to-b from-[#F4E8D8]/80 to-[#F4E8D8] px-4 py-20 text-center">
-          <IslandSectionReveal animate={!lite}>
+        <footer
+          id="rsvp"
+          data-depth-phase="abyss"
+          className="island-section-abyss island-chrome-pad relative scroll-mt-20 overflow-hidden border-t border-[var(--island-shallow)]/15 px-4 py-20 text-center"
+        >
+          <IslandSectionReveal animate={!lite} className="relative z-[1]">
             <p className="island-section-label">{VOYAGE_NARRATIVE.finaleChapter}</p>
-            <div className="island-ornament" aria-hidden>
-              <span className="island-ornament__mark">✦</span>
-            </div>
-            <h2 className="island-heading font-serif text-3xl font-light tracking-wide text-[#1A3344] md:text-4xl">
+            <IslandOrnament seed="finale" motif="helm" />
+            <h2 className="island-heading font-serif text-3xl font-light tracking-wide md:text-4xl">
               {VOYAGE_NARRATIVE.finaleTitle}
             </h2>
             <p className="island-prose mx-auto mt-4 max-w-sm">
@@ -370,11 +389,14 @@ function App() {
                 {VOYAGE_NARRATIVE.rsvpCta}
               </Link>
             </div>
-            <p className="mt-16 font-serif text-sm text-[#1B4D6E]/70" translate="no">
+            <p className="mt-16 font-serif text-sm text-white/65" translate="no">
               {APP_CONTENT.chineseNames}
             </p>
-            <p className="island-tabular mt-1 font-display text-[10px] tracking-[0.3em] text-[#3A8FB7]/80">
+            <p className="island-tabular mt-1 font-display text-[10px] tracking-[0.3em] text-[var(--island-shallow)]/75">
               {APP_CONTENT.date} · DOULIU
+            </p>
+            <p className="island-nautical-coords mt-3">
+              23.7°N · 120.5°E · DOULIU HARBOR
             </p>
           </IslandSectionReveal>
         </footer>
@@ -419,8 +441,8 @@ function App() {
                             }}
                             className={`island-focus island-touch flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm transition-colors ${
                               isActive
-                                ? 'bg-[#1B4D6E] text-white'
-                                : 'text-[#1B4D6E] hover:bg-[#F4E8D8]/80'
+                                ? 'bg-[var(--island-deep)] text-white'
+                                : 'text-[var(--island-deep)] hover:bg-[var(--island-sand)]/80'
                             }`}
                           >
                             <span className="flex h-5 w-5 shrink-0 items-center justify-center" aria-hidden>
@@ -441,7 +463,7 @@ function App() {
                   aria-label={isNavExpanded ? '收合選單' : '展開選單'}
                   aria-expanded={isNavExpanded}
                   onClick={() => setIsNavExpanded((v) => !v)}
-                  className="island-focus island-touch flex h-11 w-11 items-center justify-center rounded-full text-[#1B4D6E] hover:bg-white/40"
+                  className="island-focus island-touch flex h-11 w-11 items-center justify-center rounded-full text-[var(--island-deep)] hover:bg-white/40"
                 >
                   <span aria-hidden>{isNavExpanded ? <XIcon /> : <MenuIcon />}</span>
                 </button>

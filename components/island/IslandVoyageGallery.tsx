@@ -271,7 +271,7 @@ const IslandAdventureChapter: React.FC<{
     <article
       className="island-chapter-flow relative w-full overflow-hidden"
       style={{
-        background: `linear-gradient(188deg, ${chapter.palette.glow}26 0%, ${chapter.palette.sea} 42%, ${chapter.palette.deep} 88%)`,
+        background: `linear-gradient(188deg, ${chapter.palette.glow}1a 0%, ${chapter.palette.sea}99 42%, ${chapter.palette.deep}aa 88%)`,
       }}
     >
       {isFirst && <ChapterWaveCap fill="#f4e8d8" />}
@@ -287,14 +287,14 @@ const IslandAdventureChapter: React.FC<{
         />
       )}
 
-      {/* 末島 → 靠岸：砂色漸層 + 浪線 cap */}
+      {/* 末島 → 入水：海面藍綠漸層 + 浪線 cap */}
       {isLast && (
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[3]" aria-hidden>
           <div
             className="h-28 md:h-36"
             style={{
               background:
-                'linear-gradient(to bottom, transparent 0%, rgba(244,232,216,0.35) 45%, #F4E8D8 100%)',
+                'linear-gradient(to bottom, transparent 0%, rgba(58,143,183,0.22) 45%, rgba(244,232,216,0.4) 100%)',
             }}
           />
           <svg
@@ -303,7 +303,7 @@ const IslandAdventureChapter: React.FC<{
             preserveAspectRatio="none"
           >
             <path
-              fill="#F4E8D8"
+              fill="rgba(244,232,216,0.55)"
               d="M0,28 C220,52 420,6 640,26 C860,46 1060,10 1260,28 C1340,36 1400,22 1440,30 L1440,60 L0,60 Z"
             />
           </svg>

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './styles.css';
 import './styles/island-theme.css';
+import './styles/island-depth.css';
 import App from './App';
 import { VisitCounterProvider } from './components/VisitCounterProvider';
 

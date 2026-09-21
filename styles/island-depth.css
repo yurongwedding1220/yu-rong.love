@@ -1,0 +1,285 @@
+/* 全頁深度旅程 — 海面 → 水下 */
+
+.island-depth-journey {
+  position: fixed;
+  inset: 0;
+  z-index: -5;
+  pointer-events: none;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.island-depth-layer {
+  position: absolute;
+  inset: 0;
+  will-change: opacity;
+}
+
+/* 夕陽天際 */
+.island-depth-sunset {
+  background: linear-gradient(
+    180deg,
+    #f8c9a0 0%,
+    #e8a87c55 18%,
+    #3a8fb733 42%,
+    transparent 72%
+  );
+}
+
+/* 海面藍 */
+.island-depth-surface {
+  background: linear-gradient(
+    180deg,
+    #4a9ec4 0%,
+    #3a8fb7 35%,
+    #2a7a9e 65%,
+    #1b4d6e 100%
+  );
+}
+
+/* 淺水青 */
+.island-depth-shallow {
+  background: linear-gradient(
+    180deg,
+    rgba(126, 200, 227, 0.55) 0%,
+    rgba(58, 143, 183, 0.45) 50%,
+    rgba(27, 77, 110, 0.35) 100%
+  );
+}
+
+/* 深海 */
+.island-depth-deep {
+  background: linear-gradient(
+    180deg,
+    #1a5f7a 0%,
+    #134a62 30%,
+    #0f3550 65%,
+    #0a2438 100%
+  );
+}
+
+/* 沙灘帶 */
+.island-depth-beach {
+  background: linear-gradient(
+    to top,
+    #f4e8d8 0%,
+    #e8d5bc88 35%,
+    transparent 100%
+  );
+}
+
+/* 水面泡沫線 */
+.island-depth-foam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 18vh;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.12) 55%,
+    transparent 100%
+  );
+}
+
+.island-depth-foam__wave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3rem;
+  opacity: 0.7;
+}
+
+/* 夕陽 */
+.island-depth-sun {
+  position: absolute;
+  top: 12%;
+  right: 14%;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, #ffe8c8 0%, #e8a87c 55%, transparent 72%);
+  box-shadow: 0 0 60px 20px rgba(232, 168, 124, 0.35);
+}
+
+@media (min-width: 768px) {
+  .island-depth-sun {
+    width: 6rem;
+    height: 6rem;
+    top: 10%;
+    right: 18%;
+  }
+}
+
+/* 水下光線 */
+.island-depth-rays {
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    transparent 42%
+  );
+  mix-blend-mode: soft-light;
+}
+
+/* 海草搖曳 */
+@keyframes island-seaweed-sway {
+  0%,
+  100% {
+    transform: rotate(-2deg) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: rotate(3deg) translate3d(2px, -4px, 0);
+  }
+}
+
+.island-depth-seaweed {
+  position: absolute;
+  bottom: 0;
+  width: 28vw;
+  max-width: 9rem;
+  transform-origin: bottom center;
+}
+
+.island-depth-seaweed--left {
+  left: -2%;
+}
+
+.island-depth-seaweed--right {
+  right: -2%;
+  transform: scaleX(-1);
+}
+
+html[data-perf='medium'] .island-depth-seaweed,
+html[data-perf='high'] .island-depth-seaweed {
+  animation: island-seaweed-sway 6s ease-in-out infinite;
+}
+
+html[data-perf='high'] .island-depth-seaweed--right {
+  animation-duration: 7.2s;
+  animation-delay: -1.5s;
+}
+
+html.is-scrolling .island-depth-seaweed {
+  animation-play-state: paused;
+}
+
+/* 小魚游動 */
+@keyframes island-fish-swim {
+  0% {
+    transform: translate3d(-10%, 0, 0) scaleX(1);
+  }
+  49% {
+    transform: translate3d(110vw, 0, 0) scaleX(1);
+  }
+  50% {
+    transform: translate3d(110vw, 0, 0) scaleX(-1);
+  }
+  100% {
+    transform: translate3d(-10%, 0, 0) scaleX(-1);
+  }
+}
+
+.island-depth-fish {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+html[data-perf='medium'] .island-depth-fish,
+html[data-perf='high'] .island-depth-fish {
+  animation: island-fish-swim 28s linear infinite;
+  will-change: transform;
+}
+
+html[data-perf='high'] .island-depth-fish--fast {
+  animation-duration: 20s;
+}
+
+html[data-perf='high'] .island-depth-fish--slow {
+  animation-duration: 36s;
+}
+
+html.is-scrolling .island-depth-fish {
+  animation-play-state: paused;
+}
+
+/* 珊瑚 */
+.island-depth-coral {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 22vh;
+  color: rgba(232, 168, 124, 0.45);
+}
+
+/* 章節透明化 — 讓深度背景透出 */
+.island-section-shallow {
+  background: rgba(126, 200, 227, 0.08);
+}
+
+.island-section-submerge {
+  background: rgba(244, 232, 216, 0.35);
+}
+
+.island-section-underwater {
+  background: rgba(19, 74, 98, 0.18);
+}
+
+.island-section-abyss {
+  background: linear-gradient(
+    180deg,
+    rgba(15, 53, 80, 0.22) 0%,
+    rgba(10, 36, 56, 0.38) 100%
+  );
+}
+
+.island-section-underwater .island-section-label,
+.island-section-abyss .island-section-label {
+  color: #7ec8e3;
+}
+
+.island-section-underwater .island-heading,
+.island-section-abyss .island-heading {
+  color: #f4f8fb;
+}
+
+.island-section-underwater .island-card .island-heading,
+.island-section-abyss .island-card .island-heading {
+  color: var(--island-ink);
+}
+
+.island-section-underwater .island-prose,
+.island-section-abyss .island-prose {
+  color: rgba(244, 248, 251, 0.78);
+}
+
+.island-section-underwater .island-card .island-prose,
+.island-section-abyss .island-card .island-prose {
+  color: var(--island-muted);
+}
+
+.island-section-abyss .island-ornament__mark--sea {
+  color: #e8a87c;
+}
+
+.island-section-abyss .island-nautical-coords {
+  color: rgba(126, 200, 227, 0.55);
+}
+
+/* 水下區塊內的 wave divider 銜接色 */
+.island-section-underwater + .island-wave-divider path,
+.island-section-abyss + .island-wave-divider path {
+  fill: rgba(58, 143, 183, 0.35);
+}
+
+html[data-perf='low'] .island-depth-fish {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .island-depth-seaweed,
+  .island-depth-fish {
+    animation: none !important;
+  }
+}

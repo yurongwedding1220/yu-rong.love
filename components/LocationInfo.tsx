@@ -27,7 +27,7 @@ export const LocationInfo: React.FC = () => {
   return (
     <div className="space-y-12">
       <IslandSectionReveal>
-        <div className="island-card relative overflow-hidden rounded-2xl p-8 md:p-10">
+        <div className="island-card island-card--sea relative overflow-hidden rounded-2xl p-8 md:p-10">
           <div className="flex w-full flex-col items-stretch gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex-1">
               <p className="island-section-label mb-2">停泊港</p>
@@ -80,7 +80,7 @@ export const LocationInfo: React.FC = () => {
               地圖載入中…
             </div>
           )}
-          <div className="absolute bottom-4 left-4 right-4 rounded-xl border border-white/60 bg-white/95 p-4 text-left shadow-lg backdrop-blur-sm md:right-auto md:max-w-xs">
+          <div className="absolute bottom-4 left-4 right-4 rounded-xl border border-[#3A8FB7]/12 bg-[var(--island-paper)]/95 p-4 text-left shadow-lg backdrop-blur-sm md:right-auto md:max-w-xs">
             <p className="text-base font-medium text-[#1A3344]">{APP_CONTENT.venueName}</p>
             <p className="mt-1 text-sm leading-relaxed text-[#5A7380]">{APP_CONTENT.venueAddress}</p>
           </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { APP_CONTENT, VOYAGE_NARRATIVE } from '../../constants';
 import type { PerfMode } from '../../hooks/usePerfMode';
+import { SeaMotif } from './IslandSeaMotifs';
 
 type HarborCountdownBarProps = {
   timeLeft: { days: number; hours: number; minutes: number; seconds: number };
@@ -19,13 +20,9 @@ const MarqueeSegment: React.FC<{
       {String(timeLeft.minutes).padStart(2, '0')}:
       {String(timeLeft.seconds).padStart(2, '0')}
     </span>
-    <span className="text-[#E8A87C]" aria-hidden>
-      ✦
-    </span>
+    <span className="text-[#7EC8E3]/70" aria-hidden>~</span>
     <span>{APP_CONTENT.date}</span>
-    <span className="text-[#E8A87C]" aria-hidden>
-      ✦
-    </span>
+    <span className="text-[#7EC8E3]/70" aria-hidden>~</span>
     <span>
       {APP_CONTENT.venueName} · {APP_CONTENT.venueHall}
     </span>
@@ -45,14 +42,13 @@ export const HarborCountdownBar: React.FC<HarborCountdownBarProps> = ({
   >
     {lite ? (
       <div className="island-tabular flex justify-center gap-3 px-4 py-2.5 text-center text-sm tracking-wider text-[#1B4D6E] font-display">
+        <SeaMotif type="anchor" className="h-3.5 w-3.5 text-[#3A8FB7]/55" />
         <span>{VOYAGE_NARRATIVE.countdownLabel}</span>
         <span className="text-[#E8A87C]" aria-hidden>
-          ✦
+          ~
         </span>
         <span>{timeLeft.days} 天</span>
-        <span className="text-[#E8A87C]" aria-hidden>
-          ✦
-        </span>
+        <span className="text-[#7EC8E3]/70" aria-hidden>~</span>
         <span>{APP_CONTENT.venueName}</span>
       </div>
     ) : (

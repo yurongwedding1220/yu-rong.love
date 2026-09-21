@@ -9,6 +9,11 @@
   --island-coral: #e8a87c;
   --island-ink: #1a3344;
   --island-muted: #5a7380;
+  --island-paper: #fdf8f1;
+  --island-paper-muted: #f4e8d8;
+  --island-ink-soft: #5a7380;
+  --island-border: rgba(58, 143, 183, 0.18);
+  --island-border-strong: rgba(58, 143, 183, 0.28);
   --bg-color: #f4e8d8;
   --text-primary: #1a3344;
   --text-secondary: #3a8fb7;
@@ -102,6 +107,77 @@ html {
   line-height: 1;
 }
 
+.island-ornament__mark--sea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--island-coral);
+}
+
+/* Floating bubbles — GPU only; pause while scrolling */
+@keyframes island-bubble-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate3d(3px, -10px, 0);
+    opacity: 0.65;
+  }
+}
+
+html[data-perf='medium'] .island-bubble-drift,
+html[data-perf='high'] .island-bubble-drift {
+  animation: island-bubble-float 5.5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+html.is-scrolling .island-bubble-drift {
+  animation-play-state: paused;
+}
+
+.island-sea-ambience {
+  z-index: 0;
+}
+
+/* Card corner shell watermark */
+.island-card--sea {
+  position: relative;
+  overflow: hidden;
+}
+
+.island-card--sea::after {
+  content: '';
+  position: absolute;
+  right: -0.5rem;
+  bottom: -0.5rem;
+  width: 5.5rem;
+  height: 5.5rem;
+  opacity: 0.07;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M12 20V9' stroke='%231B4D6E' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath d='M12 20C8 16 6 13 6 10a6 6 0 0012 0c0 3-2 6-6 10z' stroke='%231B4D6E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* Nautical coordinate line */
+.island-nautical-coords {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(58, 143, 183, 0.55);
+}
+
+/* Wave divider bubbles layer */
+.island-wave-divider__bubbles {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
 /* Consistent intro prose */
 .island-prose {
   font-family: 'Noto Serif TC', 'Playfair Display', serif;
@@ -145,6 +221,200 @@ html {
     0 2px 8px rgba(27, 77, 110, 0.04);
 }
 
+.island-card--elevated {
+  background: var(--island-paper);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 2px 0 rgba(232, 168, 124, 0.08) inset,
+    0 20px 50px -16px rgba(27, 77, 110, 0.14),
+    0 6px 16px rgba(27, 77, 110, 0.06);
+}
+
+.island-meta {
+  font-size: 0.75rem;
+  color: var(--island-muted);
+  letter-spacing: 0.02em;
+}
+
+.island-thread-line {
+  width: 2px;
+  flex-grow: 1;
+  border-radius: 9999px;
+  background: rgba(58, 143, 183, 0.15);
+}
+
+.island-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.island-badge--day {
+  background: rgba(27, 77, 110, 0.1);
+  color: var(--island-deep);
+}
+
+.island-badge--before {
+  background: rgba(232, 168, 124, 0.18);
+  color: #6b3d2e;
+}
+
+.island-badge--after {
+  background: rgba(58, 143, 183, 0.12);
+  color: var(--island-deep);
+}
+
+/* Form primitives — RSVP & inputs */
+.island-field-label {
+  display: block;
+  font-family: 'Noto Serif TC', 'Playfair Display', serif;
+  font-size: 1.5rem;
+  line-height: 1.35;
+  color: var(--island-ink);
+}
+
+@media (min-width: 768px) {
+  .island-field-label {
+    font-size: 1.875rem;
+  }
+}
+
+.island-hint {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--island-muted);
+}
+
+.island-input,
+.island-select,
+.island-textarea {
+  width: 100%;
+  border: 1px solid var(--island-border);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--island-paper);
+  color: var(--island-ink);
+  transition:
+    border-color 0.25s var(--island-ease-soft),
+    box-shadow 0.25s var(--island-ease-soft);
+}
+
+.island-input:focus,
+.island-select:focus,
+.island-textarea:focus {
+  outline: none;
+  border-color: var(--island-deep);
+  box-shadow: 0 0 0 3px rgba(27, 77, 110, 0.1);
+}
+
+.island-radio-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--island-border);
+  cursor: pointer;
+  transition:
+    background 0.25s var(--island-ease-soft),
+    border-color 0.25s var(--island-ease-soft);
+}
+
+.island-radio-option:hover {
+  background: rgba(244, 232, 216, 0.5);
+}
+
+.island-radio-option--selected {
+  border-color: var(--island-deep);
+  background: rgba(27, 77, 110, 0.06);
+}
+
+.island-radio-dot {
+  display: flex;
+  height: 1.25rem;
+  width: 1.25rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(58, 143, 183, 0.35);
+  transition: border-color 0.2s var(--island-ease-soft);
+}
+
+.island-radio-dot--selected {
+  border-color: var(--island-deep);
+}
+
+.island-radio-dot__fill {
+  height: 0.75rem;
+  width: 0.75rem;
+  border-radius: 9999px;
+  background: var(--island-deep);
+}
+
+.island-rsvp-shell {
+  min-height: 100vh;
+  background: linear-gradient(
+    180deg,
+    rgba(126, 200, 227, 0.28) 0%,
+    var(--island-paper-muted) 42%,
+    var(--island-paper) 100%
+  );
+}
+
+.island-rsvp-success-ripple {
+  border: 1.5px solid rgba(58, 143, 183, 0.35);
+  background: rgba(126, 200, 227, 0.12);
+}
+
+.island-rsvp-header {
+  background: rgba(253, 248, 241, 0.75);
+  border-bottom: 1px solid var(--island-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.island-rsvp-card {
+  background: var(--island-paper);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 1rem;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 24px 60px -20px rgba(27, 77, 110, 0.16),
+    0 4px 12px rgba(27, 77, 110, 0.06);
+}
+
+.island-rsvp-info {
+  background: rgba(253, 248, 241, 0.65);
+  border: 1px solid var(--island-border);
+  border-radius: 0.75rem;
+  color: var(--island-muted);
+}
+
+.island-btn-ghost {
+  color: var(--island-muted);
+  letter-spacing: 0.06em;
+  transition: color 0.25s var(--island-ease-soft);
+}
+
+.island-btn-ghost:hover {
+  color: var(--island-deep);
+}
+
+.island-countdown-bar {
+  background: linear-gradient(
+    90deg,
+    rgba(244, 232, 216, 0.97) 0%,
+    rgba(253, 248, 241, 0.85) 50%,
+    rgba(244, 232, 216, 0.97) 100%
+  );
+}
+
 /* Backdrop blur: desktop high, mobile medium — low perf stays solid */
 @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
   html[data-perf='high'] .island-card,
@@ -171,6 +441,52 @@ html {
 
 .island-blur {
   background-color: rgba(244, 232, 216, 0.94);
+}
+
+/* 深度感知固定 UI：水下改為冷色玻璃 */
+html[data-depth-chrome='underwater'] .island-blur {
+  background-color: rgba(15, 53, 80, 0.72);
+  border-color: rgba(126, 200, 227, 0.25) !important;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+html[data-depth-chrome='underwater'] .island-nav-dock .island-blur button,
+html[data-depth-chrome='underwater'] .island-nav-dock .island-blur a {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+html[data-depth-chrome='underwater'] .island-nav-dock nav button:not([aria-current='true']) {
+  color: rgba(244, 248, 251, 0.88);
+}
+
+html[data-depth-chrome='underwater'] .island-nav-dock nav button:not([aria-current='true']):hover {
+  background: rgba(126, 200, 227, 0.15);
+}
+
+html[data-depth-chrome='underwater'] .island-floating-rsvp .island-btn {
+  background: var(--island-coral);
+  box-shadow:
+    0 2px 12px rgba(232, 168, 124, 0.35),
+    0 1px 0 rgba(255, 255, 255, 0.12) inset;
+}
+
+html[data-depth-chrome='underwater'] .island-floating-rsvp .island-btn:hover {
+  background: #f0b892;
+}
+
+.island-depth-caption {
+  bottom: max(5.5rem, calc(4.25rem + env(safe-area-inset-bottom)));
+}
+
+.island-depth-caption__text {
+  text-shadow: 0 1px 8px rgba(10, 36, 56, 0.45);
+  transition: opacity 0.4s var(--island-ease-soft);
+}
+
+@media (min-width: 768px) {
+  .island-depth-caption {
+    bottom: max(4.5rem, calc(3.25rem + env(safe-area-inset-bottom)));
+  }
 }
 
 /* GPU-friendly wave drift — medium/high only; pause while scrolling to avoid jank */
@@ -256,6 +572,7 @@ html.is-scrolling .island-wave-drift-slow {
 /* Typography helpers */
 .island-heading {
   text-wrap: balance;
+  color: var(--island-ink);
 }
 
 .island-heading-pretty {
@@ -403,6 +720,23 @@ html.is-scrolling .island-marquee-track {
     box-shadow 0.35s var(--island-ease-soft);
 }
 
+.island-section-underwater .island-timeline-spine {
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(126, 200, 227, 0.35) 8%,
+    rgba(126, 200, 227, 0.35) 92%,
+    transparent
+  );
+}
+
+.island-section-underwater .island-timeline-dot {
+  box-shadow:
+    0 0 0 4px rgba(244, 232, 216, 0.9),
+    0 0 0 6px rgba(255, 255, 255, 0.2),
+    0 2px 8px rgba(10, 36, 56, 0.25);
+}
+
 @media (min-width: 768px) {
   .island-card:hover {
     box-shadow:
@@ -461,12 +795,13 @@ html.is-scrolling .island-marquee-track {
   }
 }
 
-/* Section rhythm — subtle sand wash between chapters */
+/* Section rhythm — sand wash between chapters (slightly richer) */
 .island-section-wash {
   background: linear-gradient(
     180deg,
     rgba(244, 232, 216, 0) 0%,
-    rgba(244, 232, 216, 0.45) 50%,
+    rgba(244, 232, 216, 0.55) 42%,
+    rgba(232, 213, 188, 0.35) 58%,
     rgba(244, 232, 216, 0) 100%
   );
 }

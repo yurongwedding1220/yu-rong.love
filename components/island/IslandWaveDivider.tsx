@@ -1,12 +1,36 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { usePerfMode, isLowPerf } from '../../hooks/usePerfMode';
+import { WaveBubbles } from './IslandSeaMotifs';
+
+export type WaveDividerPreset = 'surface' | 'shallow' | 'underwater' | 'abyss';
+
+const WAVE_PRESETS: Record<WaveDividerPreset, { fill: string; toColor: string }> = {
+  surface: {
+    fill: 'rgba(244, 232, 216, 0.55)',
+    toColor: 'rgba(244, 232, 216, 0.35)',
+  },
+  shallow: {
+    fill: 'rgba(58, 143, 183, 0.28)',
+    toColor: 'rgba(244, 232, 216, 0.4)',
+  },
+  underwater: {
+    fill: 'rgba(58, 143, 183, 0.35)',
+    toColor: 'rgba(19, 74, 98, 0.2)',
+  },
+  abyss: {
+    fill: 'rgba(58, 143, 183, 0.3)',
+    toColor: 'rgba(15, 53, 80, 0.25)',
+  },
+};
 
 type IslandWaveDividerProps = {
   /** 浪線填色（銜接上一區底色或下一區頂色） */
   fill?: string;
   /** 下方漸層目標色 */
   toColor?: string;
+  /** 預設色階；未傳 fill/toColor 時使用 */
+  preset?: WaveDividerPreset;
   className?: string;
   animate?: boolean;
 };
@@ -17,29 +41,37 @@ const EASE = [0.22, 1, 0.36, 1] as const;
  * 章節接縫浪線：淡入 + 輕微上移；lite 靜態。
  */
 export const IslandWaveDivider: React.FC<IslandWaveDividerProps> = ({
-  fill = '#F4E8D8',
-  toColor = '#F4E8D8',
+  fill,
+  toColor,
+  preset = 'surface',
   className = '',
   animate,
 }) => {
   const perf = usePerfMode();
-  const shouldAnimate = animate ?? !isLowPerf(perf);
+  const lite = isLowPerf(perf);
+  const shouldAnimate = animate ?? !lite;
+  const colors = WAVE_PRESETS[preset];
+  const waveFill = fill ?? colors.fill;
+  const waveTo = toColor ?? colors.toColor;
 
   const body = (
     <div className={`island-wave-divider relative w-full overflow-hidden ${className}`} aria-hidden>
       <div
         className="pointer-events-none absolute inset-0"
         style={{
-          background: `linear-gradient(to bottom, transparent 0%, ${toColor} 100%)`,
+          background: `linear-gradient(to bottom, transparent 0%, ${waveTo} 100%)`,
         }}
       />
+      {!lite && (
+        <WaveBubbles className="island-wave-divider__bubbles h-full w-full" />
+      )}
       <svg
         className="island-wave-divider__svg relative z-[1] block h-10 w-full md:h-12"
         viewBox="0 0 1440 60"
         preserveAspectRatio="none"
       >
         <path
-          fill={fill}
+          fill={waveFill}
           d="M0,32 C200,58 400,8 600,28 C800,48 1000,12 1200,30 C1320,42 1380,24 1440,34 L1440,60 L0,60 Z"
         />
       </svg>

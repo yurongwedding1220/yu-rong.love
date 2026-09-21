@@ -119,7 +119,7 @@ const CouplePost: React.FC<CouplePostProps> = ({ likes, isLiked, onLike, onComme
     return (
         <div className="flex gap-3 relative">
             <div className="flex flex-col items-center gap-2">
-                <div className="relative w-10 h-10 rounded-full overflow-hidden border border-[#3A8FB7]/20 bg-[#1B4D6E] z-10 cursor-pointer shadow-sm">
+                <div className="relative w-10 h-10 rounded-full overflow-hidden border border-[var(--island-sea)]/20 bg-[var(--island-deep)] z-10 cursor-pointer shadow-sm">
                     <img
                         src={`${import.meta.env.BASE_URL}brand-avatar.png`}
                         alt={`${APP_CONTENT.chineseNames} 頭像`}
@@ -129,22 +129,22 @@ const CouplePost: React.FC<CouplePostProps> = ({ likes, isLiked, onLike, onComme
                     />
                 </div>
                 {/* Thread Line */}
-                <div className="w-[2px] flex-grow bg-stone-200/60 my-1 rounded-full min-h-[40px]" />
+                <div className="island-thread-line my-1 min-h-[40px]" />
             </div>
 
             <div className="flex-1 pb-4">
                 <div className="flex justify-between items-start">
                     <div>
-                        <h3 className="text-[15px] font-bold text-black leading-none">yu-rong.love</h3>
-                        <p className="text-[13px] text-stone-500 mt-0.5">{APP_CONTENT.chineseNames}</p>
+                        <h3 className="island-heading font-serif text-base font-medium leading-none">啟航公告</h3>
+                        <p className="island-meta mt-0.5">{APP_CONTENT.chineseNames}</p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <span className="text-[13px] text-stone-400">2026-12-20</span>
+                        <span className="island-meta">2026-12-20</span>
                         <ThreadsMoreIcon />
                     </div>
                 </div>
 
-                <p className="text-[15px] text-[#1A3344] mt-2 leading-relaxed whitespace-pre-line">
+                <p className="island-prose mt-2 whitespace-pre-line text-[var(--island-ink)]">
                     {APP_CONTENT.intro}
                     {'\n'}
                     {APP_CONTENT.date} · {APP_CONTENT.venueName}
@@ -212,13 +212,13 @@ const GuestEntry: React.FC<GuestEntryProps> = ({ entry, isLast, onLike }) => {
 
     if (Math.abs(daysDiff) === 0) {
         relativeTag = "婚禮當日";
-        tagStyle = 'bg-[#1B4D6E]/10 text-[#1B4D6E]';
+        tagStyle = 'island-badge island-badge--day';
     } else if (daysDiff > 0) {
         relativeTag = `婚禮前 ${daysDiff} 天`;
-        tagStyle = "bg-amber-50 text-amber-600";
+        tagStyle = 'island-badge island-badge--before';
     } else {
         relativeTag = `婚禮後 ${Math.abs(daysDiff)} 天`;
-        tagStyle = "bg-emerald-50 text-emerald-600";
+        tagStyle = 'island-badge island-badge--after';
     }
 
     return (
@@ -228,29 +228,28 @@ const GuestEntry: React.FC<GuestEntryProps> = ({ entry, isLast, onLike }) => {
                     {entry.name.charAt(0)}
                 </div>
                 {/* Thread Line - only if not last */}
-                {!isLast && <div className="w-[2px] flex-grow bg-stone-200/60 my-1 rounded-full min-h-[20px]" />}
+                {!isLast && <div className="island-thread-line my-1 min-h-[20px]" />}
             </div>
 
             <div className="flex-1 pb-5">
                 <div className="flex justify-between items-start">
                     <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3">
-                        <h4 className="text-[14px] font-bold text-black">{entry.name}</h4>
-                        {/* Visual Timeline Badge */}
-                        <span className={`text-[10px] px-2 py-[2px] rounded-[4px] font-medium tracking-wide w-fit ${tagStyle}`}>
+                        <h4 className="island-heading font-serif text-sm font-medium">{entry.name}</h4>
+                        <span className={`w-fit ${tagStyle}`}>
                             {relativeTag}
                         </span>
                     </div>
-                    <span className="text-[12px] text-stone-400 whitespace-nowrap ml-2">{formatTime(entry.timestamp)}</span>
+                    <span className="island-meta ml-2 whitespace-nowrap">{formatTime(entry.timestamp)}</span>
                 </div>
 
-                <p className="text-[14px] text-black mt-2 whitespace-pre-line leading-relaxed">
+                <p className="island-prose mt-2 whitespace-pre-line text-[var(--island-ink)]">
                     {entry.message}
                 </p>
 
                 <div className="flex items-center gap-4 mt-2.5">
                     <button
                         onClick={() => onLike(entry.id)}
-                        className="flex items-center gap-1.5 group -ml-2 p-1.5 hover:bg-stone-50 rounded-full transition-colors active:scale-95"
+                        className="island-touch group -ml-2 flex items-center gap-1.5 rounded-full p-1.5 transition-colors hover:bg-[#F4E8D8]"
                     >
                         <motion.div
                             key={entry.isLiked ? 'liked' : 'unliked'}
@@ -464,7 +463,7 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
     return (
         <>
             {/* === PREVIEW CARD === */}
-            <div className="island-card w-full max-w-[600px] mx-auto overflow-hidden rounded-2xl md:rounded-3xl">
+            <div className="island-card island-card--elevated island-card--sea w-full max-w-[600px] mx-auto overflow-hidden rounded-2xl md:rounded-3xl">
                 <div className="p-4 md:p-6 pb-2">
                     <CouplePost
                         likes={mainPostLikes}
@@ -476,32 +475,32 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
                     {/* Divider */}
                     <div className="relative py-3">
                         <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                            <div className="w-full border-t border-stone-100"></div>
+                            <div className="w-full border-t border-[#3A8FB7]/12"></div>
                         </div>
                         <div className="relative flex justify-center">
-                            <span className="bg-[#FDF8F1] px-2 text-[10px] text-[#5A7380] tracking-widest uppercase">熱門留言</span>
+                            <span className="bg-[var(--island-paper)] px-2 text-[10px] uppercase tracking-widest text-[#5A7380]">賓客祝福</span>
                         </div>
                     </div>
 
                     <div className="mt-2 min-h-[100px]">
                         {loading ? (
-                            <div className="flex flex-col items-center justify-center py-8 text-stone-400 gap-2">
-                                <div className="w-5 h-5 border-2 border-stone-200 border-t-[#1B4D6E] rounded-full animate-spin" />
-                                <span className="text-xs">載入祝福中…</span>
+                            <div className="flex flex-col items-center justify-center gap-2 py-8 text-[#5A7380]">
+                                <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#3A8FB7]/20 border-t-[#1B4D6E]" />
+                                <span className="island-meta">正在收攏祝福…</span>
                             </div>
                         ) : (errorType === 'permission' || errorType === 'fetch') ? (
-                            <div className="text-center py-8 text-stone-400 text-sm flex flex-col items-center gap-3">
-                                <div className="p-4 bg-amber-50 rounded-lg border border-amber-100 mb-1 max-w-[90%] md:max-w-xs text-left shadow-sm">
-                                    <p className="text-amber-700 text-xs font-bold mb-2 flex items-center gap-1">
+                            <div className="flex flex-col items-center gap-3 py-8 text-center text-sm text-[#5A7380]">
+                                <div className="mb-1 max-w-[90%] rounded-lg border border-[#E8A87C]/25 bg-[#F4E8D8] p-4 text-left shadow-sm md:max-w-xs">
+                                    <p className="mb-2 flex items-center gap-1 text-xs font-bold text-[#6B3D2E]">
                                         ⚠️ 連線設定提示
                                     </p>
-                                    <ul className="text-amber-600 text-[11px] leading-relaxed list-disc list-inside space-y-1">
+                                    <ul className="list-inside list-disc space-y-1 text-[11px] leading-relaxed text-[#5A7380]">
                                         <li>執行身分需設為：<strong>我 (Me)</strong></li>
                                         <li>誰可以存取：<strong>所有人 (Anyone)</strong></li>
                                         <li><strong>重要：</strong>修改後請務必建立 <strong>新版本 (New Version)</strong> 部署</li>
                                     </ul>
                                 </div>
-                                <span className="text-xs text-stone-400">目前顯示測試資料</span>
+                                <span className="island-meta">目前顯示測試資料</span>
                                 <button
                                     type="button"
                                     onClick={() => fetchEntries()}
@@ -511,8 +510,9 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
                                 </button>
                             </div>
                         ) : entries.length === 0 ? (
-                            <div className="text-center py-8 text-stone-400 text-sm">
-                                目前還沒有留言，快來搶頭香！
+                            <div className="py-8 text-center text-sm text-[#5A7380]">
+                                <p className="island-heading font-serif">航程的第一則祝福，等你來寫</p>
+                                <p className="island-meta mt-2">寫下心意，或前往 RSVP 同步發佈</p>
                             </div>
                         ) : (
                             displayEntries.map((entry, idx) => (

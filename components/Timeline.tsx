@@ -48,13 +48,13 @@ export const Timeline: React.FC<TimelineProps> = ({ animate = true }) => (
                 isEven ? 'pr-12 text-right' : 'pl-12 text-left'
               }`}
             >
-              <span className="island-tabular font-display text-4xl font-light text-[#3A8FB7]/80">
+              <span className="island-tabular font-display text-4xl font-light text-[var(--island-sea)]/80">
                 {event.time}
               </span>
             </div>
 
             <div className="absolute left-0 z-10 flex items-center justify-center md:left-1/2 md:-translate-x-1/2">
-              <div className="island-timeline-dot flex h-14 w-14 items-center justify-center rounded-full border border-[#3A8FB7]/25 bg-[#F4E8D8] text-[#1B4D6E]">
+              <div className="island-timeline-dot flex h-14 w-14 items-center justify-center rounded-full border border-[var(--island-sea)]/25 bg-[var(--island-sand)] text-[var(--island-deep)]">
                 {getIcon(index)}
               </div>
             </div>
@@ -63,15 +63,15 @@ export const Timeline: React.FC<TimelineProps> = ({ animate = true }) => (
               <div
                 className={`relative ${isEven ? 'md:ml-12' : 'md:mr-12 md:text-right'}`}
               >
-                <span className="island-tabular mb-2 block font-display text-2xl font-light text-[#3A8FB7] md:hidden">
+                <span className="island-tabular mb-2 block font-display text-2xl font-light text-[var(--island-sea)] md:hidden">
                   {event.time}
                 </span>
                 <div className="island-card rounded-xl p-6 md:p-7">
                   <div className={`flex flex-col ${!isEven ? 'md:items-end' : ''}`}>
-                    <span className="mb-1 font-display text-[11px] uppercase tracking-[0.22em] text-[#3A8FB7]">
+                    <span className="mb-1 font-display text-[11px] uppercase tracking-[0.22em] text-[var(--island-sea)]">
                       {event.title}
                     </span>
-                    <h3 className="island-heading mb-3 font-serif text-xl font-light text-[#1A3344] md:text-2xl">
+                    <h3 className="island-heading mb-3 font-serif text-xl font-light md:text-2xl">
                       {event.chineseTitle}
                     </h3>
                     <p className="island-prose text-left text-base md:text-[1.05rem]">

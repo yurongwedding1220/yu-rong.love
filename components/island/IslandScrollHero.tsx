@@ -29,6 +29,7 @@ export const IslandScrollHero: React.FC = () => {
     [0, 0.75, 1],
     [1, 1, lite ? 0.55 : 0.4]
   );
+  const foamOpacity = useTransform(scrollYProgress, [0, 0.45, 1], [0.85, 0.45, 0]);
 
   // 捲動軌道也用 svh，與 sticky 面板同一基準，進度才不會因網址列而抖
   const sectionHeight =
@@ -41,17 +42,59 @@ export const IslandScrollHero: React.FC = () => {
   return (
     <section
       ref={containerRef}
+      data-depth-phase="sunset"
       className={`island-scroll-hero relative ${sectionHeight}`}
     >
       <div className="island-scroll-hero__sticky sticky top-0 h-[100svh] w-full overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f3550] via-[#1B4D6E] to-[#3A8FB7]" />
+        {/* 夕陽天際 */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(180deg, #f5c99a 0%, rgba(232,168,124,0.22) 30%, transparent 58%)',
+          }}
+          aria-hidden
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0f3550] via-[#1B4D6E] to-[#3A8FB7] opacity-90" />
+
+        {!lite && (
+          <div
+            className="pointer-events-none absolute right-[12%] top-[14%] h-16 w-16 rounded-full md:h-20 md:w-20"
+            style={{
+              background: 'radial-gradient(circle, #ffe8c8 0%, #e8a87c 50%, transparent 70%)',
+              boxShadow: '0 0 50px 18px rgba(232,168,124,0.3)',
+            }}
+            aria-hidden
+          />
+        )}
 
         <motion.div
           className="absolute inset-0 bg-gradient-to-b from-transparent via-[#c5e4f0]/40 to-[#F4E8D8]"
           style={{ opacity: sandMix }}
         />
 
+        {/* 海面白色泡沫 */}
+        <motion.div
+          className="pointer-events-none absolute inset-x-0 bottom-[18%] h-16 md:h-20"
+          style={{ opacity: foamOpacity }}
+          aria-hidden
+        >
+          <div className="h-full bg-gradient-to-b from-white/40 to-transparent" />
+          <svg className="absolute bottom-0 w-full h-8" viewBox="0 0 1440 32" preserveAspectRatio="none">
+            <path fill="rgba(255,255,255,0.45)" d="M0,16 C240,4 480,28 720,14 C960,0 1200,24 1440,12 L1440,32 L0,32 Z" />
+          </svg>
+        </motion.div>
+
         <WaveLayers progress={scrollYProgress} mode={perf} />
+
+        {!lite && (
+          <>
+            <span className="island-bubble-drift pointer-events-none absolute left-[10%] top-[20%] h-2 w-2 rounded-full bg-white/25" style={{ animationDelay: '0s' }} aria-hidden />
+            <span className="island-bubble-drift pointer-events-none absolute left-[78%] top-[30%] h-1.5 w-1.5 rounded-full bg-white/20" style={{ animationDelay: '1.4s' }} aria-hidden />
+            <span className="island-bubble-drift pointer-events-none absolute left-[22%] top-[55%] h-2.5 w-2.5 rounded-full bg-[#7EC8E3]/35" style={{ animationDelay: '0.8s' }} aria-hidden />
+            <span className="island-bubble-drift pointer-events-none absolute left-[65%] top-[48%] h-1 w-1 rounded-full bg-white/30" style={{ animationDelay: '2.1s' }} aria-hidden />
+          </>
+        )}
 
         {!lite && (
           <div
