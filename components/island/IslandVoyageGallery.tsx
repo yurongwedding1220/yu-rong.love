@@ -287,6 +287,29 @@ const IslandAdventureChapter: React.FC<{
         />
       )}
 
+      {/* 末島 → 靠岸：砂色漸層 + 浪線 cap */}
+      {isLast && (
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[3]" aria-hidden>
+          <div
+            className="h-28 md:h-36"
+            style={{
+              background:
+                'linear-gradient(to bottom, transparent 0%, rgba(244,232,216,0.35) 45%, #F4E8D8 100%)',
+            }}
+          />
+          <svg
+            className="absolute inset-x-0 bottom-0 h-10 w-full md:h-12"
+            viewBox="0 0 1440 60"
+            preserveAspectRatio="none"
+          >
+            <path
+              fill="#F4E8D8"
+              d="M0,28 C220,52 420,6 640,26 C860,46 1060,10 1260,28 C1340,36 1400,22 1440,30 L1440,60 L0,60 Z"
+            />
+          </svg>
+        </div>
+      )}
+
       <div
         className={`pointer-events-none absolute ${layout.sunClass} h-14 w-14 rounded-full blur-md md:h-16 md:w-16`}
         style={{ background: `radial-gradient(circle, ${chapter.palette.glow}88, transparent)` }}
@@ -403,7 +426,8 @@ export const IslandVoyageGallery: React.FC = () => {
             <button
               type="button"
               aria-label="關閉"
-              className="island-focus absolute right-5 top-5 rounded-full border border-white/20 bg-white/15 px-4 py-1.5 text-sm text-white backdrop-blur-sm hover:bg-white/25"
+              className="island-focus island-touch absolute right-5 rounded-full border border-white/20 bg-white/15 px-4 py-1.5 text-sm text-white backdrop-blur-sm hover:bg-white/25"
+              style={{ top: 'max(1.25rem, env(safe-area-inset-top))' }}
               onClick={() => setLightbox(null)}
             >
               關閉

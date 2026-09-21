@@ -123,7 +123,8 @@ export const IslandScrollHero: React.FC = () => {
             <motion.div
               animate={{ opacity: [0.45, 0.85, 0.45], y: [0, 6, 0] }}
               transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute bottom-10 left-1/2 -translate-x-1/2"
+              className="absolute left-1/2 -translate-x-1/2"
+              style={{ bottom: 'max(2.5rem, calc(1.5rem + env(safe-area-inset-bottom)))' }}
             >
               <span className="block text-[10px] tracking-[0.3em] text-white/70">SCROLL</span>
               <div className="mx-auto mt-2 h-8 w-px bg-gradient-to-b from-white/60 to-transparent" />

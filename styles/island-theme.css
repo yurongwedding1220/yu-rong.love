@@ -323,14 +323,52 @@ html.is-scrolling .island-wave-drift-slow {
   }
 }
 
-/* Countdown / marquee */
-.island-countdown-bar {
-  background: linear-gradient(
-    90deg,
-    rgba(244, 232, 216, 0.97) 0%,
-    rgba(255, 255, 255, 0.55) 50%,
-    rgba(244, 232, 216, 0.97) 100%
-  );
+/* Pause marquee while scrolling (same as wave drift) */
+html.is-scrolling .island-marquee-track {
+  animation-play-state: paused !important;
+}
+
+.island-marquee-track {
+  will-change: transform;
+}
+
+/* Chapter wave divider */
+.island-wave-divider {
+  line-height: 0;
+}
+
+.island-wave-divider__svg {
+  display: block;
+}
+
+/* Content clear of bottom FABs */
+.island-chrome-pad {
+  padding-bottom: max(6.5rem, calc(5rem + env(safe-area-inset-bottom)));
+}
+
+@media (min-width: 768px) {
+  .island-chrome-pad {
+    padding-bottom: max(5rem, calc(3.5rem + env(safe-area-inset-bottom)));
+  }
+}
+
+/* Touch-friendly press */
+.island-touch {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.island-touch:active {
+  transform: scale(0.97);
+}
+
+.island-btn {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.island-btn:active {
+  transform: scale(0.97);
 }
 
 /* Timeline spine */

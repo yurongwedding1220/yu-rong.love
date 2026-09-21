@@ -49,7 +49,7 @@ const ThreadsBackIcon = () => (
 );
 
 const ThreadsLikeIcon = ({ filled, size = 20 }: { filled: boolean, size?: number }) => (
-    <svg aria-label="Like" fill={filled ? "#ff3040" : "none"} height={size} role="img" viewBox="0 0 24 24" width={size}>
+    <svg aria-label="Like" fill={filled ? "#E8A87C" : "none"} height={size} role="img" viewBox="0 0 24 24" width={size}>
         <path d={filled ? "M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.956-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 0 1 3.679-1.938Z" : "M16.792 3.904A4.989 4.989 0 0 1 21.5 9.122c0 3.072-2.652 4.956-5.197 7.222-2.512 2.243-3.865 3.469-4.303 3.752-.477-.309-2.143-1.823-4.303-3.752C5.141 14.072 2.5 12.167 2.5 9.122a4.989 4.989 0 0 1 4.708-5.218 4.21 4.21 0 0 1 3.675 1.941c.84 1.175.98 1.763 1.12 1.763s.278-.588 1.11-1.766a4.17 4.17 0 0 1 3.679-1.938Z"} stroke={filled ? "none" : "currentColor"} strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
     </svg>
 );
@@ -76,7 +76,7 @@ const ThreadsMoreIcon = () => (
 );
 
 const MiniHeartIcon = () => (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-[#ff3040]">
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-[#E8A87C]">
         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
     </svg>
 );
@@ -92,7 +92,15 @@ const formatTime = (ts: number) => {
 
 // Helper for generating consistent avatar colors
 const getAvatarColor = (name: string) => {
-    const colors = ['bg-red-100 text-red-600', 'bg-blue-100 text-blue-600', 'bg-green-100 text-green-600', 'bg-yellow-100 text-yellow-600', 'bg-purple-100 text-purple-600', 'bg-pink-100 text-pink-600', 'bg-stone-100 text-stone-600'];
+    const colors = [
+        'bg-[#F4E8D8] text-[#1B4D6E]',
+        'bg-[#E8F0F4] text-[#1B4D6E]',
+        'bg-[#F8EDE3] text-[#6B3D2E]',
+        'bg-[#E8A87C]/25 text-[#1A3344]',
+        'bg-[#3A8FB7]/15 text-[#1B4D6E]',
+        'bg-[#F4E8D8] text-[#3A8FB7]',
+        'bg-[#1B4D6E]/10 text-[#1B4D6E]',
+    ];
     let hash = 0;
     for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
     return colors[Math.abs(hash) % colors.length];
@@ -151,10 +159,11 @@ const CouplePost: React.FC<CouplePostProps> = ({ likes, isLiked, onLike, onComme
                     />
                 </div>
 
-                <div className="flex items-center gap-4 mt-3 text-black">
+                <div className="flex items-center gap-4 mt-3 text-[#1A3344]">
                     <button
+                        type="button"
                         onClick={onLike}
-                        className="group flex items-center gap-1.5 -ml-2 p-2 hover:bg-stone-50 rounded-full transition-colors active:scale-95"
+                        className="island-touch group flex items-center gap-1.5 -ml-2 p-2 hover:bg-[#F4E8D8] rounded-full transition-colors"
                     >
                         <motion.div
                             key={isLiked ? 'liked' : 'unliked'}
@@ -165,17 +174,18 @@ const CouplePost: React.FC<CouplePostProps> = ({ likes, isLiked, onLike, onComme
                         </motion.div>
                     </button>
                     <button
+                        type="button"
                         onClick={onComment}
-                        className="group -ml-2 p-2 hover:bg-stone-50 rounded-full transition-colors active:scale-95"
+                        className="island-touch group -ml-2 p-2 hover:bg-[#F4E8D8] rounded-full transition-colors"
                     >
                         <ThreadsCommentIcon />
                     </button>
-                    <button className="group -ml-2 p-2 hover:bg-stone-50 rounded-full transition-colors">
+                    <button type="button" className="island-touch group -ml-2 p-2 hover:bg-[#F4E8D8] rounded-full transition-colors">
                         <ThreadsShareIcon />
                     </button>
                 </div>
 
-                <div className="mt-1 text-[13px] text-stone-400 font-medium">
+                <div className="mt-1 text-[13px] text-[#5A7380] font-medium">
                     {likes} 個讚
                 </div>
             </div>
@@ -250,7 +260,7 @@ const GuestEntry: React.FC<GuestEntryProps> = ({ entry, isLast, onLike }) => {
                             <ThreadsLikeIcon filled={entry.isLiked} size={18} />
                         </motion.div>
                         {(entry.likes > 0) && (
-                            <span className={`text-[12px] ${entry.isLiked ? 'text-red-500' : 'text-stone-400'}`}>
+                            <span className={`text-[12px] ${entry.isLiked ? 'text-[#E8A87C]' : 'text-[#5A7380]'}`}>
                                 {entry.likes}
                             </span>
                         )}
@@ -469,7 +479,7 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
                             <div className="w-full border-t border-stone-100"></div>
                         </div>
                         <div className="relative flex justify-center">
-                            <span className="bg-white px-2 text-[10px] text-stone-400 tracking-widest uppercase">熱門留言</span>
+                            <span className="bg-[#FDF8F1] px-2 text-[10px] text-[#5A7380] tracking-widest uppercase">熱門留言</span>
                         </div>
                     </div>
 
@@ -519,10 +529,10 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
                     {/* "View All" Button */}
                     <button
                         type="button"
-                        className="island-focus w-full py-6 text-center border-t border-stone-50 mt-2 hover:bg-[#F4E8D8]/50 transition-colors group"
+                        className="island-focus island-touch w-full py-6 text-center border-t border-[#3A8FB7]/10 mt-2 hover:bg-[#F4E8D8]/50 transition-colors group"
                         onClick={() => setIsExpanded(true)}
                     >
-                        <span className="text-[14px] text-stone-500 group-hover:text-[#1A3344] font-medium">
+                        <span className="text-[14px] text-[#5A7380] group-hover:text-[#1A3344] font-medium">
                             查看全部 {entries.length} 則留言
                         </span>
                     </button>
@@ -536,37 +546,33 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
                     {isExpanded && (
                         <motion.div
                             key="expanded-guestbook-modal"
-                            // initial={false}: AnimatePresence + createPortal 已知問題會導致動畫不觸發，
-                            // 使 modal 卡在 y:100% 螢幕外。跳過 initial 確保 modal 能正確顯示。
-                            initial={false}
-                            animate={{ y: 0 }}
-                            exit={{ y: "100%" }}
-                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            // Using Portal puts this at the root. Z-index ensures it covers everything.
-                            // bg-white ensures no transparency leakage.
-                            className="fixed inset-0 z-[99999] bg-white flex flex-col w-full h-full"
+                            initial={{ opacity: 0, scale: 0.96 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.96 }}
+                            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                            className="fixed inset-0 z-[99999] flex h-full w-full flex-col bg-[#FDF8F1]"
+                            style={{ paddingTop: 'env(safe-area-inset-top)' }}
                         >
                             {/* Header */}
-                            <div className="flex-none h-14 border-b border-stone-100 flex items-center justify-between px-4 sticky top-0 bg-white/95 backdrop-blur-sm z-50">
+                            <div className="sticky top-0 z-50 flex h-14 flex-none items-center justify-between border-b border-[#3A8FB7]/12 bg-[#FDF8F1]/95 px-4 backdrop-blur-sm">
                                 <button
                                     type="button"
                                     aria-label="關閉留言板"
                                     onClick={() => setIsExpanded(false)}
-                                    className="island-focus p-2 -ml-2 text-black hover:bg-stone-50 rounded-full"
+                                    className="island-focus island-touch -ml-2 rounded-full p-2 text-[#1A3344] hover:bg-[#F4E8D8]"
                                 >
                                     <ThreadsBackIcon />
                                 </button>
-                                <span className="font-bold text-[16px] text-black">貼文</span>
+                                <span className="text-[16px] font-bold text-[#1A3344]">祝福留言</span>
                                 <div className="w-8" />
                             </div>
 
                             {/* Scrollable Content Container */}
-                            {/* Explicit touch scrolling for iOS and safe area padding */}
                             <div
-                                className="flex-1 overflow-y-auto bg-white overscroll-none scroll-smooth"
+                                className="flex-1 overflow-y-auto overscroll-none scroll-smooth bg-[#FDF8F1]"
                                 style={{ WebkitOverflowScrolling: 'touch' }}
                             >
-                                <div className="max-w-[600px] mx-auto p-4 md:p-6 min-h-full pb-32">
+                                <div className="mx-auto min-h-full max-w-[600px] p-4 pb-32 md:p-6">
 
                                     <CouplePost
                                         likes={mainPostLikes}
@@ -575,19 +581,21 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
                                         onComment={handleWriteMessage}
                                     />
 
-                                    <div className="h-px bg-stone-100 w-full my-2" />
+                                    <div className="my-2 h-px w-full bg-[#3A8FB7]/12" />
 
                                     {/* Sorting Tabs - Sticky within scroll container */}
-                                    <div className="flex gap-6 py-4 border-b border-stone-100 mb-4 sticky top-0 bg-white/95 backdrop-blur-sm z-40">
+                                    <div className="sticky top-0 z-40 mb-4 flex gap-6 border-b border-[#3A8FB7]/12 bg-[#FDF8F1]/95 py-4 backdrop-blur-sm">
                                         <button
+                                            type="button"
                                             onClick={() => setSortType('hot')}
-                                            className={`text-[14px] font-bold pb-2 border-b-2 transition-colors ${sortType === 'hot' ? 'text-black border-black' : 'text-stone-400 border-transparent hover:text-stone-600'}`}
+                                            className={`island-touch border-b-2 pb-2 text-[14px] font-bold transition-colors ${sortType === 'hot' ? 'border-[#1B4D6E] text-[#1B4D6E]' : 'border-transparent text-[#5A7380] hover:text-[#1A3344]'}`}
                                         >
                                             最熱門
                                         </button>
                                         <button
+                                            type="button"
                                             onClick={() => setSortType('recent')}
-                                            className={`text-[14px] font-bold pb-2 border-b-2 transition-colors ${sortType === 'recent' ? 'text-black border-black' : 'text-stone-400 border-transparent hover:text-stone-600'}`}
+                                            className={`island-touch border-b-2 pb-2 text-[14px] font-bold transition-colors ${sortType === 'recent' ? 'border-[#1B4D6E] text-[#1B4D6E]' : 'border-transparent text-[#5A7380] hover:text-[#1A3344]'}`}
                                         >
                                             最新
                                         </button>
@@ -597,7 +605,7 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
                                     <div className="pb-8">
                                         {loading ? (
                                             <div className="flex justify-center py-10">
-                                                <div className="w-6 h-6 border-2 border-stone-200 border-t-[#1B4D6E] rounded-full animate-spin" />
+                                                <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#3A8FB7]/20 border-t-[#1B4D6E]" />
                                             </div>
                                         ) : (
                                             sortedEntries.map((entry, idx) => (
@@ -611,18 +619,21 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
                                         )}
                                     </div>
 
-                                    <div className="text-center text-stone-300 text-[12px] py-8">
+                                    <div className="py-8 text-center text-[12px] text-[#3A8FB7]/50">
                                         — 已顯示所有留言 —
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Fixed Reply Bar (Threads Style) */}
-                            <div className="flex-none p-3 border-t border-stone-100 bg-white pb-safe z-50">
+                            {/* Fixed Reply Bar */}
+                            <div
+                              className="z-50 flex-none border-t border-[#3A8FB7]/12 bg-[#FDF8F1] p-3"
+                              style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
+                            >
                                 <button
                                     type="button"
                                     onClick={handleWriteMessage}
-                                    className="island-focus w-full max-w-[600px] mx-auto bg-[#F4E8D8]/80 rounded-full h-11 flex items-center px-4 text-[#5A7380] text-[15px] hover:bg-[#F4E8D8] transition-colors"
+                                    className="island-focus island-touch mx-auto flex h-11 w-full max-w-[600px] items-center rounded-full bg-[#F4E8D8] px-4 text-[15px] text-[#5A7380] transition-colors hover:bg-[#E8A87C]/30"
                                 >
                                     寫下祝福，或前往 RSVP 同步發佈…
                                 </button>

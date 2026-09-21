@@ -39,7 +39,7 @@ export const HarborCountdownBar: React.FC<HarborCountdownBarProps> = ({
 }) => (
   <div
     id="sticky-marquee"
-    className="island-blur island-countdown-bar sticky top-0 z-30 overflow-hidden border-b border-[#3A8FB7]/12"
+    className="island-blur island-countdown-bar relative z-30 overflow-hidden border-b border-[#3A8FB7]/12 md:sticky md:top-0"
     aria-live="polite"
     aria-label={VOYAGE_NARRATIVE.countdownLabel}
   >
@@ -57,7 +57,7 @@ export const HarborCountdownBar: React.FC<HarborCountdownBarProps> = ({
       </div>
     ) : (
       <div
-        className={`island-tabular flex w-max whitespace-nowrap py-2.5 text-sm tracking-[0.18em] text-[#1B4D6E] ${
+        className={`island-marquee-track island-tabular flex w-max whitespace-nowrap py-2.5 text-sm tracking-[0.18em] text-[#1B4D6E] ${
           perf === 'medium'
             ? 'animate-[marquee_18s_linear_infinite]'
             : 'animate-[marquee_14s_linear_infinite]'

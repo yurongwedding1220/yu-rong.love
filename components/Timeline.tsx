@@ -33,12 +33,14 @@ type TimelineProps = {
 };
 
 export const Timeline: React.FC<TimelineProps> = ({ animate = true }) => (
-  <div className="relative w-full bg-transparent px-4 py-8 md:px-0 md:py-12">
+  <div className="relative w-full bg-transparent py-8 md:py-12">
     <div className="relative mx-auto max-w-3xl space-y-12">
       <div className="island-timeline-spine" aria-hidden />
 
       {TIMELINE_EVENTS.map((event, index) => {
         const isEven = index % 2 === 0;
+        /* 手機最多 3 層 stagger，避免長清單卡頓 */
+        const staggerDelay = Math.min(index, 2) * 0.08;
         const content = (
           <>
             <div
@@ -98,10 +100,10 @@ export const Timeline: React.FC<TimelineProps> = ({ animate = true }) => (
         return (
           <motion.div
             key={index}
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-12%' }}
-            transition={{ duration: 0.55, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+            viewport={{ once: true, margin: '-8%' }}
+            transition={{ duration: 0.5, delay: staggerDelay, ease: [0.22, 1, 0.36, 1] }}
             className={`relative flex items-start gap-6 md:items-center md:gap-0 ${
               isEven ? 'md:flex-row' : 'md:flex-row-reverse'
             }`}
