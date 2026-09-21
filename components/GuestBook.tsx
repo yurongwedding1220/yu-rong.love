@@ -111,8 +111,14 @@ const CouplePost: React.FC<CouplePostProps> = ({ likes, isLiked, onLike, onComme
     return (
         <div className="flex gap-3 relative">
             <div className="flex flex-col items-center gap-2">
-                <div className="relative w-10 h-10 rounded-full overflow-hidden border border-stone-100 bg-stone-50 z-10 cursor-pointer">
-                    <img src={`${import.meta.env.BASE_URL}android-chrome-192x192.png`} alt="Avatar" className="w-full h-full object-cover" />
+                <div className="relative w-10 h-10 rounded-full overflow-hidden border border-[#3A8FB7]/20 bg-[#1B4D6E] z-10 cursor-pointer shadow-sm">
+                    <img
+                        src={`${import.meta.env.BASE_URL}brand-avatar.png`}
+                        alt={`${APP_CONTENT.chineseNames} 頭像`}
+                        className="w-full h-full object-cover"
+                        width={40}
+                        height={40}
+                    />
                 </div>
                 {/* Thread Line */}
                 <div className="w-[2px] flex-grow bg-stone-200/60 my-1 rounded-full min-h-[40px]" />
