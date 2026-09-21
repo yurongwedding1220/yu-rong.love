@@ -354,49 +354,63 @@ function App() {
             exit={{ opacity: 0, y: 24 }}
             className="island-nav-dock fixed left-1/2 z-50 -translate-x-1/2"
           >
-            <div className="island-blur flex items-center gap-1 rounded-full border border-white/70 p-1.5 shadow-lg">
-              <button
-                type="button"
-                aria-label={isNavExpanded ? '收合選單' : '展開選單'}
-                aria-expanded={isNavExpanded}
-                onClick={() => setIsNavExpanded((v) => !v)}
-                className="island-focus flex h-11 w-11 items-center justify-center rounded-full text-[#1B4D6E] hover:bg-white/40"
-              >
-                <span aria-hidden>{isNavExpanded ? <XIcon /> : <MenuIcon />}</span>
-              </button>
+            <div className="relative flex flex-col items-center">
               <AnimatePresence>
-                {isNavExpanded &&
-                  navItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = !item.isRoute && activeSection === item.id;
-                    return (
-                      <motion.button
-                        key={item.id}
-                        type="button"
-                        initial={{ width: 0, opacity: 0 }}
-                        animate={{ width: 'auto', opacity: 1 }}
-                        exit={{ width: 0, opacity: 0 }}
-                        aria-label={item.label}
-                        onClick={() => {
-                          if (item.isRoute) {
-                            navigate('/rsvp');
-                            return;
-                          }
-                          scrollTo(item.id);
-                          setIsNavExpanded(false);
-                        }}
-                        className={`island-focus flex items-center gap-1.5 overflow-hidden rounded-full px-3 py-2 text-xs transition-colors ${
-                          isActive
-                            ? 'bg-[#1B4D6E] text-white'
-                            : 'text-[#1B4D6E] hover:bg-[#F4E8D8]'
-                        }`}
-                      >
-                        <span aria-hidden><Icon /></span>
-                        <span className="whitespace-nowrap">{item.label}</span>
-                      </motion.button>
-                    );
-                  })}
+                {isNavExpanded && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 12, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                    className="island-blur absolute bottom-[calc(100%+0.5rem)] left-1/2 w-[min(11.5rem,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-2xl border border-white/70 p-1.5 shadow-lg"
+                  >
+                    <nav className="flex flex-col gap-0.5" aria-label="章節導覽">
+                      {navItems.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = !item.isRoute && activeSection === item.id;
+                        return (
+                          <button
+                            key={item.id}
+                            type="button"
+                            aria-label={item.label}
+                            aria-current={isActive ? 'true' : undefined}
+                            onClick={() => {
+                              if (item.isRoute) {
+                                navigate('/rsvp');
+                                return;
+                              }
+                              scrollTo(item.id);
+                              setIsNavExpanded(false);
+                            }}
+                            className={`island-focus flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm transition-colors ${
+                              isActive
+                                ? 'bg-[#1B4D6E] text-white'
+                                : 'text-[#1B4D6E] hover:bg-[#F4E8D8]/80'
+                            }`}
+                          >
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center" aria-hidden>
+                              <Icon />
+                            </span>
+                            <span className="font-serif tracking-wide">{item.label}</span>
+                          </button>
+                        );
+                      })}
+                    </nav>
+                  </motion.div>
+                )}
               </AnimatePresence>
+
+              <div className="island-blur flex items-center rounded-full border border-white/70 p-1.5 shadow-lg">
+                <button
+                  type="button"
+                  aria-label={isNavExpanded ? '收合選單' : '展開選單'}
+                  aria-expanded={isNavExpanded}
+                  onClick={() => setIsNavExpanded((v) => !v)}
+                  className="island-focus flex h-11 w-11 items-center justify-center rounded-full text-[#1B4D6E] hover:bg-white/40"
+                >
+                  <span aria-hidden>{isNavExpanded ? <XIcon /> : <MenuIcon />}</span>
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
