@@ -1,6 +1,12 @@
 import React, { useMemo } from 'react';
-import { useScrollDepth, depthFade, depthPeak } from '../../hooks/useScrollDepth';
+import { useScrollDepth, depthFade } from '../../hooks/useScrollDepth';
 import { usePerfMode, isLowPerf } from '../../hooks/usePerfMode';
+import {
+  getDuskLayerOpacity,
+  getGalleryLayerOpacity,
+  getGalleryPaletteAtDepth,
+  galleryPaletteGradient,
+} from '../../utils/galleryDepthPalette';
 
 const LINE = {
   fill: 'none',
@@ -11,7 +17,8 @@ const LINE = {
 };
 
 const DEPTH_CAPTIONS: { max: number; text: string }[] = [
-  { max: 0.2, text: '望向夕陽海面' },
+  { max: 0.2, text: '日光洒落海面' },
+  { max: 0.28, text: '航程上的四座島' },
   { max: 0.4, text: '浪花輕撫沙灘' },
   { max: 0.54, text: '緩緩潛入海中' },
   { max: 0.76, text: '潛入清澈浅海' },
@@ -66,37 +73,28 @@ const FoamWaveSvg: React.FC = () => (
 );
 
 /**
- * 全頁固定背景：捲動越深，從夕陽海面漸入水下世界。
- * 小島／靠岸段保留海面＋暖沙；入水從 depth≈0.46 才開始。
+ * 全頁固定背景：白天海面 → 四座小島色票 → 靠岸 → 入水 → 深海。
+ * 夕陽暖色僅在白沙／暮色小島（depth≥0.28）出現。
  */
 export const IslandDepthJourney: React.FC = () => {
   const depth = useScrollDepth();
   const lite = isLowPerf(usePerfMode());
 
-  /* 小島＋靠岸段結束後才淡出淺層（≈0.42–0.54） */
+  const galleryPalette = useMemo(() => getGalleryPaletteAtDepth(depth), [depth]);
+  const galleryOp = getGalleryLayerOpacity(depth);
+  const duskOp = getDuskLayerOpacity(depth);
+
   const layerFadeOut = 1 - depthFade(depth, 0.42, 0.54);
+  const foamOp = depth < 0.42 ? Math.min(1, galleryOp * 1.1) * layerFadeOut : 0;
 
-  const sunsetOp = depthPeak(depth, 0.1, 0.2, 0.38) * layerFadeOut;
-  const surfaceOp = depthPeak(depth, 0.05, 0.22, 0.5) * layerFadeOut;
-  const shallowOp = depthFade(depth, 0.2, 0.46) * layerFadeOut;
-
-  const beachBase = depthPeak(depth, 0.12, 0.28, 0.48);
-  const beachWarm = depthFade(depth, 0.28, 0.38) * (1 - depthFade(depth, 0.4, 0.52));
-  const beachOp = (beachBase + beachWarm * 0.8) * layerFadeOut;
-
-  const warmOp = depthFade(depth, 0.27, 0.34) * (1 - depthFade(depth, 0.4, 0.54));
-  const foamOp = depthPeak(depth, 0.18, 0.32, 0.54) * layerFadeOut;
-
-  /* 入水過渡：靠岸後、Timeline 前（0.42–0.56） */
   const submergeOp = depthFade(depth, 0.42, 0.52) * (1 - depthFade(depth, 0.52, 0.6));
-
   const deepOp = depthFade(depth, 0.54, 0.92);
-  const raysOp = (1 - depthFade(depth, 0.38, 0.58)) * shallowOp * (1 - depthFade(depth, 0.54, 0.64));
+  const raysOp =
+    galleryOp * 0.35 * (1 - depthFade(depth, 0.54, 0.64)) * layerFadeOut;
 
   const contentCalm = depthFade(depth, 0.54, 0.68);
   const decorFadeOut = 1 - depthFade(depth, 0.6, 0.74);
 
-  /* 裝飾：入水後才出現，閱讀區再淡出 */
   const seaweedOp = depthFade(depth, 0.5, 0.6) * decorFadeOut;
   const fishOp = depthFade(depth, 0.56, 0.66) * decorFadeOut;
   const coralOp = depthFade(depth, 0.62, 0.74) * decorFadeOut * 0.5;
@@ -112,19 +110,22 @@ export const IslandDepthJourney: React.FC = () => {
     <>
       <div className="island-depth-journey" aria-hidden>
         <div className="island-depth-layer island-depth-deep" style={{ opacity: deepOp }} />
-        <div className="island-depth-layer island-depth-shallow" style={{ opacity: shallowOp * 0.85 }} />
-        <div className="island-depth-layer island-depth-surface" style={{ opacity: surfaceOp * 0.9 }} />
-        <div className="island-depth-layer island-depth-sunset" style={{ opacity: sunsetOp }} />
 
-        <div className="island-depth-layer island-depth-warm" style={{ opacity: warmOp * 0.88 }} />
-        <div className="island-depth-layer island-depth-submerge" style={{ opacity: submergeOp * 0.9 }} />
-
+        {/* 主色調：隨 depth 在四座小島色票間插值 */}
         <div
-          className="island-depth-sun"
-          style={{ opacity: Math.min(1, sunsetOp + warmOp * 0.35) }}
+          className="island-depth-layer island-depth-gallery"
+          style={{
+            opacity: galleryOp,
+            background: galleryPaletteGradient(galleryPalette),
+          }}
         />
 
-        <div className="island-depth-layer island-depth-beach" style={{ opacity: beachOp }} />
+        {/* 夕陽 — 僅暮色／靠岸段 */}
+        <div className="island-depth-layer island-depth-dusk" style={{ opacity: duskOp * 0.85 }} />
+
+        <div className="island-depth-sun island-depth-sun--dusk" style={{ opacity: duskOp }} />
+
+        <div className="island-depth-layer island-depth-submerge" style={{ opacity: submergeOp * 0.9 }} />
 
         <div className="island-depth-foam" style={{ opacity: foamOp, top: foamTop }}>
           <FoamWaveSvg />

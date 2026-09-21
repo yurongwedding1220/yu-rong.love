@@ -18,7 +18,7 @@ export const IslandScrollHero: React.FC = () => {
     offset: ['start start', 'end start'],
   });
 
-  const sandMix = useTransform(scrollYProgress, [0, 0.35, 0.75, 1], [0, 0.15, 0.85, 1]);
+  const sandMix = useTransform(scrollYProgress, [0, 0.5, 0.85, 1], [0, 0, 0.35, 0.65]);
   const contentY = useTransform(
     scrollYProgress,
     [0, 0.7],
@@ -31,7 +31,6 @@ export const IslandScrollHero: React.FC = () => {
   );
   const foamOpacity = useTransform(scrollYProgress, [0, 0.45, 1], [0.85, 0.45, 0]);
 
-  // 捲動軌道也用 svh，與 sticky 面板同一基準，進度才不會因網址列而抖
   const sectionHeight =
     perf === 'low'
       ? 'h-[160svh]'
@@ -42,45 +41,44 @@ export const IslandScrollHero: React.FC = () => {
   return (
     <section
       ref={containerRef}
-      data-depth-phase="sunset"
+      data-depth-phase="daylight"
       className={`island-scroll-hero relative ${sectionHeight}`}
     >
       <div className="island-scroll-hero__sticky sticky top-0 h-[100svh] w-full overflow-hidden">
-        {/* 夕陽天際 */}
+        {/* 白天晴空 */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(180deg, #f5c99a 0%, rgba(232,168,124,0.22) 30%, transparent 58%)',
+              'linear-gradient(180deg, #B8E4F5 0%, #87CEEB 28%, rgba(126,200,227,0.15) 55%, transparent 72%)',
           }}
           aria-hidden
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f3550] via-[#1B4D6E] to-[#3A8FB7] opacity-90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#4A9EC4] via-[#3A8FB7] to-[#7EC8E3] opacity-95" />
 
         {!lite && (
           <div
-            className="pointer-events-none absolute right-[12%] top-[14%] h-16 w-16 rounded-full md:h-20 md:w-20"
+            className="pointer-events-none absolute right-[14%] top-[12%] h-12 w-12 rounded-full md:h-14 md:w-14"
             style={{
-              background: 'radial-gradient(circle, #ffe8c8 0%, #e8a87c 50%, transparent 70%)',
-              boxShadow: '0 0 50px 18px rgba(232,168,124,0.3)',
+              background: 'radial-gradient(circle, #FFFEF5 0%, #FFEAA0 45%, transparent 72%)',
+              boxShadow: '0 0 40px 14px rgba(255, 234, 160, 0.25)',
             }}
             aria-hidden
           />
         )}
 
         <motion.div
-          className="absolute inset-0 bg-gradient-to-b from-transparent via-[#c5e4f0]/40 to-[#F4E8D8]"
+          className="absolute inset-0 bg-gradient-to-b from-transparent via-[#c5e4f0]/25 to-[#F4E8D8]"
           style={{ opacity: sandMix }}
         />
 
-        {/* 海面白色泡沫 */}
         <motion.div
           className="pointer-events-none absolute inset-x-0 bottom-[18%] h-16 md:h-20"
           style={{ opacity: foamOpacity }}
           aria-hidden
         >
           <div className="h-full bg-gradient-to-b from-white/40 to-transparent" />
-          <svg className="absolute bottom-0 w-full h-8" viewBox="0 0 1440 32" preserveAspectRatio="none">
+          <svg className="absolute bottom-0 h-8 w-full" viewBox="0 0 1440 32" preserveAspectRatio="none">
             <path fill="rgba(255,255,255,0.45)" d="M0,16 C240,4 480,28 720,14 C960,0 1200,24 1440,12 L1440,32 L0,32 Z" />
           </svg>
         </motion.div>
@@ -94,16 +92,6 @@ export const IslandScrollHero: React.FC = () => {
             <span className="island-bubble-drift pointer-events-none absolute left-[22%] top-[55%] h-2.5 w-2.5 rounded-full bg-[#7EC8E3]/35" style={{ animationDelay: '0.8s' }} aria-hidden />
             <span className="island-bubble-drift pointer-events-none absolute left-[65%] top-[48%] h-1 w-1 rounded-full bg-white/30" style={{ animationDelay: '2.1s' }} aria-hidden />
           </>
-        )}
-
-        {!lite && (
-          <div
-            className={`pointer-events-none absolute -top-16 right-[-8%] rounded-full bg-[#E8A87C]/15 ${
-              perf === 'medium' ? 'h-[22%] w-[22%]' : 'h-[28%] w-[28%]'
-            }`}
-            style={{ filter: perf === 'medium' ? 'blur(24px)' : 'blur(40px)' }}
-            aria-hidden
-          />
         )}
 
         <motion.div

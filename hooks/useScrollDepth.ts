@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 
 /**
  * 全頁深度相位 — 對應捲動敘事：
- * 夕陽 → 海面 → 小島 → 靠岸 → 入水過渡 → 水下 → 更深 → 深淵
+ * 白天海面 → 啟程 → 四座小島 → 靠岸 → 入水 → 水下 → 深淵
  */
 export type DepthPhase =
-  | 'sunset'
+  | 'daylight'
   | 'surface'
   | 'shallow'
   | 'harbor'
@@ -15,7 +15,7 @@ export type DepthPhase =
   | 'abyss';
 
 export const DEPTH_PHASE_TARGET: Record<DepthPhase, number> = {
-  sunset: 0.02,
+  daylight: 0.02,
   surface: 0.18,
   shallow: 0.34,
   harbor: 0.36,

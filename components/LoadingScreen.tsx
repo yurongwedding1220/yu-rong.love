@@ -65,7 +65,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
       exit={{ opacity: 0, transition: { duration: 0.55, ease: 'easeOut' } }}
       className="island-loading-screen fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden"
     >
-      {/* 夕陽暖色 → 海面藍，與 Hero 無縫銜接 */}
+      {/* 白天海面 → 與 Hero 無縫銜接 */}
       <motion.div
         className="pointer-events-none absolute inset-0"
         initial={{ opacity: 1 }}
@@ -73,7 +73,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
         transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
         style={{
           background:
-            'linear-gradient(180deg, #f8c9a0 0%, #e8a87c 28%, #3a8fb7 72%, #1b4d6e 100%)',
+            'linear-gradient(180deg, #B8E4F5 0%, #4A9EC4 35%, #3A8FB7 68%, #1B4D6E 100%)',
         }}
         aria-hidden
       />
@@ -99,8 +99,8 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
         animate={{ opacity: 0.15, scale: 1.08 }}
         transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
         style={{
-          background: 'radial-gradient(circle, #ffe8c8 0%, #e8a87c 55%, transparent 72%)',
-          boxShadow: '0 0 60px 20px rgba(232, 168, 124, 0.3)',
+          background: 'radial-gradient(circle, #FFFEF5 0%, #FFEAA0 45%, transparent 72%)',
+          boxShadow: '0 0 40px 14px rgba(255, 234, 160, 0.25)',
         }}
         aria-hidden
       />

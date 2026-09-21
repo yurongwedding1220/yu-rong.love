@@ -311,7 +311,7 @@ const IslandAdventureChapter: React.FC<{
       ref={chapterRef}
       data-depth-value={depthValue}
       className="island-chapter-flow relative w-full overflow-hidden"
-      style={{ background: chapterTintGradient(palette, index >= 2 ? 1.28 : 1) }}
+      style={{ background: chapterTintGradient(palette, 0.55) }}
     >
       {isFirst && <ChapterWaveCap fill={`${GALLERY_SURFACE_HANDOFF.glow}55`} />}
 

@@ -15,35 +15,19 @@
   will-change: opacity;
 }
 
-/* 夕陽天際 */
-.island-depth-sunset {
-  background: linear-gradient(
-    180deg,
-    #f8c9a0 0%,
-    #e8a87c55 18%,
-    #3a8fb733 42%,
-    transparent 72%
-  );
+/* 四座小島主色 — 由 JS 注入各章 palette 漸層 */
+.island-depth-gallery {
+  transition: background 0.4s ease;
 }
 
-/* 海面藍 */
-.island-depth-surface {
+/* 暮色夕陽 — 僅白沙／暮色／靠岸（depth≥0.28） */
+.island-depth-dusk {
   background: linear-gradient(
     180deg,
-    #4a9ec4 0%,
-    #3a8fb7 35%,
-    #2a7a9e 65%,
-    #1b4d6e 100%
-  );
-}
-
-/* 淺水青 */
-.island-depth-shallow {
-  background: linear-gradient(
-    180deg,
-    rgba(126, 200, 227, 0.55) 0%,
-    rgba(58, 143, 183, 0.45) 50%,
-    rgba(27, 77, 110, 0.35) 100%
+    rgba(245, 201, 168, 0.42) 0%,
+    rgba(232, 168, 124, 0.32) 22%,
+    rgba(244, 232, 216, 0.28) 52%,
+    transparent 100%
   );
 }
 
@@ -65,17 +49,6 @@
     #f4e8d8 0%,
     #e8d5bc88 35%,
     transparent 100%
-  );
-}
-
-/* 暖色夕照 — 白沙／暮色小島＋靠岸段 */
-.island-depth-warm {
-  background: linear-gradient(
-    180deg,
-    rgba(245, 201, 168, 0.38) 0%,
-    rgba(232, 168, 124, 0.28) 22%,
-    rgba(244, 232, 216, 0.42) 52%,
-    rgba(196, 168, 130, 0.22) 100%
   );
 }
 
@@ -123,7 +96,7 @@
   opacity: 0.7;
 }
 
-/* 夕陽 */
+/* 夕陽圓盤 — 僅暮色段（.island-depth-sun--dusk） */
 .island-depth-sun {
   position: absolute;
   top: 12%;
@@ -131,6 +104,10 @@
   width: 4.5rem;
   height: 4.5rem;
   border-radius: 9999px;
+  pointer-events: none;
+}
+
+.island-depth-sun--dusk {
   background: radial-gradient(circle, #ffe8c8 0%, #e8a87c 55%, transparent 72%);
   box-shadow: 0 0 60px 20px rgba(232, 168, 124, 0.35);
 }

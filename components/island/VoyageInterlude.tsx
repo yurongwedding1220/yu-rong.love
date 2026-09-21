@@ -30,7 +30,7 @@ export const VoyageInterlude: React.FC = () => {
           </p>
           <div className="mx-auto mt-8 flex flex-col items-center gap-2 opacity-50" aria-hidden>
             <div className="h-8 w-px bg-gradient-to-b from-[var(--island-sea)]/60 to-transparent" />
-            <span className="island-nautical-coords">望向夕陽海面 · SCROLL</span>
+            <span className="island-nautical-coords">啟程，海風在前 · SCROLL</span>
           </div>
         </div>
       </IslandSectionReveal>
