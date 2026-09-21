@@ -241,6 +241,54 @@ html.is-scrolling .island-depth-fish {
   background: rgba(244, 232, 216, 0.35);
 }
 
+/* 靠岸日 — 呼應暮色小島 → 港灣暖沙 */
+.island-section-harbor {
+  background: linear-gradient(
+    180deg,
+    rgba(196, 112, 74, 0.12) 0%,
+    rgba(244, 232, 216, 0.48) 38%,
+    rgba(232, 213, 188, 0.55) 100%
+  );
+}
+
+.island-section-harbor .voyage-section-header {
+  padding: 1rem 1rem 1.25rem;
+  border-radius: 1rem;
+  background: rgba(244, 232, 216, 0.45);
+}
+
+/* 入水過場 */
+.island-submerge-gate__ripple {
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 50%,
+    rgba(126, 200, 227, 0.28) 0%,
+    rgba(58, 143, 183, 0.12) 45%,
+    transparent 70%
+  );
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .island-submerge-gate__ripple {
+    animation: island-submerge-ripple 3.2s ease-in-out infinite;
+  }
+}
+
+@keyframes island-submerge-ripple {
+  0%,
+  100% {
+    transform: translateY(-50%) scale(1);
+    opacity: 0.65;
+  }
+  50% {
+    transform: translateY(-50%) scale(1.08);
+    opacity: 1;
+  }
+}
+
+html.is-scrolling .island-submerge-gate__ripple {
+  animation-play-state: paused;
+}
+
 .island-section-underwater {
   background: linear-gradient(
     180deg,

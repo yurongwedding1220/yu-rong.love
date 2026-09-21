@@ -9,6 +9,8 @@ import { IslandWaveDivider } from './components/island/IslandWaveDivider';
 import { IslandSectionReveal } from './components/island/IslandSectionReveal';
 import { IslandOrnament } from './components/island/IslandOrnament';
 import { IslandDepthJourney } from './components/island/IslandDepthJourney';
+import { SubmergeGate } from './components/island/SubmergeGate';
+import { ScrollJourneyProvider } from './hooks/ScrollJourneyContext';
 import { CalendarRevealSection } from './components/CalendarRevealSection';
 import { Timeline } from './components/Timeline';
 import { LoadingScreen } from './components/LoadingScreen';
@@ -212,6 +214,7 @@ function App() {
   ];
 
   return (
+    <ScrollJourneyProvider>
     <main
       id="main-content"
       className="w-full min-h-screen bg-transparent text-[#1A3344] selection:bg-[#E8A87C] selection:text-white"
@@ -257,12 +260,12 @@ function App() {
           </Suspense>
         </section>
 
-        <IslandWaveDivider preset="shallow" animate={!lite} />
+        <IslandWaveDivider fromDepth={0.34} toDepth={0.36} animate={!lite} />
 
         <section
           id="harbor"
           data-depth-phase="harbor"
-          className="island-section-submerge relative scroll-mt-20 overflow-hidden px-4 pb-8 pt-0 md:pb-12"
+          className="island-section-harbor island-section-submerge relative scroll-mt-20 overflow-hidden px-4 pb-8 pt-0 md:pb-12"
         >
           <div className="relative z-[1]">
           <HarborCountdownBar timeLeft={timeLeft} lite={lite} perf={perf} />
@@ -282,7 +285,9 @@ function App() {
 
         <div data-depth-phase="descent" className="island-depth-anchor" aria-hidden />
 
-        <IslandWaveDivider preset="descent" animate={!lite} />
+        <IslandWaveDivider fromDepth={0.4} toDepth={0.46} animate={!lite} />
+
+        <SubmergeGate />
 
         <section
           id="timeline"
@@ -301,7 +306,7 @@ function App() {
           </div>
         </section>
 
-        <IslandWaveDivider preset="underwater" animate={!lite} />
+        <IslandWaveDivider fromDepth={0.56} toDepth={0.72} animate={!lite} />
 
         <section
           id="location"
@@ -323,7 +328,7 @@ function App() {
           </div>
         </section>
 
-        <IslandWaveDivider preset="abyss" animate={!lite} />
+        <IslandWaveDivider fromDepth={0.72} toDepth={0.82} animate={!lite} />
 
         <section
           id="guestbook"
@@ -514,6 +519,7 @@ function App() {
         }
       `}</style>
     </main>
+    </ScrollJourneyProvider>
   );
 }
 

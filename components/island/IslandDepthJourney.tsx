@@ -1,7 +1,9 @@
 import React, { useMemo } from 'react';
-import { useScrollDepth, depthFade } from '../../hooks/useScrollDepth';
+import { useScrollJourney } from '../../hooks/ScrollJourneyContext';
+import { depthFade } from '../../utils/scrollDepthMath';
 import { usePerfMode, isLowPerf } from '../../hooks/usePerfMode';
 import {
+  getDepthCaption,
   getDuskLayerOpacity,
   getGalleryLayerOpacity,
   getGalleryPaletteAtDepth,
@@ -15,15 +17,6 @@ const LINE = {
   strokeLinecap: 'round' as const,
   strokeLinejoin: 'round' as const,
 };
-
-const DEPTH_CAPTIONS: { max: number; text: string }[] = [
-  { max: 0.2, text: '日光洒落海面' },
-  { max: 0.28, text: '航程上的四座島' },
-  { max: 0.4, text: '浪花輕撫沙灘' },
-  { max: 0.54, text: '緩緩潛入海中' },
-  { max: 0.76, text: '潛入清澈浅海' },
-  { max: 1, text: '深海中有我們的約定' },
-];
 
 const SeaweedSvg: React.FC<{ className?: string }> = ({ className }) => (
   <svg viewBox="0 0 120 200" className={className} aria-hidden>
@@ -72,12 +65,8 @@ const FoamWaveSvg: React.FC = () => (
   </svg>
 );
 
-/**
- * 全頁固定背景：白天海面 → 四座小島色票 → 靠岸 → 入水 → 深海。
- * 夕陽暖色僅在白沙／暮色小島（depth≥0.28）出現。
- */
 export const IslandDepthJourney: React.FC = () => {
-  const depth = useScrollDepth();
+  const { depth } = useScrollJourney();
   const lite = isLowPerf(usePerfMode());
 
   const galleryPalette = useMemo(() => getGalleryPaletteAtDepth(depth), [depth]);
@@ -89,8 +78,7 @@ export const IslandDepthJourney: React.FC = () => {
 
   const submergeOp = depthFade(depth, 0.42, 0.52) * (1 - depthFade(depth, 0.52, 0.6));
   const deepOp = depthFade(depth, 0.54, 0.92);
-  const raysOp =
-    galleryOp * 0.35 * (1 - depthFade(depth, 0.54, 0.64)) * layerFadeOut;
+  const raysOp = galleryOp * 0.35 * (1 - depthFade(depth, 0.54, 0.64)) * layerFadeOut;
 
   const contentCalm = depthFade(depth, 0.54, 0.68);
   const decorFadeOut = 1 - depthFade(depth, 0.6, 0.74);
@@ -99,19 +87,13 @@ export const IslandDepthJourney: React.FC = () => {
   const fishOp = depthFade(depth, 0.56, 0.66) * decorFadeOut;
   const coralOp = depthFade(depth, 0.62, 0.74) * decorFadeOut * 0.5;
 
-  const foamTop = `${Math.max(28, 52 - depth * 30)}vh`;
-
-  const caption = useMemo(() => {
-    const hit = DEPTH_CAPTIONS.find((c) => depth <= c.max);
-    return hit?.text ?? DEPTH_CAPTIONS[DEPTH_CAPTIONS.length - 1].text;
-  }, [depth]);
+  const caption = useMemo(() => getDepthCaption(depth), [depth]);
 
   return (
     <>
       <div className="island-depth-journey" aria-hidden>
         <div className="island-depth-layer island-depth-deep" style={{ opacity: deepOp }} />
 
-        {/* 主色調：隨 depth 在四座小島色票間插值 */}
         <div
           className="island-depth-layer island-depth-gallery"
           style={{
@@ -120,14 +102,15 @@ export const IslandDepthJourney: React.FC = () => {
           }}
         />
 
-        {/* 夕陽 — 僅暮色／靠岸段 */}
         <div className="island-depth-layer island-depth-dusk" style={{ opacity: duskOp * 0.85 }} />
-
         <div className="island-depth-sun island-depth-sun--dusk" style={{ opacity: duskOp }} />
 
         <div className="island-depth-layer island-depth-submerge" style={{ opacity: submergeOp * 0.9 }} />
 
-        <div className="island-depth-foam" style={{ opacity: foamOp, top: foamTop }}>
+        <div
+          className="island-depth-foam island-depth-foam--scroll"
+          style={{ opacity: foamOp, top: `${Math.max(28, 52 - depth * 30)}vh` }}
+        >
           <FoamWaveSvg />
         </div>
 
@@ -140,35 +123,20 @@ export const IslandDepthJourney: React.FC = () => {
 
         {!lite && (
           <>
-            <div
-              className="island-depth-seaweed island-depth-seaweed--left"
-              style={{ opacity: seaweedOp }}
-            >
+            <div className="island-depth-seaweed island-depth-seaweed--left" style={{ opacity: seaweedOp }}>
               <SeaweedSvg className="h-full w-full" />
             </div>
-            <div
-              className="island-depth-seaweed island-depth-seaweed--right"
-              style={{ opacity: seaweedOp * 0.85 }}
-            >
+            <div className="island-depth-seaweed island-depth-seaweed--right" style={{ opacity: seaweedOp * 0.85 }}>
               <SeaweedSvg className="h-full w-full" />
             </div>
 
-            <div
-              className="island-depth-fish island-depth-fish--slow"
-              style={{ opacity: fishOp, top: '38%', left: 0, width: '2rem' }}
-            >
+            <div className="island-depth-fish island-depth-fish--slow" style={{ opacity: fishOp, top: '38%', left: 0, width: '2rem' }}>
               <FishSvg className="h-4 w-8" />
             </div>
-            <div
-              className="island-depth-fish"
-              style={{ opacity: fishOp * 0.8, top: '52%', left: 0, width: '1.75rem', animationDelay: '-8s' }}
-            >
+            <div className="island-depth-fish" style={{ opacity: fishOp * 0.8, top: '52%', left: 0, width: '1.75rem', animationDelay: '-8s' }}>
               <FishSvg className="h-3.5 w-7" />
             </div>
-            <div
-              className="island-depth-fish island-depth-fish--fast"
-              style={{ opacity: fishOp * 0.65, top: '64%', left: 0, width: '1.5rem', animationDelay: '-14s' }}
-            >
+            <div className="island-depth-fish island-depth-fish--fast" style={{ opacity: fishOp * 0.65, top: '64%', left: 0, width: '1.5rem', animationDelay: '-14s' }}>
               <FishSvg className="h-3 w-6" />
             </div>
 
@@ -180,10 +148,7 @@ export const IslandDepthJourney: React.FC = () => {
 
         {lite && (
           <>
-            <div
-              className="island-depth-seaweed island-depth-seaweed--left"
-              style={{ opacity: seaweedOp * 0.7 }}
-            >
+            <div className="island-depth-seaweed island-depth-seaweed--left" style={{ opacity: seaweedOp * 0.7 }}>
               <SeaweedSvg className="h-full w-full" />
             </div>
             <div className="island-depth-coral" style={{ opacity: coralOp * 0.8 }}>
@@ -194,10 +159,7 @@ export const IslandDepthJourney: React.FC = () => {
       </div>
 
       {depth >= 0.04 && (
-        <div
-          className="island-depth-caption pointer-events-none fixed inset-x-0 z-30 flex justify-center"
-          aria-hidden
-        >
+        <div className="island-depth-caption pointer-events-none fixed inset-x-0 z-30 flex justify-center" aria-hidden>
           <p className="island-depth-caption__text font-serif text-[11px] tracking-[0.28em] text-white/55 md:text-xs">
             {caption}
           </p>

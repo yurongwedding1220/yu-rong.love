@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { usePerfMode, isLowPerf } from '../../hooks/usePerfMode';
+import { getDividerColors } from '../../utils/galleryDepthPalette';
 import { WaveBubbles } from './IslandSeaMotifs';
 
 export type WaveDividerPreset = 'surface' | 'shallow' | 'descent' | 'underwater' | 'abyss';
@@ -35,6 +36,9 @@ type IslandWaveDividerProps = {
   toColor?: string;
   /** 預設色階；未傳 fill/toColor 時使用 */
   preset?: WaveDividerPreset;
+  /** 依 depth 自動取前後章節色（優先於 preset） */
+  fromDepth?: number;
+  toDepth?: number;
   className?: string;
   animate?: boolean;
 };
@@ -48,15 +52,24 @@ export const IslandWaveDivider: React.FC<IslandWaveDividerProps> = ({
   fill,
   toColor,
   preset = 'surface',
+  fromDepth,
+  toDepth,
   className = '',
   animate,
 }) => {
   const perf = usePerfMode();
   const lite = isLowPerf(perf);
   const shouldAnimate = animate ?? !lite;
+  const autoColors =
+    fromDepth != null && toDepth != null ? getDividerColors(fromDepth, toDepth) : null;
   const colors = WAVE_PRESETS[preset];
-  const waveFill = fill ?? colors.fill;
-  const waveTo = toColor ?? colors.toColor;
+  const waveFill = fill ?? autoColors?.fill ?? colors.fill;
+  const waveTo = toColor ?? autoColors?.toColor ?? colors.toColor;
+  const skipBubbles =
+    (toDepth != null && toDepth >= 0.52) ||
+    preset === 'descent' ||
+    preset === 'underwater' ||
+    preset === 'abyss';
 
   const body = (
     <div className={`island-wave-divider relative w-full overflow-hidden ${className}`} aria-hidden>
@@ -66,7 +79,7 @@ export const IslandWaveDivider: React.FC<IslandWaveDividerProps> = ({
           background: `linear-gradient(to bottom, transparent 0%, ${waveTo} 100%)`,
         }}
       />
-      {!lite && preset !== 'descent' && preset !== 'underwater' && preset !== 'abyss' && (
+      {!lite && !skipBubbles && (
         <WaveBubbles className="island-wave-divider__bubbles h-full w-full" />
       )}
       <svg

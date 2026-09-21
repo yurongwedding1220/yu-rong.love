@@ -1,20 +1,20 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-  GALLERY_HARBOR_HANDOFF,
   GALLERY_ISLAND_DEPTHS,
   GALLERY_SURFACE_HANDOFF,
   WEDDING_GALLERY_CHAPTERS,
   GalleryChapter,
   GalleryPhoto,
 } from '../../constants';
-import { useChapterScrollBlend } from '../../hooks/useChapterScrollBlend';
+import { useScrollJourney } from '../../hooks/ScrollJourneyContext';
 import { usePerfMode, isLowPerf } from '../../hooks/usePerfMode';
+import { chapterTintGradient, type IslandPalette } from '../../utils/colorBlend';
 import {
-  blendChapterPalette,
-  chapterTintGradient,
-  type IslandPalette,
-} from '../../utils/colorBlend';
+  getChapterSkyAccent,
+  getChapterSunGradient,
+  getGalleryPaletteAtDepth,
+} from '../../utils/galleryDepthPalette';
 
 type PhotoShape = 'arch' | 'capsule' | 'leaf' | 'pebble';
 
@@ -256,40 +256,17 @@ const PhotoPortal: React.FC<{
   );
 };
 
-function resolveChapterPalettes(
-  index: number,
-  chapter: GalleryChapter,
-  nextChapter: GalleryChapter | undefined,
-  isLast: boolean
-): { from: IslandPalette; to: IslandPalette } {
-  const from =
-    index === 0
-      ? GALLERY_SURFACE_HANDOFF
-      : WEDDING_GALLERY_CHAPTERS[index - 1].palette;
-  const to = isLast
-    ? GALLERY_HARBOR_HANDOFF
-    : (nextChapter?.palette ?? GALLERY_HARBOR_HANDOFF);
-  return { from, to };
-}
-
 const IslandAdventureChapter: React.FC<{
   chapter: GalleryChapter;
   index: number;
   layout: IslandLayout;
-  nextChapter?: GalleryChapter;
+  palette: IslandPalette;
   animate: boolean;
   isFirst: boolean;
   isLast: boolean;
   onPhotoClick: (photo: GalleryPhoto) => void;
-}> = ({ chapter, index, layout, nextChapter, animate, isFirst, isLast, onPhotoClick }) => {
-  const chapterRef = useRef<HTMLElement>(null);
-  const scrollProgress = useChapterScrollBlend(chapterRef);
+}> = ({ chapter, index, layout, palette, animate, isFirst, isLast, onPhotoClick }) => {
   const depthValue = GALLERY_ISLAND_DEPTHS[index] ?? GALLERY_ISLAND_DEPTHS.at(-1)!;
-
-  const palette = useMemo(() => {
-    const { from, to } = resolveChapterPalettes(index, chapter, nextChapter, isLast);
-    return blendChapterPalette(from, chapter.palette, to, scrollProgress);
-  }, [chapter, index, isLast, nextChapter, scrollProgress]);
 
   const titleBlock = (
     <div className={`max-w-[min(78vw,300px)] ${layout.titleInset}`}>
@@ -308,22 +285,21 @@ const IslandAdventureChapter: React.FC<{
 
   return (
     <article
-      ref={chapterRef}
       data-depth-value={depthValue}
       className="island-chapter-flow relative w-full overflow-hidden"
-      style={{ background: chapterTintGradient(palette, 0.55) }}
+      style={{ background: chapterTintGradient(palette, 0.38) }}
     >
       {isFirst && <ChapterWaveCap fill={`${GALLERY_SURFACE_HANDOFF.glow}55`} />}
 
       <div
         className={`pointer-events-none absolute ${layout.sunClass} h-14 w-14 rounded-full blur-md md:h-16 md:w-16`}
-        style={{ background: `radial-gradient(circle, ${palette.glow}88, transparent)` }}
+        style={{ background: getChapterSunGradient(index, palette) }}
         aria-hidden
       />
       <div
         className="pointer-events-none absolute inset-0"
         style={{
-          background: `radial-gradient(ellipse 80% 55% at ${layout.skyGlowAt}, ${palette.accent}24, transparent 68%)`,
+          background: `radial-gradient(ellipse 80% 55% at ${layout.skyGlowAt}, ${getChapterSkyAccent(index, palette)}, transparent 68%)`,
         }}
         aria-hidden
       />
@@ -376,9 +352,11 @@ const IslandAdventureChapter: React.FC<{
 };
 
 export const IslandVoyageGallery: React.FC = () => {
+  const { depth } = useScrollJourney();
   const lite = isLowPerf(usePerfMode());
   const animate = !lite;
   const [lightbox, setLightbox] = useState<GalleryPhoto | null>(null);
+  const palette = useMemo(() => getGalleryPaletteAtDepth(depth), [depth]);
 
   useEffect(() => {
     if (!lightbox) return;
@@ -399,7 +377,7 @@ export const IslandVoyageGallery: React.FC = () => {
           chapter={chapter}
           index={index}
           layout={ISLAND_LAYOUTS[index % ISLAND_LAYOUTS.length]}
-          nextChapter={WEDDING_GALLERY_CHAPTERS[index + 1]}
+          palette={palette}
           animate={animate}
           isFirst={index === 0}
           isLast={index === WEDDING_GALLERY_CHAPTERS.length - 1}
