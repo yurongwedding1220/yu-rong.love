@@ -301,7 +301,11 @@ function App() {
 
         <IslandWaveDivider preset="underwater" animate={!lite} />
 
-        <section id="location" className="island-defer island-section-underwater scroll-mt-20 px-4 py-16 md:py-24">
+        <section
+          id="location"
+          data-depth-phase="deeper"
+          className="island-defer island-section-underwater scroll-mt-20 px-4 py-16 md:py-24"
+        >
           <VoyageSectionHeader
             chapter={VOYAGE_NARRATIVE.berthChapter}
             title={VOYAGE_NARRATIVE.berthTitle}
@@ -319,7 +323,11 @@ function App() {
 
         <IslandWaveDivider preset="abyss" animate={!lite} />
 
-        <section id="guestbook" className="island-defer island-section-underwater island-chrome-pad relative scroll-mt-20 overflow-hidden px-4 py-16 md:py-24">
+        <section
+          id="guestbook"
+          data-depth-phase="deeper"
+          className="island-defer island-section-underwater island-chrome-pad relative scroll-mt-20 overflow-hidden px-4 py-16 md:py-24"
+        >
           <div className="relative z-[1]">
           <VoyageSectionHeader
             chapter={VOYAGE_NARRATIVE.guestbookChapter}
@@ -340,7 +348,11 @@ function App() {
           </div>
         </section>
 
-        <section id="line" className="island-section-underwater island-chrome-pad scroll-mt-20 px-4 py-16 md:py-20">
+        <section
+          id="line"
+          data-depth-phase="deeper"
+          className="island-section-underwater island-chrome-pad scroll-mt-20 px-4 py-16 md:py-20"
+        >
           <IslandSectionReveal animate={!lite}>
             <div className="island-card island-card--sea relative z-[1] mx-auto max-w-lg rounded-2xl p-8 text-center md:p-10">
               <p className="island-section-label">{VOYAGE_NARRATIVE.contactChapter}</p>

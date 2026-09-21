@@ -15,12 +15,12 @@ const WAVE_PRESETS: Record<WaveDividerPreset, { fill: string; toColor: string }>
     toColor: 'rgba(244, 232, 216, 0.4)',
   },
   underwater: {
-    fill: 'rgba(58, 143, 183, 0.35)',
-    toColor: 'rgba(19, 74, 98, 0.2)',
+    fill: 'rgba(15, 53, 80, 0.55)',
+    toColor: 'rgba(10, 36, 56, 0.45)',
   },
   abyss: {
-    fill: 'rgba(58, 143, 183, 0.3)',
-    toColor: 'rgba(15, 53, 80, 0.25)',
+    fill: 'rgba(10, 36, 56, 0.6)',
+    toColor: 'rgba(8, 28, 44, 0.55)',
   },
 };
 
@@ -62,7 +62,7 @@ export const IslandWaveDivider: React.FC<IslandWaveDividerProps> = ({
           background: `linear-gradient(to bottom, transparent 0%, ${waveTo} 100%)`,
         }}
       />
-      {!lite && (
+      {!lite && preset !== 'underwater' && preset !== 'abyss' && (
         <WaveBubbles className="island-wave-divider__bubbles h-full w-full" />
       )}
       <svg

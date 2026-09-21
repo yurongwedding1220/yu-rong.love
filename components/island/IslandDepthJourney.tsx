@@ -71,17 +71,25 @@ export const IslandDepthJourney: React.FC = () => {
   const depth = useScrollDepth();
   const lite = isLowPerf(usePerfMode());
 
-  /* Hero 負責首屏夕陽；旅程層在 depth≥0.12 才接手，避免雙層重疊 */
-  const sunsetOp = depthPeak(depth, 0.1, 0.2, 0.38);
-  const surfaceOp = depthPeak(depth, 0.05, 0.22, 0.48);
-  const beachOp = depthPeak(depth, 0.12, 0.28, 0.42);
-  const foamOp = depthPeak(depth, 0.18, 0.32, 0.52);
-  const shallowOp = depthFade(depth, 0.28, 0.55);
+  /*
+   * Hero 負責首屏夕陽；旅程層在 depth≥0.12 才接手。
+   * 進入閱讀區（depth≥0.5）後，淡出淺層與裝飾，只保留深海漸層，避免背景雜亂。
+   */
+  const contentCalm = depthFade(depth, 0.48, 0.62);
+  const layerFadeOut = 1 - depthFade(depth, 0.38, 0.56);
+
+  const sunsetOp = depthPeak(depth, 0.1, 0.2, 0.38) * layerFadeOut;
+  const surfaceOp = depthPeak(depth, 0.05, 0.22, 0.48) * layerFadeOut;
+  const beachOp = depthPeak(depth, 0.12, 0.28, 0.42) * layerFadeOut;
+  const foamOp = depthPeak(depth, 0.18, 0.32, 0.52) * layerFadeOut;
+  const shallowOp = depthFade(depth, 0.28, 0.55) * layerFadeOut;
   const deepOp = depthFade(depth, 0.5, 0.95);
-  const raysOp = (1 - depthFade(depth, 0.35, 0.7)) * shallowOp;
-  const seaweedOp = depthFade(depth, 0.42, 0.72);
-  const fishOp = depthFade(depth, 0.48, 0.8);
-  const coralOp = depthFade(depth, 0.68, 1);
+  const raysOp = (1 - depthFade(depth, 0.35, 0.55)) * shallowOp;
+
+  const decorFadeOut = 1 - depthFade(depth, 0.5, 0.64);
+  const seaweedOp = depthFade(depth, 0.42, 0.58) * decorFadeOut;
+  const fishOp = depthFade(depth, 0.48, 0.6) * decorFadeOut;
+  const coralOp = depthFade(depth, 0.55, 0.68) * decorFadeOut * 0.5;
 
   const foamTop = `${Math.max(28, 52 - depth * 30)}vh`;
 
@@ -113,6 +121,11 @@ export const IslandDepthJourney: React.FC = () => {
         </div>
 
         <div className="island-depth-layer island-depth-rays" style={{ opacity: raysOp }} />
+
+        <div
+          className="island-depth-layer island-depth-content-calm"
+          style={{ opacity: contentCalm * 0.82 }}
+        />
 
         {!lite && (
           <>

@@ -31,7 +31,7 @@ export const VoyageSectionHeader: React.FC<VoyageSectionHeaderProps> = ({
   );
 
   const body = (
-    <div className={`max-w-3xl ${alignClass} ${className}`}>
+    <div className={`voyage-section-header max-w-3xl ${alignClass} ${className}`}>
       {shouldAnimate ? (
         <>
           <motion.p

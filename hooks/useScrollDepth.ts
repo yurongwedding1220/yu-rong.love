@@ -1,13 +1,20 @@
 import { useEffect, useState } from 'react';
 
 /** 章節深度相位 → 目標深度值（對齊 DOM 標記，不單靠全頁比例） */
-export type DepthPhase = 'sunset' | 'surface' | 'shallow' | 'underwater' | 'abyss';
+export type DepthPhase =
+  | 'sunset'
+  | 'surface'
+  | 'shallow'
+  | 'underwater'
+  | 'deeper'
+  | 'abyss';
 
 export const DEPTH_PHASE_TARGET: Record<DepthPhase, number> = {
   sunset: 0.02,
   surface: 0.18,
   shallow: 0.35,
   underwater: 0.62,
+  deeper: 0.78,
   abyss: 0.95,
 };
 
