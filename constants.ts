@@ -182,5 +182,5 @@ export const WEDDING_GALLERY_CHAPTERS: GalleryChapter[] = [
   },
 ];
 
-/** 月曆封面占位（海島主題；可換成婚紗照） */
-export const CALENDAR_COVER_IMAGE = 'calendar-cover.png';
+/** 月曆封面背景（無文字；文案由元件疊加） */
+export const CALENDAR_COVER_IMAGE = 'calendar-cover-v2.png';

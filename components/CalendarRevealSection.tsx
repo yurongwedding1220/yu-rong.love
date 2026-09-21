@@ -94,33 +94,44 @@ const HeartSvg = () => (
 );
 
 const CalendarCover = () => (
-  <div className="relative h-full w-full overflow-hidden rounded-[2px] border border-white/25 bg-[#0f3550]">
-    {/* 實心底色，避免任何半透明透出底下日期 */}
+  <div className="relative h-full w-full overflow-hidden rounded-[6px] bg-[#0f3550]">
+    {/* 實心底，確保不透出底下月曆 */}
     <div className="absolute inset-0 bg-[#0f3550]" aria-hidden />
-    <div className="absolute inset-0">
-      {CALENDAR_COVER_IMAGE ? (
-        <img
-          src={`${import.meta.env.BASE_URL}${CALENDAR_COVER_IMAGE}`}
-          alt=""
-          className="h-full w-full object-cover object-center"
-          loading="eager"
-          decoding="async"
-          draggable={false}
+
+    {CALENDAR_COVER_IMAGE ? (
+      <img
+        src={`${import.meta.env.BASE_URL}${CALENDAR_COVER_IMAGE}`}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover object-center"
+        loading="eager"
+        decoding="async"
+        draggable={false}
+      />
+    ) : (
+      <div
+        className="absolute inset-0 bg-gradient-to-b from-[#0f3550] via-[#1B4D6E] to-[#3A8FB7]"
+        aria-hidden
+      />
+    )}
+
+    {/* 封面專用活頁孔（與內頁風格一致，避免透出底下孔洞錯位） */}
+    <div className="absolute top-2 left-0 right-0 z-20 flex justify-evenly px-6" aria-hidden>
+      {[1, 2, 3, 4, 5, 6].map((i) => (
+        <div
+          key={i}
+          className="h-3 w-3 rounded-full bg-[#0a2a40] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15),0_1px_2px_rgba(0,0,0,0.35)] ring-1 ring-white/15"
         />
-      ) : (
-        <div className="h-full w-full bg-gradient-to-b from-[#0f3550] via-[#1B4D6E] to-[#3A8FB7]" />
-      )}
-      {/* 輕陰影即可，勿用大面積 transparent，否則會透出月曆 */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-black/45" />
+      ))}
     </div>
-    <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
-      <p className="font-display text-[10px] tracking-[0.35em] text-white/80">DECEMBER</p>
-      <p className="mt-3 font-serif text-4xl font-light tracking-wide drop-shadow-sm">
-        Yu <span className="font-script text-[1.1em]">&</span> Rong
+
+    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-8 text-center">
+      <p className="font-display text-[10px] tracking-[0.4em] text-white/70">DECEMBER</p>
+      <p className="mt-4 font-serif text-4xl font-light tracking-[0.06em] text-white md:text-[2.75rem]">
+        Yu <span className="font-script text-[1.12em] text-white/95">&</span> Rong
       </p>
-      <div className="my-4 h-px w-12 bg-[#E8A87C]/70" aria-hidden />
-      <p className="font-serif text-sm tracking-wide text-white/90">{APP_CONTENT.date}</p>
-      <p className="mt-2 font-display text-[9px] tracking-[0.28em] text-[#E8A87C]/90">
+      <div className="my-5 h-px w-14 bg-[#E8A87C]/80" aria-hidden />
+      <p className="font-serif text-base tracking-wide text-white/90">{APP_CONTENT.date}</p>
+      <p className="mt-3 font-display text-[10px] tracking-[0.32em] text-[#E8A87C]">
         SAVE THE DATE
       </p>
     </div>
@@ -153,7 +164,7 @@ const FadeRevealCalendar = ({
         </div>
         <motion.div
           style={{ opacity: coverOpacity }}
-          className="pointer-events-none absolute inset-0 z-10 overflow-hidden rounded-xl shadow-lg"
+          className="pointer-events-none absolute inset-0 z-30 overflow-hidden rounded-xl shadow-lg isolate"
         >
           <CalendarCover />
         </motion.div>
