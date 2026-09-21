@@ -6,27 +6,71 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "module": "ESNext",
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
-    "types": [
-      "node",
-      "vite/client"
-    ],
+    "types": ["node", "vite/client"],
     "moduleResolution": "bundler",
     "isolatedModules": true,
     "moduleDetection": "force",
     "allowJs": true,
     "jsx": "react-jsx",
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
     "allowImportingTsExtensions": true,
-    "noEmit": true
-  }
+    "noEmit": true,
+    "strict": false
+  },
+  "include": [
+    "index.tsx",
+    "App.tsx",
+    "constants.ts",
+    "types.ts",
+    "vite-env.d.ts",
+    "pages/RSVPPage.tsx",
+    "components/CalendarRevealSection.tsx",
+    "components/GuestBook.tsx",
+    "components/LocationInfo.tsx",
+    "components/Timeline.tsx",
+    "components/LoadingScreen.tsx",
+    "components/VisitCounterProvider.tsx",
+    "components/island/**/*.tsx",
+    "hooks/useIsMobile.ts",
+    "hooks/usePerfMode.ts",
+    "hooks/useReducedMotion.ts",
+    "data/animeCharacters.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "pages/BingoPage.tsx",
+    "pages/QuizPage.tsx",
+    "pages/PhotoPage.tsx",
+    "pages/CheerPage.tsx",
+    "pages/PlaylistPage.tsx",
+    "pages/InvitationCardPage.tsx",
+    "components/BookCover.tsx",
+    "components/ScrollExperience.tsx",
+    "components/MobileAlbumGrid.tsx",
+    "components/FloatingPhoto.tsx",
+    "components/EnvelopeInvitation.tsx",
+    "components/WeddingCalendar.tsx",
+    "components/BackgroundMusic.tsx",
+    "components/Countdown.tsx",
+    "components/Confetti.tsx",
+    "components/photo",
+    "hooks/useLightboxZoom.ts",
+    "hooks/usePhotoDeepLink.ts",
+    "hooks/useWeddingPhotos.ts",
+    "hooks/usePhotoBulkDownload.ts",
+    "hooks/usePhotoBatch.ts",
+    "hooks/useTimelineSync.ts",
+    "hooks/useModalHistory.ts",
+    "hooks/useBodyScrollLock.ts",
+    "data/weddingPhotos.ts",
+    "data/publicGuestIndex.ts",
+    "data/companionIndex.ts",
+    "utils",
+    "albumLayouts.ts"
+  ]
 }

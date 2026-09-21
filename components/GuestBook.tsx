@@ -308,8 +308,6 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
             const separator = APP_CONTENT.googleScriptUrl.includes('?') ? '&' : '?';
             const url = `${APP_CONTENT.googleScriptUrl}${separator}t=${Date.now()}`;
 
-            console.log("Fetching Guestbook from:", url); // Debugging Log
-
             const response = await fetch(url, {
                 method: 'GET',
                 redirect: 'follow',
