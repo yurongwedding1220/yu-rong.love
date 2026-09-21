@@ -364,16 +364,16 @@ function App() {
         </footer>
       </div>
 
-      {/* Nav dock */}
+      {/* Nav dock — 左下；RSVP CTA 右下，避免互相重疊 */}
       <AnimatePresence>
         {showNav && !isGuestBookExpanded && (
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 24 }}
-            className="island-nav-dock fixed left-1/2 z-50 -translate-x-1/2"
+            className="island-nav-dock fixed z-50"
           >
-            <div className="relative flex flex-col items-center">
+            <div className="relative flex flex-col items-start">
               <AnimatePresence>
                 {isNavExpanded && (
                   <motion.div
@@ -381,7 +381,7 @@ function App() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 8, scale: 0.96 }}
                     transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                    className="island-blur absolute bottom-[calc(100%+0.5rem)] left-1/2 w-[min(11.5rem,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-2xl border border-white/70 p-1.5 shadow-lg"
+                    className="island-blur absolute bottom-[calc(100%+0.5rem)] left-0 w-[min(11.5rem,calc(100vw-5.5rem))] overflow-hidden rounded-2xl border border-white/70 p-1.5 shadow-lg"
                   >
                     <nav className="flex flex-col gap-0.5" aria-label="章節導覽">
                       {navItems.map((item) => {
@@ -419,7 +419,7 @@ function App() {
                 )}
               </AnimatePresence>
 
-              <div className="island-blur flex items-center rounded-full border border-white/70 p-1.5 shadow-lg">
+              <div className="island-blur flex h-12 w-12 items-center justify-center rounded-full border border-white/70 shadow-lg">
                 <button
                   type="button"
                   aria-label={isNavExpanded ? '收合選單' : '展開選單'}
@@ -435,18 +435,18 @@ function App() {
         )}
       </AnimatePresence>
 
-      {/* Floating RSVP */}
+      {/* Floating RSVP — 右下主行動 */}
       <AnimatePresence>
         {showRSVPButton && !isNavExpanded && !isGuestBookExpanded && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="island-floating-rsvp fixed z-40 md:right-8"
+            className="island-floating-rsvp fixed z-40"
           >
             <Link
               to="/rsvp"
-              className="island-btn island-focus flex items-center gap-2 px-5 py-3 text-sm font-medium shadow-lg"
+              className="island-btn island-focus flex h-12 items-center gap-2 px-5 text-sm font-medium shadow-lg"
             >
               <span aria-hidden><HeartIcon /></span>
               {VOYAGE_NARRATIVE.rsvpCta}

@@ -304,12 +304,23 @@ html.is-scrolling .island-wave-drift-slow {
 }
 
 .island-nav-dock {
-  bottom: max(1.5rem, env(safe-area-inset-bottom));
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
+  left: max(1.25rem, env(safe-area-inset-left));
 }
 
 .island-floating-rsvp {
-  bottom: max(1.5rem, env(safe-area-inset-bottom));
+  bottom: max(1.25rem, env(safe-area-inset-bottom));
   right: max(1.25rem, env(safe-area-inset-right));
+}
+
+@media (min-width: 768px) {
+  .island-nav-dock {
+    left: max(2rem, env(safe-area-inset-left));
+  }
+
+  .island-floating-rsvp {
+    right: max(2rem, env(safe-area-inset-right));
+  }
 }
 
 /* Countdown / marquee */
