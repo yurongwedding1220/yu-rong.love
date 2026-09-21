@@ -1,7 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { WEDDING_GALLERY_CHAPTERS, GalleryChapter, GalleryPhoto } from '../../constants';
+import {
+  GALLERY_HARBOR_HANDOFF,
+  GALLERY_ISLAND_DEPTHS,
+  GALLERY_SURFACE_HANDOFF,
+  WEDDING_GALLERY_CHAPTERS,
+  GalleryChapter,
+  GalleryPhoto,
+} from '../../constants';
+import { useChapterScrollBlend } from '../../hooks/useChapterScrollBlend';
 import { usePerfMode, isLowPerf } from '../../hooks/usePerfMode';
+import {
+  blendChapterPalette,
+  chapterTintGradient,
+  type IslandPalette,
+} from '../../utils/colorBlend';
 
 type PhotoShape = 'arch' | 'capsule' | 'leaf' | 'pebble';
 
@@ -170,11 +183,12 @@ const SceneWaves: React.FC<{ palette: GalleryChapter['palette']; animate: boolea
 const PhotoPortal: React.FC<{
   photo: GalleryPhoto;
   chapter: GalleryChapter;
+  palette: IslandPalette;
   layout: IslandLayout;
   photoIndex: number;
   animate: boolean;
   onClick: () => void;
-}> = ({ photo, chapter, layout, photoIndex, animate, onClick }) => {
+}> = ({ photo, chapter, palette, layout, photoIndex, animate, onClick }) => {
   const shapeClass = SHAPE_CLASS[layout.photoShape];
 
   const body = (
@@ -190,7 +204,7 @@ const PhotoPortal: React.FC<{
     >
       <div
         className="absolute -inset-4 rounded-[50%] opacity-50 blur-xl transition-opacity group-hover:opacity-70"
-        style={{ background: `radial-gradient(circle, ${chapter.palette.glow}77, transparent 70%)` }}
+        style={{ background: `radial-gradient(circle, ${palette.glow}77, transparent 70%)` }}
         aria-hidden
       />
       <div className={`${shapeClass} relative overflow-hidden`}>
@@ -242,6 +256,22 @@ const PhotoPortal: React.FC<{
   );
 };
 
+function resolveChapterPalettes(
+  index: number,
+  chapter: GalleryChapter,
+  nextChapter: GalleryChapter | undefined,
+  isLast: boolean
+): { from: IslandPalette; to: IslandPalette } {
+  const from =
+    index === 0
+      ? GALLERY_SURFACE_HANDOFF
+      : WEDDING_GALLERY_CHAPTERS[index - 1].palette;
+  const to = isLast
+    ? GALLERY_HARBOR_HANDOFF
+    : (nextChapter?.palette ?? GALLERY_HARBOR_HANDOFF);
+  return { from, to };
+}
+
 const IslandAdventureChapter: React.FC<{
   chapter: GalleryChapter;
   index: number;
@@ -252,6 +282,15 @@ const IslandAdventureChapter: React.FC<{
   isLast: boolean;
   onPhotoClick: (photo: GalleryPhoto) => void;
 }> = ({ chapter, index, layout, nextChapter, animate, isFirst, isLast, onPhotoClick }) => {
+  const chapterRef = useRef<HTMLElement>(null);
+  const scrollProgress = useChapterScrollBlend(chapterRef);
+  const depthValue = GALLERY_ISLAND_DEPTHS[index] ?? GALLERY_ISLAND_DEPTHS.at(-1)!;
+
+  const palette = useMemo(() => {
+    const { from, to } = resolveChapterPalettes(index, chapter, nextChapter, isLast);
+    return blendChapterPalette(from, chapter.palette, to, scrollProgress);
+  }, [chapter, index, isLast, nextChapter, scrollProgress]);
+
   const titleBlock = (
     <div className={`max-w-[min(78vw,300px)] ${layout.titleInset}`}>
       <p className="font-display text-[9px] tracking-[0.38em] text-white/50">
@@ -269,66 +308,32 @@ const IslandAdventureChapter: React.FC<{
 
   return (
     <article
+      ref={chapterRef}
+      data-depth-value={depthValue}
       className="island-chapter-flow relative w-full overflow-hidden"
-      style={{
-        background: `linear-gradient(188deg, ${chapter.palette.glow}1a 0%, ${chapter.palette.sea}99 42%, ${chapter.palette.deep}aa 88%)`,
-      }}
+      style={{ background: chapterTintGradient(palette) }}
     >
-      {isFirst && <ChapterWaveCap fill="#f4e8d8" />}
-
-      {/* 與下一座島自然衔接 */}
-      {!isLast && nextChapter && (
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-32 md:h-40"
-          style={{
-            background: `linear-gradient(to bottom, transparent, ${nextChapter.palette.sea}55)`,
-          }}
-          aria-hidden
-        />
-      )}
-
-      {/* 末島 → 入水：海面藍綠漸層 + 浪線 cap */}
-      {isLast && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[3]" aria-hidden>
-          <div
-            className="h-28 md:h-36"
-            style={{
-              background:
-                'linear-gradient(to bottom, transparent 0%, rgba(58,143,183,0.22) 45%, rgba(244,232,216,0.4) 100%)',
-            }}
-          />
-          <svg
-            className="absolute inset-x-0 bottom-0 h-10 w-full md:h-12"
-            viewBox="0 0 1440 60"
-            preserveAspectRatio="none"
-          >
-            <path
-              fill="rgba(244,232,216,0.55)"
-              d="M0,28 C220,52 420,6 640,26 C860,46 1060,10 1260,28 C1340,36 1400,22 1440,30 L1440,60 L0,60 Z"
-            />
-          </svg>
-        </div>
-      )}
+      {isFirst && <ChapterWaveCap fill={`${GALLERY_SURFACE_HANDOFF.glow}55`} />}
 
       <div
         className={`pointer-events-none absolute ${layout.sunClass} h-14 w-14 rounded-full blur-md md:h-16 md:w-16`}
-        style={{ background: `radial-gradient(circle, ${chapter.palette.glow}88, transparent)` }}
+        style={{ background: `radial-gradient(circle, ${palette.glow}88, transparent)` }}
         aria-hidden
       />
       <div
         className="pointer-events-none absolute inset-0"
         style={{
-          background: `radial-gradient(ellipse 80% 55% at ${layout.skyGlowAt}, ${chapter.palette.accent}20, transparent 68%)`,
+          background: `radial-gradient(ellipse 80% 55% at ${layout.skyGlowAt}, ${palette.accent}24, transparent 68%)`,
         }}
         aria-hidden
       />
 
       <IslandTerrain
         chapterId={chapter.id}
-        palette={chapter.palette}
+        palette={palette}
         shiftClass={layout.terrainShift}
       />
-      <SceneWaves palette={chapter.palette} animate={animate} />
+      <SceneWaves palette={palette} animate={animate} />
 
       <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-14 px-5 py-16 md:gap-20 md:px-8 md:py-24">
         {animate ? (
@@ -351,6 +356,7 @@ const IslandAdventureChapter: React.FC<{
               key={photo.id}
               photo={photo}
               chapter={chapter}
+              palette={palette}
               layout={layout}
               photoIndex={photoIndex}
               animate={animate}

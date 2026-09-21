@@ -547,6 +547,31 @@ html.is-scrolling .island-wave-drift-slow {
   scroll-margin-top: 0;
 }
 
+/* 藝廊標題區 — 半透明底，與全頁海面背景融合 */
+.island-gallery-header {
+  position: relative;
+  border-radius: 1rem;
+  background: linear-gradient(
+    180deg,
+    rgba(244, 232, 216, 0.42) 0%,
+    rgba(126, 200, 227, 0.12) 100%
+  );
+}
+
+.island-gallery-header .island-heading {
+  color: #f4f8fb;
+  text-shadow: 0 1px 10px rgba(8, 28, 44, 0.45);
+}
+
+.island-gallery-header .island-prose {
+  color: rgba(244, 248, 251, 0.85);
+  text-shadow: 0 1px 8px rgba(8, 28, 44, 0.35);
+}
+
+.island-gallery-header .island-section-label {
+  color: #7ec8e3;
+}
+
 /* 每座島不同有機照片形狀 */
 .island-photo-arch,
 .island-photo-capsule,

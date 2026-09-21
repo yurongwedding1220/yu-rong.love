@@ -34,10 +34,20 @@ function computeAnchoredDepth(): number {
 
   const anchors: { y: number; depth: number }[] = [];
   nodes.forEach((el) => {
-    const phase = el.getAttribute('data-depth-phase');
-    if (!isDepthPhase(phase)) return;
     const rect = el.getBoundingClientRect();
     const y = rect.top + window.scrollY + rect.height * 0.35;
+
+    const explicit = el.getAttribute('data-depth-value');
+    if (explicit != null && explicit !== '') {
+      const value = Number.parseFloat(explicit);
+      if (!Number.isNaN(value)) {
+        anchors.push({ y, depth: Math.min(1, Math.max(0, value)) });
+        return;
+      }
+    }
+
+    const phase = el.getAttribute('data-depth-phase');
+    if (!isDepthPhase(phase)) return;
     anchors.push({ y, depth: DEPTH_PHASE_TARGET[phase] });
   });
 

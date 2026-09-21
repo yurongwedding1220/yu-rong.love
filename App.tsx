@@ -239,12 +239,11 @@ function App() {
 
         <VoyageInterlude />
 
-        <section
-          id="photos"
-          data-depth-phase="shallow"
-          className="island-section-shallow scroll-mt-20"
-        >
-          <div className="px-4 pb-8 pt-14 md:pb-10 md:pt-20">
+        <section id="photos" className="island-section-shallow scroll-mt-20">
+          <div
+            data-depth-value="0.2"
+            className="island-gallery-header px-4 pb-8 pt-14 md:pb-10 md:pt-20"
+          >
             <VoyageSectionHeader
               chapter={VOYAGE_NARRATIVE.galleryChapter}
               title={VOYAGE_NARRATIVE.galleryTitle}

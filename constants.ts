@@ -116,6 +116,25 @@ export type GalleryChapter = {
   photos: GalleryPhoto[];
 };
 
+/** 啟程 → 第一座島（對齊全頁海面層） */
+export const GALLERY_SURFACE_HANDOFF: GalleryChapter['palette'] = {
+  deep: '#1B4D6E',
+  sea: '#3A8FB7',
+  accent: '#7EC8E3',
+  glow: '#7EC8E3',
+};
+
+/** 末島 → 靠岸日（暖沙港灣） */
+export const GALLERY_HARBOR_HANDOFF: GalleryChapter['palette'] = {
+  deep: '#8B7355',
+  sea: '#C4A882',
+  accent: '#E8D5BC',
+  glow: '#F4E8D8',
+};
+
+/** 四座小島對應的全頁 depth 錨點（surface 0.18 → shallow 0.35 之間） */
+export const GALLERY_ISLAND_DEPTHS = [0.22, 0.26, 0.3, 0.34] as const;
+
 export const WEDDING_GALLERY_CHAPTERS: GalleryChapter[] = [
   {
     id: 'azure',
