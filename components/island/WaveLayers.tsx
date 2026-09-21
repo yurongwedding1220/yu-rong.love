@@ -7,11 +7,11 @@ type WaveLayersProps = {
   mode: PerfMode;
 };
 
-/** CSS-only waves for low-end — no infinite JS animation */
+/** 高度用父層 %，避免 vh 隨網址列跳動 */
 const StaticWaves: React.FC = () => (
-  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[36vh] overflow-hidden">
+  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[36%] overflow-hidden">
     <svg
-      className="absolute bottom-[12%] left-[-5%] h-[22vh] w-[120%] opacity-50"
+      className="absolute bottom-[12%] left-[-5%] h-[70%] w-[120%] opacity-50"
       viewBox="0 0 1440 320"
       preserveAspectRatio="none"
       aria-hidden
@@ -22,7 +22,7 @@ const StaticWaves: React.FC = () => (
       />
     </svg>
     <svg
-      className="absolute bottom-0 left-0 h-[26vh] w-full opacity-80"
+      className="absolute bottom-0 left-0 h-[80%] w-full opacity-80"
       viewBox="0 0 1440 320"
       preserveAspectRatio="none"
       aria-hidden
@@ -39,9 +39,9 @@ const DriftingWaves: React.FC<{
   yMain: MotionValue<number>;
   yFront: MotionValue<number>;
 }> = ({ yMain, yFront }) => (
-  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[40vh] overflow-hidden">
+  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%] overflow-hidden">
     <motion.div
-      className="absolute bottom-[10%] left-[-8%] h-[26vh] w-[170%] will-change-transform"
+      className="absolute bottom-[10%] left-[-8%] h-[72%] w-[170%]"
       style={{ y: yMain }}
     >
       <div className="island-wave-drift h-full w-full">
@@ -60,7 +60,7 @@ const DriftingWaves: React.FC<{
       </div>
     </motion.div>
     <motion.div
-      className="absolute bottom-0 left-0 h-[28vh] w-full will-change-transform"
+      className="absolute bottom-0 left-0 h-[78%] w-full"
       style={{ y: yFront }}
     >
       <div className="island-wave-drift island-wave-drift-slow h-full w-full">
@@ -88,19 +88,19 @@ export const WaveLayers: React.FC<WaveLayersProps> = ({ progress, mode }) => {
   const yMain = useTransform(
     progress,
     [0, 1],
-    [0, isLow ? -50 : isMedium ? -75 : -100]
+    [0, isLow ? -40 : isMedium ? -56 : -80]
   );
   const yFront = useTransform(
     progress,
     [0, 1],
-    [0, isLow ? -80 : isMedium ? -115 : -150]
+    [0, isLow ? -60 : isMedium ? -88 : -120]
   );
   const fade = useTransform(progress, [0.5, 0.92], [1, 0]);
 
   if (isLow) {
     return (
       <motion.div
-        className="pointer-events-none absolute inset-x-0 bottom-0 will-change-transform"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-full"
         style={{ opacity: fade, y: yMain }}
       >
         <StaticWaves />
@@ -110,7 +110,7 @@ export const WaveLayers: React.FC<WaveLayersProps> = ({ progress, mode }) => {
 
   return (
     <motion.div
-      className="pointer-events-none absolute inset-x-0 bottom-0 will-change-transform"
+      className="pointer-events-none absolute inset-x-0 bottom-0 h-full"
       style={{ opacity: fade }}
     >
       <DriftingWaves yMain={yMain} yFront={yFront} />

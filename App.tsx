@@ -134,30 +134,49 @@ function App() {
   }, [lite]);
 
   useEffect(() => {
-    const onScroll = () => {
+    let ticking = false;
+    let scrollEndTimer = 0;
+
+    const updateChrome = () => {
+      ticking = false;
       const harbor = document.getElementById('harbor');
       const timeline = document.getElementById('timeline');
+      const vh = window.innerHeight;
 
-      setShowNav(
-        !!harbor && harbor.getBoundingClientRect().top < window.innerHeight * 0.9
-      );
-      setShowRSVPButton(
-        !!timeline && timeline.getBoundingClientRect().top < window.innerHeight * 0.75
-      );
+      setShowNav(!!harbor && harbor.getBoundingClientRect().top < vh * 0.9);
+      setShowRSVPButton(!!timeline && timeline.getBoundingClientRect().top < vh * 0.75);
 
       if (isNavigatingRef.current) return;
       const sections = ['line', 'guestbook', 'location', 'timeline', 'harbor', 'photos'];
       for (const id of sections) {
         const el = document.getElementById(id);
-        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.42) {
+        if (el && el.getBoundingClientRect().top <= vh * 0.42) {
           setActiveSection(id);
           break;
         }
       }
     };
+
+    const onScroll = () => {
+      document.documentElement.classList.add('is-scrolling');
+      window.clearTimeout(scrollEndTimer);
+      scrollEndTimer = window.setTimeout(() => {
+        document.documentElement.classList.remove('is-scrolling');
+      }, 140);
+
+      if (!ticking) {
+        ticking = true;
+        window.requestAnimationFrame(updateChrome);
+      }
+    };
+
     window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
+    updateChrome();
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.clearTimeout(scrollEndTimer);
+      document.documentElement.classList.remove('is-scrolling');
+    };
   }, []);
 
   useEffect(() => {

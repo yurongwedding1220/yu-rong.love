@@ -4,6 +4,10 @@ import { APP_CONTENT } from '../../constants';
 import { WaveLayers } from './WaveLayers';
 import { usePerfMode, isLowPerf } from '../../hooks/usePerfMode';
 
+/**
+ * Sticky hero 用 svh（small viewport）鎖定高度，避免 Chrome 手機網址列
+ * 收合時 dvh／vh 跳動 → sticky 區重排 → useScroll 進度跳針 → 海浪卡頓。
+ */
 export const IslandScrollHero: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const perf = usePerfMode();
@@ -26,16 +30,24 @@ export const IslandScrollHero: React.FC = () => {
     [1, 1, lite ? 0.55 : 0.4]
   );
 
+  // 捲動軌道也用 svh，與 sticky 面板同一基準，進度才不會因網址列而抖
   const sectionHeight =
-    perf === 'low' ? 'h-[160vh]' : perf === 'medium' ? 'h-[185vh]' : 'h-[200vh] md:h-[220vh]';
+    perf === 'low'
+      ? 'h-[160svh]'
+      : perf === 'medium'
+        ? 'h-[185svh]'
+        : 'h-[200svh] md:h-[220svh]';
 
   return (
-    <section ref={containerRef} className={`relative ${sectionHeight}`}>
-      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden">
+    <section
+      ref={containerRef}
+      className={`island-scroll-hero relative ${sectionHeight}`}
+    >
+      <div className="island-scroll-hero__sticky sticky top-0 h-[100svh] w-full overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-[#0f3550] via-[#1B4D6E] to-[#3A8FB7]" />
 
         <motion.div
-          className="absolute inset-0 bg-gradient-to-b from-transparent via-[#c5e4f0]/40 to-[#F4E8D8] will-change-transform"
+          className="absolute inset-0 bg-gradient-to-b from-transparent via-[#c5e4f0]/40 to-[#F4E8D8]"
           style={{ opacity: sandMix }}
         />
 
@@ -43,16 +55,16 @@ export const IslandScrollHero: React.FC = () => {
 
         {!lite && (
           <div
-            className={`pointer-events-none absolute -top-16 right-[-8%] rounded-full bg-[#E8A87C]/20 ${
-              perf === 'medium' ? 'h-[24vh] w-[24vh]' : 'h-[32vh] w-[32vh]'
+            className={`pointer-events-none absolute -top-16 right-[-8%] rounded-full bg-[#E8A87C]/15 ${
+              perf === 'medium' ? 'h-[22%] w-[22%]' : 'h-[28%] w-[28%]'
             }`}
-            style={{ filter: perf === 'medium' ? 'blur(32px)' : 'blur(48px)' }}
+            style={{ filter: perf === 'medium' ? 'blur(24px)' : 'blur(40px)' }}
             aria-hidden
           />
         )}
 
         <motion.div
-          className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center will-change-transform"
+          className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center"
           style={{ y: contentY, opacity: contentFade }}
         >
           <motion.p

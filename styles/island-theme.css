@@ -173,24 +173,24 @@ html {
   background-color: rgba(244, 232, 216, 0.94);
 }
 
-/* GPU-friendly wave drift — medium/high only */
+/* GPU-friendly wave drift — medium/high only; pause while scrolling to avoid jank */
 @keyframes island-wave-drift {
   0%,
   100% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateX(-1.5%);
+    transform: translate3d(-1.5%, 0, 0);
   }
 }
 
 @keyframes island-wave-drift-slow {
   0%,
   100% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateX(1.2%);
+    transform: translate3d(1.2%, 0, 0);
   }
 }
 
@@ -202,6 +202,22 @@ html[data-perf='high'] .island-wave-drift {
 html[data-perf='medium'] .island-wave-drift-slow,
 html[data-perf='high'] .island-wave-drift-slow {
   animation: island-wave-drift-slow 12s ease-in-out infinite;
+}
+
+/* 手指滑動時暫停無限 CSS 動畫，減少與 scroll-linked transform 搶合成層 */
+html.is-scrolling .island-wave-drift,
+html.is-scrolling .island-wave-drift-slow {
+  animation-play-state: paused;
+}
+
+/* Sticky hero：關閉 scroll anchoring，避免網址列收合時瀏覽器自動補位移 */
+.island-scroll-hero {
+  overflow-anchor: none;
+}
+
+.island-scroll-hero__sticky {
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* Skip layout/paint for off-screen sections */
