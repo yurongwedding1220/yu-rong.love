@@ -5,7 +5,7 @@
 export const APP_CONTENT = {
   coupleName: 'Yu & Rong',
   chineseNames: '政憲 ❤️ 幸容',
-  date: '2026年12月20日（六）',
+  date: '2026年12月20日（日）',
   dateISO: '2026-12-20T11:30:00+08:00',
   location: '雲林縣斗六市',
   venueName: '緻麗伯爵酒店',
@@ -16,7 +16,7 @@ export const APP_CONTENT = {
   googleScriptUrl:
     'https://script.google.com/macros/s/AKfycbyHpBAbJVEftXr2cunc1M7sMlcZSxxLc-4GGvwpK3ZRZL_n0Aqo0FF5XX5Hsy0LLZOO/exec',
   lineLink: '',
-  lineQrCode: 'qrcode.png',
+  lineQrCode: '',
   mapsQuery: '緻麗伯爵酒店 斗六',
 };
 
@@ -67,12 +67,6 @@ export const TIMELINE_EVENTS = [
     chineseTitle: '幸福開席',
     description: '婚禮正式開始，敬備佳餚，共饗盛宴。',
   },
-  {
-    time: '15:00',
-    title: 'Farewell',
-    chineseTitle: '送客合影',
-    description: '感謝您的參與，與新人留下美好回憶。',
-  },
 ];
 
 export const TRANSPORT_INFO = [
@@ -81,7 +75,7 @@ export const TRANSPORT_INFO = [
     title: 'Driving',
     chineseTitle: '自行開車',
     description:
-      '國道三號下斗六交流道，依指標往斗六市區／中山路即可抵達。酒店備有停車場。',
+      '俥亭停車－斗六停三立體停車場（到會場提供車號，可折抵三小時停車費）',
   },
   {
     icon: '🚆',
@@ -94,7 +88,7 @@ export const TRANSPORT_INFO = [
     title: 'HSR',
     chineseTitle: '台灣高鐵',
     description:
-      '建議於【高鐵台中站】或【高鐵嘉義站】轉乘台鐵／客運／計程車至斗六市區（細節待補）。',
+      '高鐵雲林站下車；有接送需求請於 RSVP 表單填寫 LINE ID，我們將建立聯絡群組',
   },
 ];
 

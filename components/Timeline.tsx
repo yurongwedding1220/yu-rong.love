@@ -66,13 +66,13 @@ export const Timeline: React.FC<TimelineProps> = ({ animate = true }) => (
                 </span>
                 <div className="island-card rounded-xl p-6 md:p-7">
                   <div className={`flex flex-col ${!isEven ? 'md:items-end' : ''}`}>
-                    <span className="mb-1 font-display text-[10px] uppercase tracking-[0.22em] text-[#3A8FB7]">
+                    <span className="mb-1 font-display text-[11px] uppercase tracking-[0.22em] text-[#3A8FB7]">
                       {event.title}
                     </span>
                     <h3 className="island-heading mb-3 font-serif text-xl font-light text-[#1A3344] md:text-2xl">
                       {event.chineseTitle}
                     </h3>
-                    <p className="island-prose text-left text-sm md:text-[0.9rem]">
+                    <p className="island-prose text-left text-base md:text-[1.05rem]">
                       {event.description}
                     </p>
                   </div>

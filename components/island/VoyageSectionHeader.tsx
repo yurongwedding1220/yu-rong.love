@@ -29,7 +29,7 @@ export const VoyageSectionHeader: React.FC<VoyageSectionHeaderProps> = ({
       <div className={ornamentAlign} aria-hidden>
         <span className="island-ornament__mark">✦</span>
       </div>
-      <h2 className="island-heading font-serif text-3xl font-light tracking-wide text-[#1A3344] md:text-4xl">
+      <h2 className="island-heading font-serif text-4xl font-light tracking-wide text-[#1A3344] md:text-5xl">
         {title}
       </h2>
       {intro && (

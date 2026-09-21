@@ -41,7 +41,7 @@ export const LocationInfo: React.FC = () => {
           </div>
 
           <div className="flex flex-col items-stretch gap-3 md:items-end">
-            <p className="hidden max-w-xs text-right font-sans text-sm leading-relaxed text-[#5A7380] md:block">
+            <p className="hidden max-w-xs text-right font-sans text-base leading-relaxed text-[#5A7380] md:block">
               {APP_CONTENT.venueDescription}
             </p>
             <a
@@ -77,8 +77,8 @@ export const LocationInfo: React.FC = () => {
           </div>
         )}
         <div className="absolute bottom-4 left-4 right-4 rounded-xl border border-white/60 bg-white/95 p-4 text-left shadow-lg backdrop-blur-sm md:right-auto md:max-w-xs">
-          <p className="text-sm font-medium text-[#1A3344]">{APP_CONTENT.venueName}</p>
-          <p className="mt-1 text-xs leading-relaxed text-[#5A7380]">{APP_CONTENT.venueAddress}</p>
+          <p className="text-base font-medium text-[#1A3344]">{APP_CONTENT.venueName}</p>
+          <p className="mt-1 text-sm leading-relaxed text-[#5A7380]">{APP_CONTENT.venueAddress}</p>
         </div>
       </div>
 
@@ -89,13 +89,13 @@ export const LocationInfo: React.FC = () => {
             className="island-card island-transport-card flex flex-col items-center rounded-2xl p-6 text-center md:p-7"
           >
             <div className="mb-4 text-3xl opacity-75 grayscale" aria-hidden>{item.icon}</div>
-            <h4 className="mb-2 font-display text-[10px] uppercase tracking-[0.22em] text-[#3A8FB7]">
+            <h4 className="mb-2 font-display text-[11px] uppercase tracking-[0.22em] text-[#3A8FB7]">
               {item.title}
             </h4>
             <span className="island-heading mb-3 block font-serif text-lg text-[#1A3344]">
               {item.chineseTitle}
             </span>
-            <p className="island-prose text-xs">{item.description}</p>
+            <p className="island-prose text-sm">{item.description}</p>
           </div>
         ))}
       </div>

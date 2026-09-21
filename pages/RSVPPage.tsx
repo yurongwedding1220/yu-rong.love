@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { APP_CONTENT } from '../constants';
-import { GuestBookEntry } from '../types';
 import { ANIME_CHARACTERS } from '../data/animeCharacters';
 
-type Step = 'name' | 'side' | 'relation' | 'attendance' | 'guests' | 'paperInvite' | 'address' | 'email' | 'message' | 'success';
+type Step = 'name' | 'side' | 'relation' | 'attendance' | 'arrivalMethod' | 'lineId' | 'guests' | 'paperInvite' | 'address' | 'email' | 'message' | 'success';
 
 const RSVPPage: React.FC = () => {
     const navigate = useNavigate();
@@ -19,6 +18,8 @@ const RSVPPage: React.FC = () => {
         side: '' as 'groom' | 'bride' | '',
         relation: '',
         attendance: '' as 'yes' | 'no' | '',
+        arrivalMethod: '' as 'car' | 'train' | 'hsr' | '',
+        lineId: '',
         // Guest Counts
         adults: 1,
         children: 0,
@@ -31,7 +32,6 @@ const RSVPPage: React.FC = () => {
         address: '',
         // Email
         email: '',
-        // Message
         // Message
         message: '',
         publishToGuestbook: true,
@@ -46,20 +46,30 @@ const RSVPPage: React.FC = () => {
         let current = 0;
 
         const sequence = ['name', 'side', 'relation', 'attendance'];
+        const needsLineId = formData.attendance === 'yes' && formData.arrivalMethod === 'hsr';
 
         // Determine path length
         if (formData.attendance === 'yes') {
-            total = 8;
-            if (formData.needPaperInvite === 'yes') total = 9;
+            // name, side, relation, attendance, arrivalMethod, [lineId], guests, paperInvite, [address], email, message
+            total = 9; // without lineId, without address
+            if (needsLineId) total += 1;
+            if (formData.needPaperInvite === 'yes') total += 1;
         }
 
         // Determine current index
         if (sequence.includes(currentStepName)) {
             current = sequence.indexOf(currentStepName);
-        } else if (currentStepName === 'guests') current = 4;
-        else if (currentStepName === 'paperInvite') current = 5;
-        else if (currentStepName === 'address') current = 6;
-        else if (currentStepName === 'email') {
+        } else if (currentStepName === 'arrivalMethod') {
+            current = 4;
+        } else if (currentStepName === 'lineId') {
+            current = 5;
+        } else if (currentStepName === 'guests') {
+            current = needsLineId ? 6 : 5;
+        } else if (currentStepName === 'paperInvite') {
+            current = needsLineId ? 7 : 6;
+        } else if (currentStepName === 'address') {
+            current = needsLineId ? 8 : 7;
+        } else if (currentStepName === 'email') {
             if (formData.attendance === 'yes') {
                 current = total - 2;
             }
@@ -81,9 +91,14 @@ const RSVPPage: React.FC = () => {
             case 'side': setCurrentStepName('relation'); break;
             case 'relation': setCurrentStepName('attendance'); break;
             case 'attendance':
-                if (formData.attendance === 'yes') setCurrentStepName('guests');
+                if (formData.attendance === 'yes') setCurrentStepName('arrivalMethod');
                 else setCurrentStepName('message');
                 break;
+            case 'arrivalMethod':
+                if (formData.arrivalMethod === 'hsr') setCurrentStepName('lineId');
+                else setCurrentStepName('guests');
+                break;
+            case 'lineId': setCurrentStepName('guests'); break;
             case 'guests': setCurrentStepName('paperInvite'); break;
             case 'paperInvite':
                 if (formData.needPaperInvite === 'yes') setCurrentStepName('address');
@@ -102,7 +117,12 @@ const RSVPPage: React.FC = () => {
             case 'side': setCurrentStepName('name'); break;
             case 'relation': setCurrentStepName('side'); break;
             case 'attendance': setCurrentStepName('relation'); break;
-            case 'guests': setCurrentStepName('attendance'); break;
+            case 'arrivalMethod': setCurrentStepName('attendance'); break;
+            case 'lineId': setCurrentStepName('arrivalMethod'); break;
+            case 'guests':
+                if (formData.arrivalMethod === 'hsr') setCurrentStepName('lineId');
+                else setCurrentStepName('arrivalMethod');
+                break;
             case 'paperInvite': setCurrentStepName('guests'); break;
             case 'address': setCurrentStepName('paperInvite'); break;
             case 'email':
@@ -129,6 +149,8 @@ const RSVPPage: React.FC = () => {
             case 'side': return !!formData.side;
             case 'relation': return !!formData.relation;
             case 'attendance': return !!formData.attendance;
+            case 'arrivalMethod': return !!formData.arrivalMethod;
+            case 'lineId': return true; // 選填
             case 'guests': return true;
             case 'paperInvite': return !!formData.needPaperInvite;
             case 'address': return formData.zipCode.trim().length > 0 && formData.address.trim().length > 0;
@@ -145,9 +167,14 @@ const RSVPPage: React.FC = () => {
     const handleSubmit = async () => {
         setIsSubmitting(true);
 
+        const isHsr = formData.attendance === 'yes' && formData.arrivalMethod === 'hsr';
+
         // Ensure we don't publish empty messages
         const finalFormData = {
             ...formData,
+            // 非高鐵時不送 LINE ID
+            lineId: isHsr ? formData.lineId.trim() : '',
+            arrivalMethod: formData.attendance === 'yes' ? formData.arrivalMethod : '',
             publishToGuestbook: formData.message.trim().length > 0 ? formData.publishToGuestbook : false,
             // If publishing to guestbook, decide which name to use
             guestbookName: (formData.publishToGuestbook && formData.useAnonymous) ? formData.nickname : formData.name
@@ -205,7 +232,7 @@ const RSVPPage: React.FC = () => {
                 return (
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="block text-xl md:text-2xl font-serif text-[#2c3e50]">
+                            <label className="block text-2xl md:text-3xl font-serif text-[#2c3e50]">
                                 您的姓名 <span className="text-[#1B4D6E]">*</span>
                             </label>
                         </div>
@@ -214,7 +241,7 @@ const RSVPPage: React.FC = () => {
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             placeholder="請輸入您的姓名"
-                            className="w-full text-lg border border-stone-200 rounded-lg px-4 py-3 focus:outline-none focus:border-[#1B4D6E] focus:ring-1 focus:ring-[#1B4D6E] transition-all bg-stone-50"
+                            className="w-full text-xl border border-stone-200 rounded-lg px-4 py-3 focus:outline-none focus:border-[#1B4D6E] focus:ring-1 focus:ring-[#1B4D6E] transition-all bg-stone-50"
                             autoFocus
                         />
                     </div>
@@ -224,7 +251,7 @@ const RSVPPage: React.FC = () => {
                 return (
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="block text-xl md:text-2xl font-serif text-[#2c3e50]">
+                            <label className="block text-2xl md:text-3xl font-serif text-[#2c3e50]">
                                 您是哪一方的親友呢 <span className="text-[#1B4D6E]">*</span>
                             </label>
                         </div>
@@ -244,7 +271,7 @@ const RSVPPage: React.FC = () => {
                                         checked={formData.side === opt.val}
                                         onChange={() => setFormData({ ...formData, side: opt.val as any })}
                                     />
-                                    <span className="text-lg text-[#2c3e50]">{opt.label}</span>
+                                    <span className="text-xl text-[#2c3e50]">{opt.label}</span>
                                 </label>
                             ))}
                         </div>
@@ -259,7 +286,7 @@ const RSVPPage: React.FC = () => {
                 return (
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="block text-xl md:text-2xl font-serif text-[#2c3e50]">
+                            <label className="block text-2xl md:text-3xl font-serif text-[#2c3e50]">
                                 {title} <span className="text-[#1B4D6E]">*</span>
                             </label>
                         </div>
@@ -276,7 +303,7 @@ const RSVPPage: React.FC = () => {
                                         checked={formData.relation === opt}
                                         onChange={() => setFormData({ ...formData, relation: opt })}
                                     />
-                                    <span className="text-lg text-[#2c3e50]">{opt}</span>
+                                    <span className="text-xl text-[#2c3e50]">{opt}</span>
                                 </label>
                             ))}
                         </div>
@@ -287,7 +314,7 @@ const RSVPPage: React.FC = () => {
                 return (
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="block text-xl md:text-2xl font-serif text-[#2c3e50]">
+                            <label className="block text-2xl md:text-3xl font-serif text-[#2c3e50]">
                                 是否一同參與我們重要的一天 <span className="text-[#1B4D6E]">*</span>
                             </label>
                         </div>
@@ -303,7 +330,7 @@ const RSVPPage: React.FC = () => {
                                     checked={formData.attendance === 'yes'}
                                     onChange={() => setFormData({ ...formData, attendance: 'yes' })}
                                 />
-                                <span className="text-lg text-[#2c3e50]">一定到場，一起見證幸福！</span>
+                                <span className="text-xl text-[#2c3e50]">一定到場，一起見證幸福！</span>
                             </label>
 
                             <label className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${formData.attendance === 'no' ? 'border-[#1B4D6E] bg-[#1B4D6E]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
@@ -315,11 +342,69 @@ const RSVPPage: React.FC = () => {
                                     name="attendance"
                                     className="hidden"
                                     checked={formData.attendance === 'no'}
-                                    onChange={() => setFormData({ ...formData, attendance: 'no' })}
+                                    onChange={() => setFormData({ ...formData, attendance: 'no', arrivalMethod: '', lineId: '' })}
                                 />
-                                <span className="text-lg text-[#2c3e50] flex items-center gap-2">無法出席，謹上心意與祝福 <span className="text-red-500">❤️</span></span>
+                                <span className="text-xl text-[#2c3e50] flex items-center gap-2">無法出席，謹上心意與祝福 <span className="text-red-500">❤️</span></span>
                             </label>
                         </div>
+                    </div>
+                );
+
+            case 'arrivalMethod':
+                return (
+                    <div className="space-y-6">
+                        <div className="space-y-2">
+                            <label className="block text-2xl md:text-3xl font-serif text-[#2c3e50]">
+                                您預計如何抵達會場？ <span className="text-[#1B4D6E]">*</span>
+                            </label>
+                        </div>
+                        <div className="space-y-3">
+                            {[
+                                { val: 'car' as const, label: '自行開車' },
+                                { val: 'train' as const, label: '台鐵火車' },
+                                { val: 'hsr' as const, label: '高鐵' },
+                            ].map((opt) => (
+                                <label key={opt.val} className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${formData.arrivalMethod === opt.val ? 'border-[#1B4D6E] bg-[#1B4D6E]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
+                                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${formData.arrivalMethod === opt.val ? 'border-[#1B4D6E]' : 'border-stone-300'}`}>
+                                        {formData.arrivalMethod === opt.val && <div className="w-3 h-3 rounded-full bg-[#1B4D6E]" />}
+                                    </div>
+                                    <input
+                                        type="radio"
+                                        name="arrivalMethod"
+                                        className="hidden"
+                                        checked={formData.arrivalMethod === opt.val}
+                                        onChange={() => setFormData({
+                                            ...formData,
+                                            arrivalMethod: opt.val,
+                                            lineId: opt.val === 'hsr' ? formData.lineId : '',
+                                        })}
+                                    />
+                                    <span className="text-xl text-[#2c3e50]">{opt.label}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                );
+
+            case 'lineId':
+                return (
+                    <div className="space-y-6">
+                        <div className="space-y-2">
+                            <label className="block text-2xl md:text-3xl font-serif text-[#2c3e50]">
+                                LINE ID <span className="text-base font-sans text-stone-400 font-normal tracking-normal">（選填）</span>
+                            </label>
+                            <p className="text-base text-stone-500 leading-relaxed">
+                                若有接送需求，請填寫 LINE ID，我們將建立聯絡群組
+                            </p>
+                        </div>
+                        <input
+                            type="text"
+                            value={formData.lineId}
+                            onChange={(e) => setFormData({ ...formData, lineId: e.target.value })}
+                            placeholder="請輸入您的 LINE ID"
+                            className="w-full text-xl border border-stone-200 rounded-lg px-4 py-3 focus:outline-none focus:border-[#1B4D6E] focus:ring-1 focus:ring-[#1B4D6E] transition-all bg-stone-50"
+                            autoFocus
+                        />
                     </div>
                 );
 
@@ -327,7 +412,7 @@ const RSVPPage: React.FC = () => {
                 return (
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="block text-lg font-serif text-[#2c3e50]">成人人數 <span className="text-[#1B4D6E]">*</span></label>
+                            <label className="block text-xl font-serif text-[#2c3e50]">成人人數 <span className="text-[#1B4D6E]">*</span></label>
                             <select
                                 value={formData.adults}
                                 onChange={(e) => setFormData({ ...formData, adults: Number(e.target.value) })}
@@ -338,7 +423,7 @@ const RSVPPage: React.FC = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="block text-lg font-serif text-[#2c3e50]">兒童人數</label>
+                            <label className="block text-xl font-serif text-[#2c3e50]">兒童人數</label>
                             <select
                                 value={formData.children}
                                 onChange={(e) => setFormData({ ...formData, children: Number(e.target.value) })}
@@ -349,7 +434,7 @@ const RSVPPage: React.FC = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="block text-lg font-serif text-[#2c3e50]">兒童座椅數量</label>
+                            <label className="block text-xl font-serif text-[#2c3e50]">兒童座椅數量</label>
                             <select
                                 value={formData.highChairs}
                                 onChange={(e) => setFormData({ ...formData, highChairs: Number(e.target.value) })}
@@ -360,7 +445,7 @@ const RSVPPage: React.FC = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="block text-lg font-serif text-[#2c3e50]">素食人數</label>
+                            <label className="block text-xl font-serif text-[#2c3e50]">素食人數</label>
                             <select
                                 value={formData.vegetarian}
                                 onChange={(e) => setFormData({ ...formData, vegetarian: Number(e.target.value) })}
@@ -376,7 +461,7 @@ const RSVPPage: React.FC = () => {
                 return (
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="block text-xl md:text-2xl font-serif text-[#2c3e50]">
+                            <label className="block text-2xl md:text-3xl font-serif text-[#2c3e50]">
                                 您是否需要紙本喜帖？ <span className="text-[#1B4D6E]">*</span>
                             </label>
                         </div>
@@ -392,7 +477,7 @@ const RSVPPage: React.FC = () => {
                                     checked={formData.needPaperInvite === 'yes'}
                                     onChange={() => setFormData({ ...formData, needPaperInvite: 'yes' })}
                                 />
-                                <span className="text-lg text-[#2c3e50]">是，請寄給我</span>
+                                <span className="text-xl text-[#2c3e50]">是，請寄給我</span>
                             </label>
 
                             <label className={`flex items-center gap-4 p-4 rounded-lg border cursor-pointer transition-all ${formData.needPaperInvite === 'no' ? 'border-[#1B4D6E] bg-[#1B4D6E]/5' : 'border-stone-200 hover:bg-stone-50'}`}>
@@ -406,7 +491,7 @@ const RSVPPage: React.FC = () => {
                                     checked={formData.needPaperInvite === 'no'}
                                     onChange={() => setFormData({ ...formData, needPaperInvite: 'no' })}
                                 />
-                                <span className="text-lg text-[#2c3e50]">不用喔，我已經知道婚禮資訊了</span>
+                                <span className="text-xl text-[#2c3e50]">不用喔，我已經知道婚禮資訊了</span>
                             </label>
                         </div>
                     </div>
@@ -416,7 +501,7 @@ const RSVPPage: React.FC = () => {
                 return (
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="block text-lg font-serif text-[#2c3e50]">郵遞區號 <span className="text-[#1B4D6E]">*</span></label>
+                            <label className="block text-xl font-serif text-[#2c3e50]">郵遞區號 <span className="text-[#1B4D6E]">*</span></label>
                             <input
                                 type="text"
                                 value={formData.zipCode}
@@ -427,7 +512,7 @@ const RSVPPage: React.FC = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="block text-lg font-serif text-[#2c3e50]">地址 <span className="text-[#1B4D6E]">*</span></label>
+                            <label className="block text-xl font-serif text-[#2c3e50]">地址 <span className="text-[#1B4D6E]">*</span></label>
                             <input
                                 type="text"
                                 value={formData.address}
@@ -443,10 +528,10 @@ const RSVPPage: React.FC = () => {
                 return (
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="block text-xl md:text-2xl font-serif text-[#2c3e50]">
+                            <label className="block text-2xl md:text-3xl font-serif text-[#2c3e50]">
                                 您的 Email <span className="text-stone-400 text-lg md:text-xl font-normal">(選填)</span>
                             </label>
-                            <p className="text-sm text-stone-400">方便我們寄送婚禮通知與現場資訊，如不需要可略過</p>
+                            <p className="text-base text-stone-400">方便我們寄送婚禮通知與現場資訊，如不需要可略過</p>
                         </div>
                         <input
                             type="email"
@@ -466,10 +551,10 @@ const RSVPPage: React.FC = () => {
                 return (
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="block text-xl md:text-2xl font-serif text-[#2c3e50]">
+                            <label className="block text-2xl md:text-3xl font-serif text-[#2c3e50]">
                                 有什麼想對我們說的話嗎？ <span className="text-stone-400 text-lg md:text-xl font-normal">(選填)</span>
                             </label>
-                            <p className="text-sm text-stone-400">您的祝福是我們最大的動力，不需留言也可直接提交回覆</p>
+                            <p className="text-base text-stone-400">您的祝福是我們最大的動力，不需留言也可直接提交回覆</p>
                         </div>
 
                         <textarea
@@ -616,40 +701,9 @@ const RSVPPage: React.FC = () => {
 
                     <div className="w-full h-px bg-stone-50" />
 
-                    {/* LINE Section */}
-                    <div className="pt-2">
-                        <motion.div
-                            whileHover={{ scale: 1.02 }}
-                            className="inline-block relative rounded-2xl overflow-hidden shadow-sm border border-stone-100"
-                        >
-                            <img
-                                src={APP_CONTENT.lineQrCode}
-                                alt="LINE QR Code"
-                                className="w-64 h-auto md:w-72 mx-auto block"
-                            />
-                            {/* Clickable Area Overlay */}
-                            <a
-                                href={APP_CONTENT.lineLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="absolute z-10 hover:bg-black/5 transition-all duration-300 flex items-center justify-center"
-                                style={{
-                                    left: '14.12%',
-                                    top: '75.27%',
-                                    width: '72.16%',
-                                    height: '14.68%'
-                                } as any}
-                            >
-                                <motion.span
-                                    animate={{ opacity: [0.6, 1, 0.6] }}
-                                    transition={{ duration: 2.5, repeat: Infinity }}
-                                    className="font-serif text-[#1B4D6E] text-xs md:text-sm tracking-[0.2em] font-medium"
-                                >
-                                    點擊加入 LINE 好友
-                                </motion.span>
-                            </a>
-                        </motion.div>
-                    </div>
+                    <p className="text-stone-400 text-sm font-serif leading-relaxed">
+                        LINE 聯絡資訊將於婚禮前通知
+                    </p>
 
                     <div className="pt-2">
                         <button
@@ -701,12 +755,12 @@ const RSVPPage: React.FC = () => {
                     {/* Wedding Info Summary */}
                     <div className="text-center space-y-2 md:space-y-4 mb-2 md:mb-4">
                         <h1 className="font-serif text-2xl md:text-4xl text-[#2c3e50]">政憲 & 幸容</h1>
-                        <p className="font-serif text-base md:text-lg text-[#1B4D6E]">2026.05.30 星期六</p>
+                        <p className="font-serif text-base md:text-lg text-[#1B4D6E]">{APP_CONTENT.date}</p>
 
-                        <div className="text-[11px] md:text-sm text-stone-600 bg-white/50 block md:inline-block p-3 md:p-4 rounded-lg border border-stone-100 max-w-lg mx-auto leading-relaxed">
-                            <p className="mb-1 md:mb-2"><span className="font-bold text-[#3A8FB7]">時間：</span> 12:00 入席 · 12:30 準時開席</p>
-                            <p className="mb-1 md:mb-2"><span className="font-bold text-[#3A8FB7]">地點：</span> {APP_CONTENT.venueName}</p>
-                            <p className="hidden md:block"><span className="font-bold text-[#3A8FB7]">交通：</span> 高鐵新竹站轉乘計程車 (約15分) / 國道一號公道五路交流道 / 附設停車場</p>
+                        <div className="text-sm md:text-base text-stone-600 bg-white/50 block md:inline-block p-3 md:p-4 rounded-lg border border-stone-100 max-w-lg mx-auto leading-relaxed">
+                            <p className="mb-1 md:mb-2"><span className="font-bold text-[#3A8FB7]">時間：</span> 11:30 入席 · 12:00 開席</p>
+                            <p className="mb-1 md:mb-2"><span className="font-bold text-[#3A8FB7]">地點：</span> {APP_CONTENT.venueName} · {APP_CONTENT.venueHall}</p>
+                            <p className="hidden md:block"><span className="font-bold text-[#3A8FB7]">交通：</span> 高鐵雲林站／俥亭停車斗六停三（折抵三小時）</p>
                         </div>
                     </div>
 

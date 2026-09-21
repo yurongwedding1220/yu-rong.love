@@ -16,6 +16,7 @@
   --theme-color: #1b4d6e;
 
   /* Type rhythm — consistent scale across sections */
+  --island-text-scale: 1.125; /* ~+12.5% */
   --island-space-xs: 0.5rem;
   --island-space-sm: 0.75rem;
   --island-space-md: 1rem;
@@ -23,6 +24,10 @@
   --island-space-xl: 2.5rem;
   --island-ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
   --island-ease-land: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+html {
+  font-size: calc(16px * var(--island-text-scale));
 }
 
 .bg-grid-fixed {
@@ -48,7 +53,7 @@
 
 .island-section-label {
   font-family: 'Cinzel', serif;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.38em;
   text-transform: uppercase;
   color: var(--island-sea);
@@ -100,8 +105,8 @@
 /* Consistent intro prose */
 .island-prose {
   font-family: 'Noto Serif TC', 'Playfair Display', serif;
-  font-size: 0.875rem;
-  line-height: 1.85;
+  font-size: 1rem;
+  line-height: 1.9;
   letter-spacing: 0.02em;
   color: var(--island-muted);
 }

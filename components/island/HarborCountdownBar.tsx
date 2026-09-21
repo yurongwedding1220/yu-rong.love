@@ -20,7 +20,7 @@ export const HarborCountdownBar: React.FC<HarborCountdownBarProps> = ({
     aria-label={VOYAGE_NARRATIVE.countdownLabel}
   >
     {lite ? (
-      <div className="island-tabular flex justify-center gap-3 px-4 py-2.5 text-center text-xs tracking-wider text-[#1B4D6E] font-display">
+      <div className="island-tabular flex justify-center gap-3 px-4 py-2.5 text-center text-sm tracking-wider text-[#1B4D6E] font-display">
         <span>{VOYAGE_NARRATIVE.countdownLabel}</span>
         <span className="text-[#E8A87C]" aria-hidden>✦</span>
         <span>{timeLeft.days} 天</span>
@@ -29,7 +29,7 @@ export const HarborCountdownBar: React.FC<HarborCountdownBarProps> = ({
       </div>
     ) : (
       <div
-        className={`island-tabular flex whitespace-nowrap py-2.5 text-xs tracking-[0.18em] text-[#1B4D6E] ${
+        className={`island-tabular flex whitespace-nowrap py-2.5 text-sm tracking-[0.18em] text-[#1B4D6E] ${
           perf === 'medium'
             ? 'animate-[marquee_48s_linear_infinite]'
             : 'animate-[marquee_36s_linear_infinite]'
