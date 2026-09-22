@@ -10,13 +10,30 @@ export const VoyageInterlude: React.FC = () => {
   return (
     <section
       data-depth-phase="surface"
-      className="island-section-surface relative overflow-hidden py-14 md:py-16"
+      className="island-section-surface island-voyage-shore relative overflow-hidden py-14 md:py-16"
     >
       {!lite && (
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--island-shallow)]/40 to-transparent"
-          aria-hidden
-        />
+        <>
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#F4E8D8]/35 to-transparent"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-16 opacity-60"
+            aria-hidden
+          >
+            <svg className="h-full w-full" viewBox="0 0 1440 48" preserveAspectRatio="none">
+              <path
+                fill="rgba(255,255,255,0.35)"
+                d="M0,24 C240,8 480,40 720,22 C960,4 1200,36 1440,18 L1440,48 L0,48 Z"
+              />
+            </svg>
+          </div>
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--island-shallow)]/40 to-transparent"
+            aria-hidden
+          />
+        </>
       )}
       <IslandSectionReveal animate={!lite}>
         <div className="relative mx-auto max-w-lg px-6 text-center">

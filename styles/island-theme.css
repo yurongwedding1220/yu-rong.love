@@ -38,10 +38,11 @@ html {
 .bg-grid-fixed {
   background: linear-gradient(
     180deg,
-    #b8e4f5 0%,
-    #4a9ec4 42%,
-    #3a8fb7 68%,
-    #1b4d6e 100%
+    #87ceeb 0%,
+    #6bb5e8 18%,
+    #4a9ec4 38%,
+    #1b4d6e 72%,
+    #0f3550 100%
   ) !important;
 }
 
@@ -539,6 +540,72 @@ html.is-scrolling .island-wave-drift-slow {
 .island-scroll-hero__sticky {
   transform: translateZ(0);
   backface-visibility: hidden;
+}
+
+/* Hero 開場：藍天白雲、海平面、遠方小島 */
+.hero-ocean-scene__sky {
+  background: linear-gradient(
+    180deg,
+    #5eb3e8 0%,
+    #87ceeb 22%,
+    #b8e4f5 48%,
+    rgba(184, 228, 245, 0.35) 68%,
+    transparent 82%
+  );
+}
+
+.hero-ocean-scene__cloud-drift {
+  animation: hero-cloud-drift 48s linear infinite;
+}
+
+@keyframes hero-cloud-drift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-6%, 0, 0);
+  }
+}
+
+html.is-scrolling .hero-ocean-scene__cloud-drift {
+  animation-play-state: paused;
+}
+
+.hero-ocean-scene__shallow {
+  background: linear-gradient(
+    to top,
+    rgba(126, 200, 227, 0.42) 0%,
+    rgba(184, 232, 245, 0.22) 45%,
+    transparent 100%
+  );
+}
+
+.hero-ocean-scene__horizon-glow {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255, 255, 255, 0.18) 45%,
+    transparent 100%
+  );
+}
+
+.hero-ocean-scene__vignette {
+  background: linear-gradient(
+    180deg,
+    rgba(8, 28, 44, 0.08) 0%,
+    transparent 35%,
+    transparent 72%,
+    rgba(8, 28, 44, 0.12) 100%
+  );
+}
+
+.island-voyage-shore {
+  background: linear-gradient(
+    180deg,
+    rgba(244, 232, 216, 0.28) 0%,
+    rgba(126, 200, 227, 0.12) 38%,
+    transparent 100%
+  );
 }
 
 /* Skip layout/paint for off-screen sections */

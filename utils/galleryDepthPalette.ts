@@ -121,6 +121,8 @@ export function getDividerColors(fromDepth: number, toDepth: number): {
 
 /** 深度導覽字幕 */
 export function getDepthCaption(depth: number): string {
+  if (depth <= 0.06) return '遠方的小島';
+  if (depth <= 0.14) return '海平線上，啟程';
   if (depth <= 0.2) return '日光洒落海面';
 
   const chapters = WEDDING_GALLERY_CHAPTERS;

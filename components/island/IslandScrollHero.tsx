@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { APP_CONTENT } from '../../constants';
+import { HeroOceanScene } from './HeroOceanScene';
 import { WaveLayers } from './WaveLayers';
 import { usePerfMode, isLowPerf } from '../../hooks/usePerfMode';
 
@@ -18,7 +19,8 @@ export const IslandScrollHero: React.FC = () => {
     offset: ['start start', 'end start'],
   });
 
-  const sandMix = useTransform(scrollYProgress, [0, 0.5, 0.85, 1], [0, 0, 0.35, 0.65]);
+  const sandMix = useTransform(scrollYProgress, [0, 0.45, 0.72, 1], [0, 0.08, 0.38, 0.68]);
+  const beachGlow = useTransform(scrollYProgress, [0.5, 0.9, 1], [0, 0.25, 0.42]);
   const contentY = useTransform(
     scrollYProgress,
     [0, 0.7],
@@ -45,31 +47,18 @@ export const IslandScrollHero: React.FC = () => {
       className={`island-scroll-hero relative ${sectionHeight}`}
     >
       <div className="island-scroll-hero__sticky sticky top-0 h-[100svh] w-full overflow-hidden">
-        {/* 白天晴空 */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(180deg, #B8E4F5 0%, #87CEEB 28%, rgba(126,200,227,0.15) 55%, transparent 72%)',
-          }}
-          aria-hidden
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#4A9EC4] via-[#3A8FB7] to-[#7EC8E3] opacity-95" />
-
-        {!lite && (
-          <div
-            className="pointer-events-none absolute right-[14%] top-[12%] h-12 w-12 rounded-full md:h-14 md:w-14"
-            style={{
-              background: 'radial-gradient(circle, #FFFEF5 0%, #FFEAA0 45%, transparent 72%)',
-              boxShadow: '0 0 40px 14px rgba(255, 234, 160, 0.25)',
-            }}
-            aria-hidden
-          />
-        )}
+        <HeroOceanScene progress={scrollYProgress} lite={lite} />
 
         <motion.div
-          className="absolute inset-0 bg-gradient-to-b from-transparent via-[#c5e4f0]/25 to-[#F4E8D8]"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#c5e4f0]/20 to-[#F4E8D8]"
           style={{ opacity: sandMix }}
+          aria-hidden
+        />
+
+        <motion.div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-[#F4E8D8]/55 via-[#E8D5BC]/18 to-transparent"
+          style={{ opacity: beachGlow }}
+          aria-hidden
         />
 
         <motion.div
@@ -93,6 +82,11 @@ export const IslandScrollHero: React.FC = () => {
             <span className="island-bubble-drift pointer-events-none absolute left-[65%] top-[48%] h-1 w-1 rounded-full bg-white/30" style={{ animationDelay: '2.1s' }} aria-hidden />
           </>
         )}
+
+        <div
+          className="pointer-events-none absolute inset-x-0 top-[24%] bottom-[16%] bg-[radial-gradient(ellipse_at_center,rgba(8,28,44,0.18),transparent_72%)]"
+          aria-hidden
+        />
 
         <motion.div
           className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center"

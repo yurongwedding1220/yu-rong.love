@@ -65,18 +65,27 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
       exit={{ opacity: 0, transition: { duration: 0.55, ease: 'easeOut' } }}
       className="island-loading-screen fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden"
     >
-      {/* 白天海面 → 與 Hero 無縫銜接 */}
+      {/* 藍天白雲海面 → 與 Hero 遠景無縫銜接 */}
       <motion.div
         className="pointer-events-none absolute inset-0"
         initial={{ opacity: 1 }}
         animate={{ opacity: 0 }}
         transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-        style={{
-          background:
-            'linear-gradient(180deg, #B8E4F5 0%, #4A9EC4 35%, #3A8FB7 68%, #1B4D6E 100%)',
-        }}
         aria-hidden
-      />
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'linear-gradient(180deg, #87CEEB 0%, #6BB5E8 22%, #4A9EC4 45%, #1B4D6E 100%)',
+          }}
+        />
+        <img
+          src={`${import.meta.env.BASE_URL}voyage/hero-ocean-island.png`}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-[center_40%] opacity-85"
+        />
+      </motion.div>
       <div
         className="pointer-events-none absolute inset-0"
         style={{
