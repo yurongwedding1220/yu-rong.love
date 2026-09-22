@@ -530,6 +530,25 @@ html[data-depth-chrome='underwater'] .island-countdown-bar .island-tabular {
 .island-calendar-sticky {
   top: var(--island-marquee-offset);
   height: calc(100svh - var(--island-marquee-offset));
+  min-height: calc(100svh - var(--island-marquee-offset));
+}
+
+html.calendar-scroll-locked {
+  overscroll-behavior-y: none;
+}
+
+.island-calendar-reveal-hint {
+  animation: island-calendar-hint-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes island-calendar-hint-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.95;
+  }
 }
 
 /* GPU-friendly wave drift — medium/high only; pause while scrolling to avoid jank */

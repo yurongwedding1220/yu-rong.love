@@ -8,8 +8,10 @@ import {
 import { APP_CONTENT, CALENDAR_COVER_IMAGE } from '../constants';
 import { usePerfMode, isLowPerf, isHighPerf } from '../hooks/usePerfMode';
 import { useCalendarScrollLock } from '../hooks/useCalendarScrollLock';
-
-const REVEAL_COMPLETE = 0.99;
+import {
+  CALENDAR_REVEAL_COMPLETE,
+  CALENDAR_SCROLL_OFFSET,
+} from '../utils/calendarScrollMath';
 
 /** December 2026: 1st is Tuesday → 2 empty slots. Wedding day = 20 */
 const CalendarBase = ({ pulseHeart }: { pulseHeart: boolean }) => {
@@ -176,11 +178,11 @@ const PeelRevealCalendar = ({
 }: {
   scrollYProgress: MotionValue<number>;
 }) => {
-  const scale = useTransform(scrollYProgress, [0, 0.35], [0.94, 1]);
-  const y = useTransform(scrollYProgress, [0, 0.35], [18, 0]);
-  const coverY = useTransform(scrollYProgress, [0.12, REVEAL_COMPLETE], ['0%', '-108%']);
-  const coverRotate = useTransform(scrollYProgress, [0.12, REVEAL_COMPLETE], [0, -6]);
-  const coverOpacity = useTransform(scrollYProgress, [0.88, REVEAL_COMPLETE], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.15], [0.96, 1]);
+  const y = useTransform(scrollYProgress, [0, 0.15], [14, 0]);
+  const coverY = useTransform(scrollYProgress, [0.06, CALENDAR_REVEAL_COMPLETE], ['0%', '-108%']);
+  const coverRotate = useTransform(scrollYProgress, [0.06, CALENDAR_REVEAL_COMPLETE], [0, -8]);
+  const coverOpacity = useTransform(scrollYProgress, [0.82, CALENDAR_REVEAL_COMPLETE], [1, 0]);
 
   return (
     <div className="mx-auto aspect-[3/4.2] w-full max-w-[320px]">
@@ -209,9 +211,9 @@ const FlippingCalendar = ({
 }: {
   scrollYProgress: MotionValue<number>;
 }) => {
-  const scale = useTransform(scrollYProgress, [0, 0.3], [0.94, 1]);
-  const rotateX = useTransform(scrollYProgress, [0.18, REVEAL_COMPLETE], [0, 175]);
-  const coverOpacity = useTransform(scrollYProgress, [0.85, REVEAL_COMPLETE], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.15], [0.96, 1]);
+  const rotateX = useTransform(scrollYProgress, [0.08, CALENDAR_REVEAL_COMPLETE], [0, 175]);
+  const coverOpacity = useTransform(scrollYProgress, [0.82, CALENDAR_REVEAL_COMPLETE], [1, 0]);
 
   return (
     <div className="perspective-[1600px] mx-auto aspect-[3/4.2] w-full max-w-[340px]">
@@ -280,15 +282,15 @@ export const CalendarRevealSection: React.FC = () => {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    /* 月曆進入視窗中段才翻頁，避免貼頂時看不到日期 */
-    offset: ['start 0.82', 'end 0.18'],
+    /* 月曆 sticky 期間：progress 0→1 對應整段捲動距離 */
+    offset: CALENDAR_SCROLL_OFFSET,
   });
 
   useCalendarScrollLock({
     containerRef,
     scrollYProgress,
-    completeThreshold: REVEAL_COMPLETE,
-    enabled: !scrollUnlocked,
+    completeThreshold: CALENDAR_REVEAL_COMPLETE,
+    enabled: !lite && !scrollUnlocked,
     manualUnlocked: lite ? manualRevealed : scrollUnlocked,
     onComplete: () => setScrollUnlocked(true),
   });
@@ -296,8 +298,8 @@ export const CalendarRevealSection: React.FC = () => {
   const sectionHeight = lite
     ? 'h-[160vh]'
     : isHighPerf(perf)
-      ? 'h-[210vh]'
-      : 'h-[190vh]';
+      ? 'h-[min(320svh,280vh)]'
+      : 'h-[min(280svh,260vh)]';
 
   const showHint = lite ? !manualRevealed : !scrollUnlocked;
 

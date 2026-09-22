@@ -1,19 +1,10 @@
 import { useEffect, useRef } from 'react';
 import type { MotionValue } from 'framer-motion';
 import { useMotionValueEvent } from 'framer-motion';
-
-const OFFSET_START = 0.82;
-const OFFSET_END = 0.18;
-
-/** 對應 CalendarRevealSection 的 useScroll offset */
-export function getCalendarRevealScrollY(el: HTMLElement, progress: number): number {
-  const top = window.scrollY + el.getBoundingClientRect().top;
-  const height = el.offsetHeight;
-  const vh = window.innerHeight;
-  const startY = top - OFFSET_START * vh;
-  const endY = top + height - OFFSET_END * vh;
-  return startY + progress * (endY - startY);
-}
+import {
+  CALENDAR_REVEAL_COMPLETE,
+  getCalendarRevealScrollY,
+} from '../utils/calendarScrollMath';
 
 type UseCalendarScrollLockOptions = {
   containerRef: React.RefObject<HTMLElement | null>;
@@ -26,7 +17,7 @@ type UseCalendarScrollLockOptions = {
 };
 
 /**
- * 月曆完整揭開前，阻止繼續往下滑。
+ * 月曆完整揭開前，阻止繼續往下滑出章節。
  */
 export function useCalendarScrollLock({
   containerRef,
@@ -42,28 +33,36 @@ export function useCalendarScrollLock({
     unlockedRef.current = manualUnlocked;
   }, [manualUnlocked]);
 
-  useMotionValueEvent(scrollYProgress, 'change', (v) => {
-    if (!enabled || unlockedRef.current) return;
-    if (v >= completeThreshold) {
+  const tryUnlock = (progress: number) => {
+    if (unlockedRef.current) return true;
+    if (progress >= completeThreshold) {
       unlockedRef.current = true;
       onComplete?.();
+      return true;
     }
+    return false;
+  };
+
+  useMotionValueEvent(scrollYProgress, 'change', (v) => {
+    if (!enabled) return;
+    tryUnlock(v);
   });
 
   useEffect(() => {
     if (!enabled) return;
 
+    const isInCalendarZone = (el: HTMLElement) => {
+      const rect = el.getBoundingClientRect();
+      return rect.top < window.innerHeight * 0.92 && rect.bottom > window.innerHeight * 0.08;
+    };
+
     const clamp = () => {
       if (unlockedRef.current) return;
       const el = containerRef.current;
-      if (!el) return;
+      if (!el || !isInCalendarZone(el)) return;
 
       const progress = scrollYProgress.get();
-      if (progress >= completeThreshold) {
-        unlockedRef.current = true;
-        onComplete?.();
-        return;
-      }
+      if (tryUnlock(progress)) return;
 
       const maxY = getCalendarRevealScrollY(el, completeThreshold);
       if (window.scrollY > maxY + 1) {
@@ -72,24 +71,15 @@ export function useCalendarScrollLock({
     };
 
     const blockWheel = (e: WheelEvent) => {
-      if (unlockedRef.current) return;
+      if (unlockedRef.current || e.deltaY <= 0) return;
       const el = containerRef.current;
-      if (!el) return;
+      if (!el || !isInCalendarZone(el)) return;
 
-      const rect = el.getBoundingClientRect();
-      const inZone = rect.top < window.innerHeight * 0.95 && rect.bottom > window.innerHeight * 0.1;
-      if (!inZone) return;
-
-      if (scrollYProgress.get() >= completeThreshold) {
-        unlockedRef.current = true;
-        onComplete?.();
-        return;
-      }
-
-      if (e.deltaY <= 0) return;
+      const progress = scrollYProgress.get();
+      if (tryUnlock(progress)) return;
 
       const maxY = getCalendarRevealScrollY(el, completeThreshold);
-      if (window.scrollY >= maxY - 4) {
+      if (window.scrollY >= maxY - 2) {
         e.preventDefault();
       }
     };
@@ -102,29 +92,23 @@ export function useCalendarScrollLock({
     const onTouchMove = (e: TouchEvent) => {
       if (unlockedRef.current) return;
       const el = containerRef.current;
-      if (!el) return;
-
-      const rect = el.getBoundingClientRect();
-      const inZone = rect.top < window.innerHeight * 0.95 && rect.bottom > window.innerHeight * 0.1;
-      if (!inZone) return;
+      if (!el || !isInCalendarZone(el)) return;
 
       const touchY = e.touches[0]?.clientY ?? lastTouchY;
       const delta = lastTouchY - touchY;
       lastTouchY = touchY;
-
       if (delta <= 0) return;
 
-      if (scrollYProgress.get() >= completeThreshold) {
-        unlockedRef.current = true;
-        onComplete?.();
-        return;
-      }
+      const progress = scrollYProgress.get();
+      if (tryUnlock(progress)) return;
 
       const maxY = getCalendarRevealScrollY(el, completeThreshold);
-      if (window.scrollY >= maxY - 4) {
+      if (window.scrollY >= maxY - 2) {
         e.preventDefault();
       }
     };
+
+    document.documentElement.classList.add('calendar-scroll-locked');
 
     window.addEventListener('scroll', clamp, { passive: true });
     window.addEventListener('wheel', blockWheel, { passive: false });
@@ -132,6 +116,7 @@ export function useCalendarScrollLock({
     window.addEventListener('touchmove', onTouchMove, { passive: false });
 
     return () => {
+      document.documentElement.classList.remove('calendar-scroll-locked');
       window.removeEventListener('scroll', clamp);
       window.removeEventListener('wheel', blockWheel);
       window.removeEventListener('touchstart', onTouchStart);
@@ -139,3 +124,5 @@ export function useCalendarScrollLock({
     };
   }, [containerRef, scrollYProgress, completeThreshold, enabled, onComplete]);
 }
+
+export { CALENDAR_REVEAL_COMPLETE };
