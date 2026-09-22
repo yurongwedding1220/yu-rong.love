@@ -712,8 +712,20 @@ html[data-perf='medium'] .hero-ocean-scene__horizon-waves .hero-ocean-scene__wav
   color: rgba(45, 96, 128, 0.88);
 }
 
-.island-hero-type__date {
-  color: rgba(27, 77, 110, 0.92);
+/* 日期／地點：海面區，小島剪影正上方 */
+.island-hero-type__sea-meta {
+  bottom: calc(24% - 0.25rem + min(58vw, 16rem) * 0.45 + 0.75rem);
+}
+
+@media (min-width: 768px) {
+  .island-hero-type__sea-meta {
+    bottom: calc(24% - 0.25rem + min(42vw, 19rem) * 0.45 + 1rem);
+  }
+}
+
+.island-hero-type__sea-meta .island-hero-type__date {
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 8px rgba(8, 28, 44, 0.35);
 }
 
 .island-hero-type__meta {

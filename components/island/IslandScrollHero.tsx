@@ -99,21 +99,21 @@ export const IslandScrollHero: React.FC = () => {
             >
               {APP_CONTENT.intro}
             </motion.p>
-
-            <motion.div
-              initial={lite ? false : { opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.52 }}
-              className="mt-7 md:mt-8"
-            >
-              <p className="island-hero-type__date font-display text-xs tracking-[0.28em] md:text-xs">
-                {APP_CONTENT.date}
-              </p>
-              <p className="island-hero-type__date mt-1.5 font-serif text-[0.9375rem] md:text-[0.95rem]">
-                {APP_CONTENT.venueName} · {APP_CONTENT.venueHall}
-              </p>
-            </motion.div>
           </div>
+
+          <motion.div
+            initial={lite ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.52 }}
+            className="island-hero-type__sea-meta pointer-events-none absolute inset-x-0 z-10 px-6 text-center"
+          >
+            <p className="island-hero-type__date font-display text-xs tracking-[0.28em] md:text-xs">
+              {APP_CONTENT.date}
+            </p>
+            <p className="island-hero-type__date mt-1.5 font-serif text-[0.9375rem] md:text-[0.95rem]">
+              {APP_CONTENT.venueName} · {APP_CONTENT.venueHall}
+            </p>
+          </motion.div>
 
           <div className="flex-1" aria-hidden />
 
