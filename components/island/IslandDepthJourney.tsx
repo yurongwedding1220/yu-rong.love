@@ -121,13 +121,13 @@ export const IslandDepthJourney: React.FC = () => {
   const raysOp = galleryOp * 0.35 * (1 - depthFade(depth, 0.54, 0.64)) * layerFadeOut;
 
   const contentCalm = depthFade(depth, 0.54, 0.68);
-  /* 裝飾從入水過場出現，一路伴隨到 RSVP 前段 */
-  const decorFadeOut = 1 - depthFade(depth, 0.78, 0.92);
+  /* 裝飾從入水過場出現，一路伴隨到頁面最底 */
+  const decorIn = depthFade(depth, 0.44, 0.56);
 
-  const seaweedOp = depthFade(depth, 0.44, 0.54) * decorFadeOut;
-  const fishOp = depthFade(depth, 0.48, 0.56) * decorFadeOut;
-  const coralOp = depthFade(depth, 0.52, 0.62) * decorFadeOut * 0.58;
-  const bubbleOp = depthFade(depth, 0.45, 0.53) * decorFadeOut;
+  const seaweedOp = decorIn;
+  const fishOp = depthFade(depth, 0.48, 0.56);
+  const coralOp = depthFade(depth, 0.52, 0.62) * 0.58;
+  const bubbleOp = depthFade(depth, 0.45, 0.53);
 
   return (
     <>
