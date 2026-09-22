@@ -179,9 +179,7 @@ html[data-perf='high'] .island-depth-seaweed--right {
   animation-delay: -1.5s;
 }
 
-html.is-scrolling .island-depth-seaweed {
-  animation-play-state: paused;
-}
+/* 海草／小魚／珊瑚：捲動時仍保持動態（transform 動畫成本低） */
 
 /* 小魚游動 */
 @keyframes island-fish-swim {
@@ -218,10 +216,6 @@ html[data-perf='high'] .island-depth-fish--slow {
   animation-duration: 36s;
 }
 
-html.is-scrolling .island-depth-fish {
-  animation-play-state: paused;
-}
-
 /* 珊瑚 */
 .island-depth-coral {
   position: absolute;
@@ -230,6 +224,26 @@ html.is-scrolling .island-depth-fish {
   right: 0;
   height: 22vh;
   color: rgba(232, 168, 124, 0.45);
+  transform-origin: bottom center;
+}
+
+@keyframes island-coral-sway {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+html[data-perf='medium'] .island-depth-coral,
+html[data-perf='high'] .island-depth-coral {
+  animation: island-coral-sway 9s ease-in-out infinite;
+}
+
+html[data-perf='high'] .island-depth-coral {
+  animation-duration: 11s;
 }
 
 /* 海面／航程段 — 完全透明，只顯示固定背景一層 */
@@ -435,7 +449,8 @@ html[data-perf='low'] .island-depth-fish {
 
 @media (prefers-reduced-motion: reduce) {
   .island-depth-seaweed,
-  .island-depth-fish {
+  .island-depth-fish,
+  .island-depth-coral {
     animation: none !important;
   }
 }

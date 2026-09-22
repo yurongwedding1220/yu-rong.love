@@ -67,11 +67,12 @@ export const IslandDepthJourney: React.FC = () => {
   const raysOp = galleryOp * 0.35 * (1 - depthFade(depth, 0.54, 0.64)) * layerFadeOut;
 
   const contentCalm = depthFade(depth, 0.54, 0.68);
-  const decorFadeOut = 1 - depthFade(depth, 0.6, 0.74);
+  /* 裝飾從入水過場出現，一路伴隨到 RSVP 前段 */
+  const decorFadeOut = 1 - depthFade(depth, 0.78, 0.92);
 
-  const seaweedOp = depthFade(depth, 0.5, 0.6) * decorFadeOut;
-  const fishOp = depthFade(depth, 0.56, 0.66) * decorFadeOut;
-  const coralOp = depthFade(depth, 0.62, 0.74) * decorFadeOut * 0.5;
+  const seaweedOp = depthFade(depth, 0.44, 0.54) * decorFadeOut;
+  const fishOp = depthFade(depth, 0.48, 0.56) * decorFadeOut;
+  const coralOp = depthFade(depth, 0.52, 0.62) * decorFadeOut * 0.58;
 
   const caption = useMemo(() => getDepthCaption(depth), [depth]);
 
@@ -116,6 +117,12 @@ export const IslandDepthJourney: React.FC = () => {
               <FishSvg className="h-3.5 w-7" />
             </div>
             <div className="island-depth-fish island-depth-fish--fast" style={{ opacity: fishOp * 0.65, top: '64%', left: 0, width: '1.5rem', animationDelay: '-14s' }}>
+              <FishSvg className="h-3 w-6" />
+            </div>
+            <div
+              className="island-depth-fish island-depth-fish--slow"
+              style={{ opacity: fishOp * 0.5, top: '46%', left: 0, width: '1.25rem', animationDelay: '-22s' }}
+            >
               <FishSvg className="h-3 w-6" />
             </div>
 
