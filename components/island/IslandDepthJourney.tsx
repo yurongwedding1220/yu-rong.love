@@ -52,19 +52,6 @@ const CoralSvg: React.FC = () => (
   </svg>
 );
 
-const FoamWaveSvg: React.FC = () => (
-  <svg className="island-depth-foam__wave w-full" viewBox="0 0 1440 48" preserveAspectRatio="none" aria-hidden>
-    <path
-      fill="rgba(255,255,255,0.5)"
-      d="M0,24 C180,8 360,40 540,22 C720,4 900,36 1080,20 C1260,6 1380,28 1440,18 L1440,48 L0,48 Z"
-    />
-    <path
-      fill="rgba(255,255,255,0.25)"
-      d="M0,32 C200,18 400,42 600,28 C800,14 1000,38 1200,24 C1320,16 1400,30 1440,26 L1440,48 L0,48 Z"
-    />
-  </svg>
-);
-
 export const IslandDepthJourney: React.FC = () => {
   const { depth } = useScrollJourney();
   const lite = isLowPerf(usePerfMode());
@@ -74,7 +61,6 @@ export const IslandDepthJourney: React.FC = () => {
   const duskOp = getDuskLayerOpacity(depth);
 
   const layerFadeOut = 1 - depthFade(depth, 0.42, 0.54);
-  const foamOp = depth < 0.42 ? Math.min(1, galleryOp * 1.1) * layerFadeOut : 0;
 
   const submergeOp = depthFade(depth, 0.42, 0.52) * (1 - depthFade(depth, 0.52, 0.6));
   const deepOp = depthFade(depth, 0.54, 0.92);
@@ -106,13 +92,6 @@ export const IslandDepthJourney: React.FC = () => {
         <div className="island-depth-sun island-depth-sun--dusk" style={{ opacity: duskOp }} />
 
         <div className="island-depth-layer island-depth-submerge" style={{ opacity: submergeOp * 0.9 }} />
-
-        <div
-          className="island-depth-foam island-depth-foam--scroll"
-          style={{ opacity: foamOp, top: `${Math.max(28, 52 - depth * 30)}vh` }}
-        >
-          <FoamWaveSvg />
-        </div>
 
         <div className="island-depth-layer island-depth-rays" style={{ opacity: raysOp }} />
 
