@@ -7,6 +7,9 @@ import {
 } from 'framer-motion';
 import { APP_CONTENT, CALENDAR_COVER_IMAGE } from '../constants';
 import { usePerfMode, isLowPerf, isHighPerf } from '../hooks/usePerfMode';
+import { useCalendarScrollLock } from '../hooks/useCalendarScrollLock';
+
+const REVEAL_COMPLETE = 0.99;
 
 /** December 2026: 1st is Tuesday → 2 empty slots. Wedding day = 20 */
 const CalendarBase = ({ pulseHeart }: { pulseHeart: boolean }) => {
@@ -139,8 +142,13 @@ const CalendarCover = () => (
 );
 
 /** Low-end: 靜態月曆，輕觸揭開封面 */
-const SimpleCalendar = () => {
+const SimpleCalendar = ({ onRevealed }: { onRevealed: () => void }) => {
   const [revealed, setRevealed] = useState(false);
+
+  const reveal = () => {
+    setRevealed(true);
+    onRevealed();
+  };
 
   return (
     <div className="island-calendar-card island-card--elevated island-card--sea relative mx-auto aspect-[3/4.2] w-full max-w-[320px] overflow-hidden rounded-xl border border-[#3A8FB7]/15 bg-[var(--island-paper)]">
@@ -148,7 +156,7 @@ const SimpleCalendar = () => {
       {!revealed && (
         <button
           type="button"
-          onClick={() => setRevealed(true)}
+          onClick={reveal}
           className="island-focus absolute inset-0 z-30 overflow-hidden rounded-xl shadow-lg"
           aria-label="揭開月曆封面"
         >
@@ -168,11 +176,11 @@ const PeelRevealCalendar = ({
 }: {
   scrollYProgress: MotionValue<number>;
 }) => {
-  const scale = useTransform(scrollYProgress, [0, 0.45], [0.94, 1]);
-  const y = useTransform(scrollYProgress, [0, 0.45], [18, 0]);
-  const coverY = useTransform(scrollYProgress, [0.38, 0.82], ['0%', '-108%']);
-  const coverRotate = useTransform(scrollYProgress, [0.38, 0.82], [0, -6]);
-  const coverOpacity = useTransform(scrollYProgress, [0.72, 0.88], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.35], [0.94, 1]);
+  const y = useTransform(scrollYProgress, [0, 0.35], [18, 0]);
+  const coverY = useTransform(scrollYProgress, [0.12, REVEAL_COMPLETE], ['0%', '-108%']);
+  const coverRotate = useTransform(scrollYProgress, [0.12, REVEAL_COMPLETE], [0, -6]);
+  const coverOpacity = useTransform(scrollYProgress, [0.88, REVEAL_COMPLETE], [1, 0]);
 
   return (
     <div className="mx-auto aspect-[3/4.2] w-full max-w-[320px]">
@@ -201,9 +209,9 @@ const FlippingCalendar = ({
 }: {
   scrollYProgress: MotionValue<number>;
 }) => {
-  const scale = useTransform(scrollYProgress, [0, 0.35], [0.94, 1]);
-  const rotateX = useTransform(scrollYProgress, [0.5, 0.82], [0, 175]);
-  const coverOpacity = useTransform(scrollYProgress, [0.58, 0.82], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.3], [0.94, 1]);
+  const rotateX = useTransform(scrollYProgress, [0.18, REVEAL_COMPLETE], [0, 175]);
+  const coverOpacity = useTransform(scrollYProgress, [0.85, REVEAL_COMPLETE], [1, 0]);
 
   return (
     <div className="perspective-[1600px] mx-auto aspect-[3/4.2] w-full max-w-[340px]">
@@ -254,36 +262,57 @@ const FlippingCalendar = ({
   );
 };
 
+const CalendarRevealHint: React.FC<{ visible: boolean }> = ({ visible }) => {
+  if (!visible) return null;
+  return (
+    <p className="island-calendar-reveal-hint pointer-events-none mt-5 text-center font-display text-[10px] tracking-[0.28em] text-[#3A8FB7]/80 md:text-xs">
+      上滑揭開月曆
+    </p>
+  );
+};
+
 export const CalendarRevealSection: React.FC = () => {
   const perf = usePerfMode();
+  const lite = isLowPerf(perf);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [manualRevealed, setManualRevealed] = useState(false);
+  const [scrollUnlocked, setScrollUnlocked] = useState(false);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     /* 月曆進入視窗中段才翻頁，避免貼頂時看不到日期 */
     offset: ['start 0.82', 'end 0.18'],
   });
 
-  if (isLowPerf(perf)) {
-    return (
-      <div className="relative w-full bg-transparent py-16 md:py-20">
-        <div className="w-full px-6">
-          <SimpleCalendar />
-        </div>
-      </div>
-    );
-  }
+  useCalendarScrollLock({
+    containerRef,
+    scrollYProgress,
+    completeThreshold: REVEAL_COMPLETE,
+    enabled: !scrollUnlocked,
+    manualUnlocked: lite ? manualRevealed : scrollUnlocked,
+    onComplete: () => setScrollUnlocked(true),
+  });
 
-  const sectionHeight = isHighPerf(perf) ? 'h-[175vh]' : 'h-[145vh]';
+  const sectionHeight = lite
+    ? 'h-[160vh]'
+    : isHighPerf(perf)
+      ? 'h-[210vh]'
+      : 'h-[190vh]';
+
+  const showHint = lite ? !manualRevealed : !scrollUnlocked;
 
   return (
     <div ref={containerRef} className={`relative ${sectionHeight} w-full bg-transparent`}>
       <div className="island-calendar-sticky sticky flex flex-col items-center justify-center overflow-visible py-6">
         <div className="relative z-10 w-full px-4 md:px-6">
-          {isHighPerf(perf) ? (
+          {lite ? (
+            <SimpleCalendar onRevealed={() => setManualRevealed(true)} />
+          ) : isHighPerf(perf) ? (
             <FlippingCalendar scrollYProgress={scrollYProgress} />
           ) : (
             <PeelRevealCalendar scrollYProgress={scrollYProgress} />
           )}
+          <CalendarRevealHint visible={showHint} />
         </div>
       </div>
     </div>
