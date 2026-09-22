@@ -90,9 +90,10 @@ export function getGalleryPaletteAtDepth(depth: number): IslandPalette {
 }
 
 export function getGalleryLayerOpacity(depth: number): number {
-  const rise = depth <= 0.12 ? 0 : Math.min(1, (depth - 0.12) / 0.1);
-  const fall = depth >= 0.52 ? 0 : 1 - Math.max(0, (depth - 0.4) / 0.12);
-  return rise * fall;
+  /* 啟程～靠岸：gallery 層全不透明，避免底層 sand／dark 透出造成雙背景 */
+  if (depth <= 0.4) return 1;
+  if (depth >= 0.52) return 0;
+  return 1 - (depth - 0.4) / 0.12;
 }
 
 export function getDuskLayerOpacity(depth: number): number {

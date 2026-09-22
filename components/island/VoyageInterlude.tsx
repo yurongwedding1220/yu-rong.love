@@ -10,7 +10,7 @@ export const VoyageInterlude: React.FC = () => {
   return (
     <section
       data-depth-phase="surface"
-      className="island-section-submerge relative overflow-hidden border-y border-[var(--island-sea)]/15 py-14 md:py-16"
+      className="island-section-surface relative overflow-hidden py-14 md:py-16"
     >
       {!lite && (
         <div

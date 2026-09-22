@@ -242,10 +242,10 @@ function App() {
 
         <VoyageInterlude />
 
-        <section id="photos" className="island-section-shallow scroll-mt-20">
+        <section id="photos" className="island-section-surface scroll-mt-20">
           <div
             data-depth-value="0.2"
-            className="island-gallery-header px-4 pb-8 pt-14 md:pb-10 md:pt-20"
+            className="island-gallery-header island-section-surface px-4 pb-8 pt-14 md:pb-10 md:pt-20"
           >
             <VoyageSectionHeader
               chapter={VOYAGE_NARRATIVE.galleryChapter}
@@ -265,7 +265,7 @@ function App() {
         <section
           id="harbor"
           data-depth-phase="harbor"
-          className="island-section-harbor island-section-submerge relative scroll-mt-20 overflow-hidden px-4 pb-8 pt-0 md:pb-12"
+          className="island-section-harbor relative scroll-mt-20 overflow-hidden px-4 pb-8 pt-0 md:pb-12"
         >
           <div className="relative z-[1]">
           <HarborCountdownBar timeLeft={timeLeft} lite={lite} perf={perf} />

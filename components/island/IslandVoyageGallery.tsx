@@ -2,14 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   GALLERY_ISLAND_DEPTHS,
-  GALLERY_SURFACE_HANDOFF,
   WEDDING_GALLERY_CHAPTERS,
   GalleryChapter,
   GalleryPhoto,
 } from '../../constants';
 import { useScrollJourney } from '../../hooks/ScrollJourneyContext';
 import { usePerfMode, isLowPerf } from '../../hooks/usePerfMode';
-import { chapterTintGradient, type IslandPalette } from '../../utils/colorBlend';
+import type { IslandPalette } from '../../utils/colorBlend';
 import {
   getChapterSkyAccent,
   getChapterSunGradient,
@@ -99,20 +98,6 @@ const alignClass = (align: 'left' | 'right' | 'center') => {
   if (align === 'left') return 'self-start text-left';
   return 'self-center text-center';
 };
-
-const ChapterWaveCap: React.FC<{ fill: string }> = ({ fill }) => (
-  <svg
-    className="pointer-events-none absolute inset-x-0 top-0 h-12 w-full md:h-16"
-    viewBox="0 0 1440 60"
-    preserveAspectRatio="none"
-    aria-hidden
-  >
-    <path
-      fill={fill}
-      d="M0,32 C200,58 400,8 600,28 C800,48 1000,12 1200,30 C1320,42 1380,24 1440,34 L1440,0 L0,0 Z"
-    />
-  </svg>
-);
 
 const IslandTerrain: React.FC<{
   chapterId: string;
@@ -262,10 +247,9 @@ const IslandAdventureChapter: React.FC<{
   layout: IslandLayout;
   palette: IslandPalette;
   animate: boolean;
-  isFirst: boolean;
   isLast: boolean;
   onPhotoClick: (photo: GalleryPhoto) => void;
-}> = ({ chapter, index, layout, palette, animate, isFirst, isLast, onPhotoClick }) => {
+}> = ({ chapter, index, layout, palette, animate, isLast, onPhotoClick }) => {
   const depthValue = GALLERY_ISLAND_DEPTHS[index] ?? GALLERY_ISLAND_DEPTHS.at(-1)!;
 
   const titleBlock = (
@@ -287,19 +271,16 @@ const IslandAdventureChapter: React.FC<{
     <article
       data-depth-value={depthValue}
       className="island-chapter-flow relative w-full overflow-hidden"
-      style={{ background: chapterTintGradient(palette, 0.38) }}
     >
-      {isFirst && <ChapterWaveCap fill={`${GALLERY_SURFACE_HANDOFF.glow}55`} />}
-
       <div
         className={`pointer-events-none absolute ${layout.sunClass} h-14 w-14 rounded-full blur-md md:h-16 md:w-16`}
         style={{ background: getChapterSunGradient(index, palette) }}
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[45%]"
         style={{
-          background: `radial-gradient(ellipse 80% 55% at ${layout.skyGlowAt}, ${getChapterSkyAccent(index, palette)}, transparent 68%)`,
+          background: `radial-gradient(ellipse 70% 80% at ${layout.skyGlowAt}, ${getChapterSkyAccent(index, palette)}, transparent 72%)`,
         }}
         aria-hidden
       />
@@ -379,7 +360,6 @@ export const IslandVoyageGallery: React.FC = () => {
           layout={ISLAND_LAYOUTS[index % ISLAND_LAYOUTS.length]}
           palette={palette}
           animate={animate}
-          isFirst={index === 0}
           isLast={index === WEDDING_GALLERY_CHAPTERS.length - 1}
           onPhotoClick={setLightbox}
         />

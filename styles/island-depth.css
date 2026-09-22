@@ -232,29 +232,52 @@ html.is-scrolling .island-depth-fish {
   color: rgba(232, 168, 124, 0.45);
 }
 
-/* 章節底色 — 淺區保留透感，深水區以可讀性為優先 */
-.island-section-shallow {
-  background: rgba(126, 200, 227, 0.08);
+/* 海面／航程段 — 完全透明，只顯示固定背景一層 */
+.island-section-shallow,
+.island-section-submerge,
+.island-section-surface {
+  background: transparent;
 }
 
-.island-section-submerge {
-  background: rgba(244, 232, 216, 0.35);
-}
-
-/* 靠岸日 — 呼應暮色小島 → 港灣暖沙 */
+/* 靠岸日 — 極淡暖色，不遮擋固定背景 */
 .island-section-harbor {
-  background: linear-gradient(
-    180deg,
-    rgba(196, 112, 74, 0.12) 0%,
-    rgba(244, 232, 216, 0.48) 38%,
-    rgba(232, 213, 188, 0.55) 100%
-  );
+  background: transparent;
 }
 
-.island-section-harbor .voyage-section-header {
-  padding: 1rem 1rem 1.25rem;
-  border-radius: 1rem;
-  background: rgba(244, 232, 216, 0.45);
+/* 海面段文字：直接讀固定背景，不再加半透明底盒 */
+.island-section-surface .island-heading {
+  color: #f4f8fb;
+  text-shadow: 0 1px 10px rgba(8, 28, 44, 0.5);
+}
+
+.island-section-surface .island-prose {
+  color: rgba(244, 248, 251, 0.88);
+  text-shadow: 0 1px 8px rgba(8, 28, 44, 0.4);
+}
+
+.island-section-surface .island-section-label {
+  color: #7ec8e3;
+  text-shadow: 0 1px 6px rgba(8, 28, 44, 0.35);
+}
+
+.island-section-surface .island-nautical-coords {
+  color: rgba(126, 200, 227, 0.65);
+}
+
+/* 靠岸段：固定背景偏暖沙，用深色字 */
+.island-section-harbor .island-heading {
+  color: var(--island-ink);
+  text-shadow: none;
+}
+
+.island-section-harbor .island-prose {
+  color: var(--island-muted);
+  text-shadow: none;
+}
+
+.island-section-harbor .island-section-label {
+  color: var(--island-sea);
+  text-shadow: none;
 }
 
 /* 入水過場 */
