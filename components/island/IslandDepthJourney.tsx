@@ -28,10 +28,22 @@ const SeaweedSvg: React.FC<{ className?: string }> = ({ className }) => (
 );
 
 const FishSvg: React.FC<{ className?: string }> = ({ className }) => (
-  <svg viewBox="0 0 32 16" className={className} aria-hidden>
-    <path d="M4 8h16" {...LINE} />
-    <path d="M20 6l6 2-6 2" {...LINE} />
-    <circle cx="10" cy="8" r="1" fill="currentColor" stroke="none" />
+  <svg viewBox="0 0 40 20" className={className} aria-hidden>
+    {/* 魚身剪影 */}
+    <path
+      d="M4 10 C8 6 16 5 24 7.5 C28 8.5 32 9.5 35 10 C32 10.5 28 11.5 24 12.5 C16 15 8 14 4 10 Z"
+      fill="currentColor"
+      fillOpacity="0.18"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    {/* 尾鰭 */}
+    <path d="M35 10 L39 6.5 M35 10 L39 13.5" {...LINE} strokeWidth="1.4" />
+    {/* 背鰭 */}
+    <path d="M16 7.5 Q19 4.5 22 7" {...LINE} strokeWidth="1.2" opacity="0.75" />
+    <circle cx="11" cy="9.5" r="0.9" fill="currentColor" stroke="none" />
   </svg>
 );
 
