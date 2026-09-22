@@ -98,7 +98,9 @@ export const LocationInfo: React.FC = () => {
               <span className="island-heading mb-3 block font-serif text-lg text-[#1A3344]">
                 {item.chineseTitle}
               </span>
-              <p className="island-prose text-sm">{item.description}</p>
+              <p className="island-prose text-base leading-relaxed text-[#3d4f5c]">
+                {item.description}
+              </p>
             </div>
           </IslandSectionReveal>
         ))}

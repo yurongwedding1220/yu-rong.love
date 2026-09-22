@@ -265,20 +265,18 @@ function App() {
         <section
           id="harbor"
           data-depth-phase="harbor"
-          className="island-section-harbor relative scroll-mt-20 overflow-hidden px-4 pb-8 pt-0 md:pb-12"
+          className="island-section-harbor relative scroll-mt-20 px-4 pb-8 pt-0 md:pb-12"
         >
-          <div className="relative z-[1]">
           <HarborCountdownBar timeLeft={timeLeft} lite={lite} perf={perf} />
-          <div className="pt-12 md:pt-16">
-          <VoyageSectionHeader
-            chapter={VOYAGE_NARRATIVE.harborChapter}
-            title={VOYAGE_NARRATIVE.harborTitle}
-            intro={VOYAGE_NARRATIVE.harborIntro}
-            animate={!lite}
-            className="mx-auto mb-6 max-w-5xl"
-          />
-          <CalendarRevealSection />
-          </div>
+          <div className="relative z-[1] pt-8 md:pt-10">
+            <VoyageSectionHeader
+              chapter={VOYAGE_NARRATIVE.harborChapter}
+              title={VOYAGE_NARRATIVE.harborTitle}
+              intro={VOYAGE_NARRATIVE.harborIntro}
+              animate={!lite}
+              className="mx-auto mb-6 max-w-5xl"
+            />
+            <CalendarRevealSection />
           </div>
           <div data-depth-value="0.4" className="island-depth-anchor" aria-hidden />
         </section>

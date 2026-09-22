@@ -153,7 +153,7 @@ const FadeRevealCalendar = ({
 }) => {
   const scale = useTransform(scrollYProgress, [0, 0.5], [0.94, 1]);
   // 整卡保持不透明，避免「還沒滑到就透出日期」
-  const coverOpacity = useTransform(scrollYProgress, [0.42, 0.72], [1, 0]);
+  const coverOpacity = useTransform(scrollYProgress, [0.48, 0.78], [1, 0]);
   const y = useTransform(scrollYProgress, [0, 0.5], [16, 0]);
 
   return (
@@ -179,9 +179,8 @@ const FlippingCalendar = ({
   scrollYProgress: MotionValue<number>;
 }) => {
   const scale = useTransform(scrollYProgress, [0, 0.35], [0.94, 1]);
-  const rotateX = useTransform(scrollYProgress, [0.4, 0.78], [0, 175]);
-  // 翻到一半才淡出封面，避免早期露出內頁
-  const coverOpacity = useTransform(scrollYProgress, [0.55, 0.78], [1, 0]);
+  const rotateX = useTransform(scrollYProgress, [0.5, 0.82], [0, 175]);
+  const coverOpacity = useTransform(scrollYProgress, [0.58, 0.82], [1, 0]);
 
   return (
     <div className="perspective-[1600px] mx-auto aspect-[3/4.2] w-full max-w-[340px]">
@@ -237,7 +236,8 @@ export const CalendarRevealSection: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ['start start', 'end end'],
+    /* 月曆進入視窗中段才翻頁，避免貼頂時看不到日期 */
+    offset: ['start 0.82', 'end 0.18'],
   });
 
   if (isLowPerf(perf)) {
@@ -250,12 +250,12 @@ export const CalendarRevealSection: React.FC = () => {
     );
   }
 
-  const sectionHeight = isHighPerf(perf) ? 'h-[160vh]' : 'h-[130vh]';
+  const sectionHeight = isHighPerf(perf) ? 'h-[175vh]' : 'h-[145vh]';
 
   return (
     <div ref={containerRef} className={`relative ${sectionHeight} w-full bg-transparent`}>
-      <div className="sticky top-0 flex h-[100svh] flex-col items-center justify-center overflow-hidden">
-        <div className="relative z-10 w-full px-6">
+      <div className="sticky top-11 flex h-[calc(100svh-2.75rem)] flex-col items-center justify-center overflow-visible py-6 md:top-12 md:h-[calc(100svh-3rem)]">
+        <div className="relative z-10 w-full px-4 md:px-6">
           {isHighPerf(perf) ? (
             <FlippingCalendar scrollYProgress={scrollYProgress} />
           ) : (

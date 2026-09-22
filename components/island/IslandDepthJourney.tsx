@@ -139,7 +139,7 @@ export const IslandDepthJourney: React.FC = () => {
 
       {depth >= 0.04 && (
         <div className="island-depth-caption pointer-events-none fixed inset-x-0 z-30 flex justify-center" aria-hidden>
-          <p className="island-depth-caption__text font-serif text-[11px] tracking-[0.28em] text-white/55 md:text-xs">
+          <p className="island-depth-caption__text font-serif text-[11px] tracking-[0.28em] md:text-xs">
             {caption}
           </p>
         </div>

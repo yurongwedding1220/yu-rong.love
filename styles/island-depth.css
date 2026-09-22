@@ -346,11 +346,29 @@ html.is-scrolling .island-submerge-gate__ripple {
   color: rgba(244, 248, 251, 0.88);
 }
 
+/* 水下區塊：淺色底 + 深色字，長輩易讀 */
 .island-section-underwater .voyage-section-header,
 .island-section-abyss .voyage-section-header {
   padding: 1.25rem 1rem 1.5rem;
   border-radius: 1rem;
-  background: rgba(10, 36, 56, 0.35);
+  background: rgba(253, 248, 241, 0.96);
+  border: 1px solid rgba(27, 77, 110, 0.1);
+  box-shadow: 0 4px 20px -8px rgba(8, 28, 44, 0.12);
+}
+
+.island-section-underwater .voyage-section-header .island-heading,
+.island-section-abyss .voyage-section-header .island-heading {
+  color: #1a3344;
+}
+
+.island-section-underwater .voyage-section-header .island-prose,
+.island-section-abyss .voyage-section-header .island-prose {
+  color: #4a5f6b;
+}
+
+.island-section-underwater .voyage-section-header .island-section-label,
+.island-section-abyss .voyage-section-header .island-section-label {
+  color: #2d6a8a;
 }
 
 @media (min-width: 768px) {
@@ -360,23 +378,41 @@ html.is-scrolling .island-submerge-gate__ripple {
   }
 }
 
-/* 水下區塊卡片提高不透明度，確保內文清晰 */
 .island-section-underwater .island-card,
 .island-section-abyss .island-card {
-  background: rgba(253, 248, 241, 0.94);
+  background: #fdf8f1;
+  border: 1px solid rgba(27, 77, 110, 0.12);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 8px 24px -10px rgba(8, 28, 44, 0.14);
+}
+
+.island-section-underwater .island-card .island-heading,
+.island-section-abyss .island-card .island-heading {
+  color: #1a3344;
 }
 
 .island-section-underwater .island-card .island-prose,
 .island-section-abyss .island-card .island-prose {
-  color: var(--island-muted);
+  color: #3d4f5c;
+  font-size: 0.95rem;
+  line-height: 1.75;
   text-shadow: none;
 }
 
 .island-section-underwater .island-card .island-section-label,
 .island-section-abyss .island-card .island-section-label {
+  color: #2d6a8a;
   text-shadow: none;
+}
+
+.island-section-underwater .island-transport-card .island-prose,
+.island-section-abyss .island-transport-card .island-prose {
+  color: #3d4f5c;
+  font-size: 1rem;
+  line-height: 1.8;
 }
 
 .island-section-abyss .island-ornament__mark--sea {
