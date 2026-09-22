@@ -739,7 +739,13 @@ html.is-scrolling .island-wave-drift-slow {
 }
 
 html.is-scrolling .hero-ocean-scene__shimmer,
-html[data-perf='low'] .hero-ocean-scene__shimmer {
+html[data-perf='low'] .hero-ocean-scene__shimmer,
+html[data-perf='medium'] .hero-ocean-scene__shimmer {
+  display: none;
+}
+
+html[data-perf='medium'] .hero-ocean-scene__horizon-waves .hero-ocean-scene__wave-drift,
+html[data-perf='medium'] .hero-ocean-scene__horizon-waves .hero-ocean-scene__wave-drift-slow {
   animation: none;
 }
 
@@ -759,6 +765,10 @@ html[data-perf='low'] .hero-ocean-scene__shimmer {
 
 .island-hero-type__intro {
   color: rgba(45, 96, 128, 0.88);
+}
+
+.island-hero-type__date {
+  color: rgba(27, 77, 110, 0.92);
 }
 
 .island-hero-type__meta {
@@ -840,7 +850,12 @@ html[data-perf='low'] .hero-ocean-scene__cloud-drift,
 html[data-perf='low'] .hero-ocean-scene__wave-drift,
 html[data-perf='low'] .hero-ocean-scene__wave-drift-slow,
 html[data-perf='low'] .hero-ocean-scene__island-bob,
-html[data-perf='low'] .hero-ocean-scene__sun-pulse {
+html[data-perf='low'] .hero-ocean-scene__sun-pulse,
+html[data-perf='medium'] .hero-ocean-scene__cloud-drift,
+html[data-perf='medium'] .hero-ocean-scene__wave-drift,
+html[data-perf='medium'] .hero-ocean-scene__wave-drift-slow,
+html[data-perf='medium'] .hero-ocean-scene__island-bob,
+html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
   animation: none;
 }
 

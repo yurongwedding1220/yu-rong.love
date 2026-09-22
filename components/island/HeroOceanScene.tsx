@@ -200,18 +200,22 @@ const SunDisc: React.FC<{ animate: boolean }> = ({ animate }) => (
  */
 export const HeroOceanScene: React.FC<HeroOceanSceneProps> = ({ progress, lite, perf }) => {
   const islandId = useId().replace(/:/g, '');
-  const animate = !lite && perf !== 'low';
+  const isMobileScene = perf === 'medium';
+  const animate = !lite && perf === 'high';
   const vistaScale = useTransform(
     progress,
     [0, 0.5, 1],
-    lite ? [1, 1.1, 1.2] : perf === 'medium' ? [1, 1.14, 1.28] : [1, 1.18, 1.38]
+    lite ? [1, 1.1, 1.2] : isMobileScene ? [1, 1.06, 1.12] : [1, 1.18, 1.38]
   );
-  const vistaY = useTransform(progress, [0, 1], [0, lite ? 24 : perf === 'medium' ? 40 : 56]);
+  const vistaY = useTransform(progress, [0, 1], [0, lite ? 24 : isMobileScene ? 20 : 56]);
   const cloudOp = useTransform(progress, [0, 0.65, 1], [1, 0.92, 0.78]);
-  const shallowMix = useTransform(progress, [0, 0.35, 0.72, 1], [0, 0.12, 0.3, 0.46]);
+  const shallowMix = useTransform(
+    progress,
+    [0, 0.35, 0.72, 1],
+    isMobileScene ? [0, 0.08, 0.18, 0.28] : [0, 0.12, 0.3, 0.46]
+  );
   const skyBright = useTransform(progress, [0, 0.85, 1], [1, 0.97, 0.9]);
-  const islandLift = useTransform(progress, [0, 1], [0, lite ? 6 : 12]);
-  const shimmerOp = useTransform(progress, [0, 0.5, 1], [0.35, 0.22, 0.1]);
+  const islandLift = useTransform(progress, [0, 1], [0, lite ? 6 : isMobileScene ? 4 : 12]);
 
   return (
     <>
@@ -219,10 +223,10 @@ export const HeroOceanScene: React.FC<HeroOceanSceneProps> = ({ progress, lite, 
         <div className="hero-ocean-scene__sky absolute inset-0" />
         <div className="hero-ocean-scene__sky-haze absolute inset-x-0 top-[32%] h-[18%]" />
 
-        <SunDisc animate={animate} />
+        <SunDisc animate={animate && !isMobileScene} />
 
         <motion.div className="pointer-events-none absolute inset-0" style={{ opacity: cloudOp }}>
-          {lite ? (
+          {lite || isMobileScene ? (
             <>
               <CloudSvg className="absolute left-[6%] top-[9%] h-16 w-40 opacity-85" />
               <CloudSvg variant="wisp" className="absolute right-[4%] top-[12%] h-10 w-48 opacity-60" />
@@ -254,10 +258,7 @@ export const HeroOceanScene: React.FC<HeroOceanSceneProps> = ({ progress, lite, 
         <div className="hero-ocean-scene__ocean absolute inset-x-0 bottom-0 top-[42%]" />
 
         {animate && (
-          <motion.div
-            className="hero-ocean-scene__shimmer absolute inset-x-[12%] bottom-[24%] top-[44%]"
-            style={{ opacity: shimmerOp }}
-          />
+          <div className="hero-ocean-scene__shimmer absolute inset-x-[12%] bottom-[24%] top-[44%] opacity-25" />
         )}
 
         <HorizonWaves animate={animate} />
@@ -277,7 +278,7 @@ export const HeroOceanScene: React.FC<HeroOceanSceneProps> = ({ progress, lite, 
         />
       </motion.div>
 
-      <ForegroundRipple animate={animate} />
+      {!isMobileScene && <ForegroundRipple animate={animate} />}
       <div className="hero-ocean-scene__vignette pointer-events-none absolute inset-0" aria-hidden />
     </>
   );
