@@ -77,7 +77,7 @@ export const IslandScrollHero: React.FC = () => {
               initial={lite ? false : { opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.85, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="island-hero-type__title font-serif text-[2.65rem] font-light tracking-[0.06em] md:text-6xl"
+              className="island-hero-type__title font-serif text-[2.9rem] font-light tracking-[0.06em] md:text-6xl"
             >
               Yu <span className="font-script text-[1.12em]">&</span> Rong
             </motion.h1>
@@ -86,7 +86,7 @@ export const IslandScrollHero: React.FC = () => {
               initial={lite ? false : { opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.32 }}
-              className="island-hero-type__subtitle mt-2 font-serif text-lg md:text-xl"
+              className="island-hero-type__subtitle mt-2 font-serif text-xl md:text-xl"
             >
               {APP_CONTENT.chineseNames}
             </motion.p>
@@ -95,7 +95,7 @@ export const IslandScrollHero: React.FC = () => {
               initial={lite ? false : { opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.44 }}
-              className="island-hero-type__intro island-heading-pretty mx-auto mt-5 max-w-[17rem] font-serif text-sm leading-[1.85] md:max-w-xs md:text-[0.95rem]"
+              className="island-hero-type__intro island-heading-pretty mx-auto mt-5 max-w-[18rem] font-serif text-[0.9375rem] leading-[1.9] md:max-w-xs md:text-[0.95rem]"
             >
               {APP_CONTENT.intro}
             </motion.p>
@@ -109,10 +109,10 @@ export const IslandScrollHero: React.FC = () => {
             transition={{ duration: 0.7, delay: 0.55 }}
             className="mx-auto pb-[clamp(4.5rem,12vh,6.5rem)]"
           >
-            <p className="island-hero-type__meta font-display text-[11px] tracking-[0.28em] md:text-xs">
+            <p className="island-hero-type__meta font-display text-xs tracking-[0.28em] md:text-xs">
               {APP_CONTENT.date}
             </p>
-            <p className="island-hero-type__meta mt-1.5 font-serif text-sm md:text-[0.95rem]">
+            <p className="island-hero-type__meta mt-1.5 font-serif text-[0.9375rem] md:text-[0.95rem]">
               {APP_CONTENT.venueName} · {APP_CONTENT.venueHall}
             </p>
 

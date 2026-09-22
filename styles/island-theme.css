@@ -31,8 +31,24 @@
   --island-ease-land: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
+@media (max-width: 767px) {
+  :root {
+    --island-text-scale: 1.16;
+  }
+}
+
 html {
   font-size: calc(16px * var(--island-text-scale));
+}
+
+/* 章節進度條出現時，為 sticky 元件留出頂部空間 */
+html[data-journey-progress='visible'] {
+  --journey-chrome-height: calc(3.25rem + env(safe-area-inset-top, 0px));
+}
+
+html[data-journey-progress='hidden'],
+html:not([data-journey-progress]) {
+  --journey-chrome-height: 0px;
 }
 
 .bg-grid-fixed {
@@ -188,8 +204,8 @@ html.is-scrolling .island-bubble-drift {
 /* Consistent intro prose */
 .island-prose {
   font-family: 'Noto Serif TC', 'Playfair Display', serif;
-  font-size: 1rem;
-  line-height: 1.9;
+  font-size: 1.02rem;
+  line-height: 1.92;
   letter-spacing: 0.02em;
   color: var(--island-muted);
 }
@@ -491,22 +507,83 @@ html[data-depth-chrome='underwater'] .island-floating-rsvp .island-btn:hover {
   background: #f0b892;
 }
 
-.island-depth-caption {
-  bottom: max(5.5rem, calc(4.25rem + env(safe-area-inset-bottom)));
+/* 航程章節進度 — 頂部固定 pill */
+.island-journey-progress {
+  z-index: 45;
 }
 
-.island-depth-caption__text {
-  color: rgba(26, 51, 68, 0.72);
-  transition: opacity 0.4s var(--island-ease-soft);
+.island-journey-progress__pill {
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background: rgba(253, 248, 241, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    0 4px 20px rgba(27, 77, 110, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.6) inset;
 }
 
-html[data-depth-chrome='underwater'] .island-depth-caption__text {
-  color: rgba(244, 248, 251, 0.72);
+.island-journey-progress__label {
+  color: rgba(58, 143, 183, 0.9);
+  letter-spacing: 0.18em;
+}
+
+.island-journey-progress__title {
+  color: var(--island-ink);
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+}
+
+.island-journey-progress__count {
+  color: rgba(90, 115, 128, 0.85);
+  letter-spacing: 0.12em;
+}
+
+.island-journey-progress__track {
+  background: rgba(58, 143, 183, 0.14);
+}
+
+.island-journey-progress__fill {
+  background: linear-gradient(90deg, var(--island-sea), var(--island-coral));
+}
+
+html[data-depth-chrome='underwater'] .island-journey-progress__pill {
+  border-color: rgba(126, 200, 227, 0.28);
+  background: rgba(15, 53, 80, 0.82);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+}
+
+html[data-depth-chrome='underwater'] .island-journey-progress__label {
+  color: rgba(126, 200, 227, 0.88);
+}
+
+html[data-depth-chrome='underwater'] .island-journey-progress__title {
+  color: rgba(244, 248, 251, 0.95);
+}
+
+html[data-depth-chrome='underwater'] .island-journey-progress__count {
+  color: rgba(126, 200, 227, 0.65);
+}
+
+html[data-depth-chrome='underwater'] .island-journey-progress__track {
+  background: rgba(126, 200, 227, 0.16);
+}
+
+.island-countdown-bar {
+  top: var(--journey-chrome-height);
+}
+
+.island-calendar-sticky {
+  top: calc(var(--journey-chrome-height) + 2.75rem);
+  height: calc(100svh - var(--journey-chrome-height) - 2.75rem);
 }
 
 @media (min-width: 768px) {
-  .island-depth-caption {
-    bottom: max(4.5rem, calc(3.25rem + env(safe-area-inset-bottom)));
+  .island-calendar-sticky {
+    top: calc(var(--journey-chrome-height) + 3rem);
+    height: calc(100svh - var(--journey-chrome-height) - 3rem);
   }
 }
 

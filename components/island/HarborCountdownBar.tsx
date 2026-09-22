@@ -36,7 +36,7 @@ export const HarborCountdownBar: React.FC<HarborCountdownBarProps> = ({
 }) => (
   <div
     id="sticky-marquee"
-    className="island-blur island-countdown-bar sticky top-0 z-40 -mx-4 overflow-hidden border-b border-[#3A8FB7]/12 px-4 md:-mx-0 md:px-0"
+    className="island-blur island-countdown-bar sticky z-40 -mx-4 overflow-hidden border-b border-[#3A8FB7]/12 px-4 md:-mx-0 md:px-0"
     aria-live="polite"
     aria-label={VOYAGE_NARRATIVE.countdownLabel}
   >

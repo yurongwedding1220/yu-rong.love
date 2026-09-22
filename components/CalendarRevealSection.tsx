@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   motion,
   useScroll,
@@ -71,7 +71,7 @@ const CalendarBase = ({ pulseHeart }: { pulseHeart: boolean }) => {
                   </span>
                 </div>
               ) : (
-                <span className="text-sm font-medium text-[#5A7380]">{d}</span>
+                <span className="text-[0.9375rem] font-medium text-[#5A7380] md:text-sm">{d}</span>
               )}
             </div>
           );
@@ -138,33 +138,56 @@ const CalendarCover = () => (
   </div>
 );
 
-/** Low-end: no scroll theatre — just show the calendar page */
-const SimpleCalendar = () => (
-  <div className="island-calendar-card island-card--elevated island-card--sea mx-auto aspect-[3/4.2] w-full max-w-[320px] overflow-hidden rounded-xl border border-[#3A8FB7]/15 bg-[var(--island-paper)]">
-    <CalendarBase pulseHeart={false} />
-  </div>
-);
+/** Low-end: 靜態月曆，輕觸揭開封面 */
+const SimpleCalendar = () => {
+  const [revealed, setRevealed] = useState(false);
 
-/** Medium: scroll-driven fade + scale — no 3D flip */
-const FadeRevealCalendar = ({
+  return (
+    <div className="island-calendar-card island-card--elevated island-card--sea relative mx-auto aspect-[3/4.2] w-full max-w-[320px] overflow-hidden rounded-xl border border-[#3A8FB7]/15 bg-[var(--island-paper)]">
+      <CalendarBase pulseHeart={false} />
+      {!revealed && (
+        <button
+          type="button"
+          onClick={() => setRevealed(true)}
+          className="island-focus absolute inset-0 z-30 overflow-hidden rounded-xl shadow-lg"
+          aria-label="揭開月曆封面"
+        >
+          <CalendarCover />
+          <span className="absolute inset-x-0 bottom-5 text-center font-display text-[10px] tracking-[0.28em] text-white/80">
+            輕觸揭開
+          </span>
+        </button>
+      )}
+    </div>
+  );
+};
+
+/** Medium: 上滑揭開封面 — 無 3D 翻頁 */
+const PeelRevealCalendar = ({
   scrollYProgress,
 }: {
   scrollYProgress: MotionValue<number>;
 }) => {
-  const scale = useTransform(scrollYProgress, [0, 0.5], [0.94, 1]);
-  // 整卡保持不透明，避免「還沒滑到就透出日期」
-  const coverOpacity = useTransform(scrollYProgress, [0.48, 0.78], [1, 0]);
-  const y = useTransform(scrollYProgress, [0, 0.5], [16, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.45], [0.94, 1]);
+  const y = useTransform(scrollYProgress, [0, 0.45], [18, 0]);
+  const coverY = useTransform(scrollYProgress, [0.38, 0.82], ['0%', '-108%']);
+  const coverRotate = useTransform(scrollYProgress, [0.38, 0.82], [0, -6]);
+  const coverOpacity = useTransform(scrollYProgress, [0.72, 0.88], [1, 0]);
 
   return (
     <div className="mx-auto aspect-[3/4.2] w-full max-w-[320px]">
-      <motion.div style={{ scale, y }} className="relative h-full w-full">
+      <motion.div style={{ scale, y }} className="relative h-full w-full overflow-hidden rounded-xl">
         <div className="island-calendar-card island-card--elevated island-card--sea absolute inset-0 overflow-hidden rounded-xl border border-[#3A8FB7]/15 bg-[var(--island-paper)]">
           <CalendarBase pulseHeart />
         </div>
         <motion.div
-          style={{ opacity: coverOpacity }}
-          className="pointer-events-none absolute inset-0 z-30 overflow-hidden rounded-xl shadow-lg isolate"
+          style={{
+            y: coverY,
+            rotate: coverRotate,
+            opacity: coverOpacity,
+            transformOrigin: 'bottom center',
+          }}
+          className="pointer-events-none absolute inset-0 z-30 overflow-hidden rounded-xl shadow-xl"
         >
           <CalendarCover />
         </motion.div>
@@ -254,12 +277,12 @@ export const CalendarRevealSection: React.FC = () => {
 
   return (
     <div ref={containerRef} className={`relative ${sectionHeight} w-full bg-transparent`}>
-      <div className="sticky top-11 flex h-[calc(100svh-2.75rem)] flex-col items-center justify-center overflow-visible py-6 md:top-12 md:h-[calc(100svh-3rem)]">
+      <div className="island-calendar-sticky sticky flex flex-col items-center justify-center overflow-visible py-6">
         <div className="relative z-10 w-full px-4 md:px-6">
           {isHighPerf(perf) ? (
             <FlippingCalendar scrollYProgress={scrollYProgress} />
           ) : (
-            <FadeRevealCalendar scrollYProgress={scrollYProgress} />
+            <PeelRevealCalendar scrollYProgress={scrollYProgress} />
           )}
         </div>
       </div>

@@ -9,6 +9,7 @@ import { IslandWaveDivider } from './components/island/IslandWaveDivider';
 import { IslandSectionReveal } from './components/island/IslandSectionReveal';
 import { IslandOrnament } from './components/island/IslandOrnament';
 import { IslandDepthJourney } from './components/island/IslandDepthJourney';
+import { VoyageJourneyProgress } from './components/island/VoyageJourneyProgress';
 import { SubmergeGate } from './components/island/SubmergeGate';
 import { ScrollJourneyProvider } from './hooks/ScrollJourneyContext';
 import { CalendarRevealSection } from './components/CalendarRevealSection';
@@ -223,6 +224,7 @@ function App() {
         跳至主要內容
       </a>
       <IslandDepthJourney />
+      <VoyageJourneyProgress visible={showNav && !isGuestBookExpanded} />
 
       <AnimatePresence>
         {isInitialLoading && (

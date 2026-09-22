@@ -3,7 +3,6 @@ import { useScrollJourney } from '../../hooks/ScrollJourneyContext';
 import { depthFade } from '../../utils/scrollDepthMath';
 import { usePerfMode, isLowPerf } from '../../hooks/usePerfMode';
 import {
-  getDepthCaption,
   getDuskLayerOpacity,
   getGalleryLayerOpacity,
   getGalleryPaletteAtDepth,
@@ -58,9 +57,18 @@ const DEPTH_SIDE_BUBBLES: DepthBubbleSpec[] = [
   { side: 'right', inset: '5%', size: '0.45rem', duration: 21, delay: -17, drift: 2 },
 ];
 
-const DepthSideBubbles: React.FC<{ opacity: number; animate: boolean }> = ({ opacity, animate }) => (
+const DepthSideBubbles: React.FC<{ opacity: number; animate: boolean; compact?: boolean }> = ({
+  opacity,
+  animate,
+  compact = false,
+}) => {
+  const bubbles = compact
+    ? DEPTH_SIDE_BUBBLES.filter((_, i) => i % 2 === 0)
+    : DEPTH_SIDE_BUBBLES;
+
+  return (
   <div className="island-depth-bubbles" style={{ opacity }}>
-    {DEPTH_SIDE_BUBBLES.map((b, i) => (
+    {bubbles.map((b, i) => (
       <span
         key={`${b.side}-${i}`}
         className={`island-depth-bubble island-depth-bubble--${b.side} ${
@@ -77,7 +85,8 @@ const DepthSideBubbles: React.FC<{ opacity: number; animate: boolean }> = ({ opa
       />
     ))}
   </div>
-);
+  );
+};
 
 const CoralSvg: React.FC = () => (
   <svg className="h-full w-full" viewBox="0 0 400 120" preserveAspectRatio="xMidYMax meet" aria-hidden>
@@ -97,7 +106,9 @@ const CoralSvg: React.FC = () => (
 
 export const IslandDepthJourney: React.FC = () => {
   const { depth } = useScrollJourney();
-  const lite = isLowPerf(usePerfMode());
+  const perf = usePerfMode();
+  const lite = isLowPerf(perf);
+  const mediumOnly = perf === 'medium';
 
   const galleryPalette = useMemo(() => getGalleryPaletteAtDepth(depth), [depth]);
   const galleryOp = getGalleryLayerOpacity(depth);
@@ -117,8 +128,6 @@ export const IslandDepthJourney: React.FC = () => {
   const fishOp = depthFade(depth, 0.48, 0.56) * decorFadeOut;
   const coralOp = depthFade(depth, 0.52, 0.62) * decorFadeOut * 0.58;
   const bubbleOp = depthFade(depth, 0.45, 0.53) * decorFadeOut;
-
-  const caption = useMemo(() => getDepthCaption(depth), [depth]);
 
   return (
     <>
@@ -145,26 +154,32 @@ export const IslandDepthJourney: React.FC = () => {
           style={{ opacity: contentCalm * 0.82 }}
         />
 
-        <DepthSideBubbles opacity={bubbleOp} animate={!lite} />
+        <DepthSideBubbles opacity={bubbleOp} animate={!lite} compact={mediumOnly} />
 
         {!lite && (
           <>
             <div className="island-depth-seaweed island-depth-seaweed--left" style={{ opacity: seaweedOp }}>
               <SeaweedSvg className="h-full w-full" />
             </div>
-            <div className="island-depth-seaweed island-depth-seaweed--right" style={{ opacity: seaweedOp * 0.85 }}>
-              <SeaweedSvg className="h-full w-full" />
-            </div>
+            {!mediumOnly && (
+              <div className="island-depth-seaweed island-depth-seaweed--right" style={{ opacity: seaweedOp * 0.85 }}>
+                <SeaweedSvg className="h-full w-full" />
+              </div>
+            )}
 
             <div className="island-depth-fish island-depth-fish--slow" style={{ opacity: fishOp, top: '38%', left: 0, width: '2rem' }}>
               <FishSvg className="h-4 w-8" />
             </div>
+            {!mediumOnly && (
+              <>
             <div className="island-depth-fish" style={{ opacity: fishOp * 0.8, top: '52%', left: 0, width: '1.75rem', animationDelay: '-8s' }}>
               <FishSvg className="h-3.5 w-7" />
             </div>
             <div className="island-depth-fish island-depth-fish--fast" style={{ opacity: fishOp * 0.65, top: '64%', left: 0, width: '1.5rem', animationDelay: '-14s' }}>
               <FishSvg className="h-3 w-6" />
             </div>
+              </>
+            )}
             <div
               className="island-depth-fish island-depth-fish--slow"
               style={{ opacity: fishOp * 0.5, top: '46%', left: 0, width: '1.25rem', animationDelay: '-22s' }}
@@ -190,13 +205,6 @@ export const IslandDepthJourney: React.FC = () => {
         )}
       </div>
 
-      {depth >= 0.04 && (
-        <div className="island-depth-caption pointer-events-none fixed inset-x-0 z-30 flex justify-center" aria-hidden>
-          <p className="island-depth-caption__text font-serif text-[11px] tracking-[0.28em] md:text-xs">
-            {caption}
-          </p>
-        </div>
-      )}
     </>
   );
 };
