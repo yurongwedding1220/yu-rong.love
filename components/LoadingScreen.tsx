@@ -119,32 +119,51 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
       </div>
 
       <div className="relative z-10 flex w-full max-w-sm flex-col items-center px-6 text-center">
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
+        <motion.h1
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-8 font-display text-[10px] tracking-[0.45em] text-white/70"
+          transition={{ duration: 0.7, delay: 0.08 }}
+          className="font-serif text-3xl font-light text-white md:text-4xl"
         >
-          {VOYAGE_NARRATIVE.loadingHint}
+          {APP_CONTENT.coupleName}
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-2 font-serif text-base text-white/85"
+        >
+          {APP_CONTENT.chineseNames}
         </motion.p>
 
-        <div className="relative mb-8 w-full max-w-[16rem]" aria-hidden>
-          <div className="relative h-14 w-full">
+        {/* 入港航程：帆船位置即載入進度，取代進度條 */}
+        <div className="island-loading-voyage relative mt-10 w-full max-w-[18rem]" aria-hidden>
+          <div className="relative h-16 w-full">
+            <span
+              className="absolute bottom-1 left-0 font-display text-[9px] tracking-[0.2em] text-white/35"
+            >
+              啟程
+            </span>
+            <span
+              className="absolute bottom-1 right-0 font-display text-[9px] tracking-[0.2em] text-[var(--island-coral)]/80"
+            >
+              靠岸
+            </span>
             <motion.div
               className="absolute bottom-2 text-white"
               style={{
                 left: `calc(${clamped}% - 1.75rem)`,
               }}
-              animate={{ y: [0, -3, 0] }}
+              animate={{ y: [0, -4, 0] }}
               transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <SailboatSvg className="h-11 w-14 drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)]" />
+              <SailboatSvg className="h-12 w-14 drop-shadow-[0_4px_14px_rgba(0,0,0,0.3)]" />
             </motion.div>
           </div>
 
           <svg
-            className="h-5 w-full overflow-visible text-[var(--island-shallow)]/55"
-            viewBox="0 0 200 20"
+            className="h-6 w-full overflow-visible text-[var(--island-shallow)]/60"
+            viewBox="0 0 200 24"
             preserveAspectRatio="none"
           >
             <motion.g
@@ -164,7 +183,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
               transition={{ duration: 3.6, repeat: Infinity, ease: 'linear' }}
             >
               <path
-                d="M0 14 Q 12.5 9 25 14 T 50 14 T 75 14 T 100 14 T 125 14 T 150 14 T 175 14 T 200 14 T 225 14"
+                d="M0 16 Q 12.5 11 25 16 T 50 16 T 75 16 T 100 16 T 125 16 T 150 16 T 175 16 T 200 16 T 225 16"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="1"
@@ -175,32 +194,14 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
           </svg>
         </div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.08 }}
-          className="font-serif text-3xl font-light text-white md:text-4xl"
-        >
-          {APP_CONTENT.coupleName}
-        </motion.h1>
         <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-2 font-serif text-base text-white/85"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.28, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-6 font-display text-[10px] tracking-[0.45em] text-white/70"
         >
-          {APP_CONTENT.chineseNames}
+          {VOYAGE_NARRATIVE.loadingHint}
         </motion.p>
-
-        <div className="mt-10 h-px w-44 overflow-hidden rounded-full bg-white/15">
-          <div
-            className="h-full rounded-full bg-gradient-to-r from-[var(--island-shallow)] via-white/80 to-[var(--island-coral)]/90 transition-[width] duration-300 ease-out"
-            style={{ width: `${clamped}%` }}
-          />
-        </div>
-        <p className="mt-3 font-display text-[10px] tracking-[0.3em] text-white/50">
-          {Math.round(clamped)}%
-        </p>
       </div>
     </motion.div>
   );
