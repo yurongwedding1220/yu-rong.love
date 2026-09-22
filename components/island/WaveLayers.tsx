@@ -39,7 +39,7 @@ const DriftingWaves: React.FC<{
   yMain: MotionValue<number>;
   yFront: MotionValue<number>;
 }> = ({ yMain, yFront }) => (
-  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%] overflow-hidden">
+  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[34%] overflow-hidden">
     <motion.div
       className="absolute bottom-[10%] left-[-8%] h-[72%] w-[170%]"
       style={{ y: yMain }}
@@ -71,8 +71,8 @@ const DriftingWaves: React.FC<{
           aria-hidden
         >
           <path
-            fill="#7EC8E3"
-            opacity={0.9}
+            fill="#6BB5D8"
+            opacity={0.62}
             d="M0,224L80,208C160,192,320,160,480,154C640,149,800,171,960,186C1120,202,1280,210,1360,192L1440,174L1440,320L0,320Z"
           />
         </svg>

@@ -561,24 +561,74 @@ html.is-scrolling .island-wave-drift-slow {
 .hero-ocean-scene__sky {
   background: linear-gradient(
     180deg,
-    #5eb3e8 0%,
-    #87ceeb 22%,
-    #b8e4f5 48%,
-    rgba(184, 228, 245, 0.35) 68%,
-    transparent 82%
+    #4da8e0 0%,
+    #6eb8e8 14%,
+    #87ceeb 30%,
+    #b8e4f5 52%,
+    rgba(184, 228, 245, 0.45) 68%,
+    transparent 84%
+  );
+}
+
+.hero-ocean-scene__sky-haze {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.12) 45%,
+    rgba(184, 232, 245, 0.28) 100%
   );
 }
 
 .hero-ocean-scene__sun {
-  background: radial-gradient(circle, #fffef5 0%, #ffeaa0 42%, transparent 72%);
-  box-shadow: 0 0 48px 16px rgba(255, 234, 160, 0.28);
+  position: relative;
+  width: 3rem;
+  height: 3rem;
+}
+
+@media (min-width: 768px) {
+  .hero-ocean-scene__sun {
+    width: 3.75rem;
+    height: 3.75rem;
+  }
+}
+
+.hero-ocean-scene__sun-core {
+  position: absolute;
+  inset: 22%;
+  border-radius: 9999px;
+  background: radial-gradient(circle, #fffef8 0%, #ffeaa0 55%, #f5d080 100%);
+  box-shadow: 0 0 20px 6px rgba(255, 234, 160, 0.45);
+}
+
+.hero-ocean-scene__sun-halo {
+  position: absolute;
+  inset: -40%;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255, 244, 210, 0.55) 0%, transparent 68%);
+}
+
+.hero-ocean-scene__sun-pulse .hero-ocean-scene__sun-halo {
+  animation: hero-sun-pulse 5s ease-in-out infinite;
+}
+
+@keyframes hero-sun-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
 }
 
 .hero-ocean-scene__ocean-deep {
   background: linear-gradient(
     180deg,
-    #1b4d6e 0%,
-    #134a62 38%,
+    #1a5270 0%,
+    #1b4d6e 28%,
+    #134a62 58%,
     #0f3550 100%
   );
 }
@@ -586,10 +636,92 @@ html.is-scrolling .island-wave-drift-slow {
 .hero-ocean-scene__ocean-mid {
   background: linear-gradient(
     180deg,
-    rgba(58, 143, 183, 0.45) 0%,
-    rgba(27, 77, 110, 0.72) 55%,
-    rgba(15, 53, 80, 0.9) 100%
+    rgba(74, 158, 196, 0.35) 0%,
+    rgba(58, 143, 183, 0.55) 40%,
+    rgba(27, 77, 110, 0.82) 100%
   );
+}
+
+.hero-ocean-scene__ocean-surface {
+  background: linear-gradient(
+    180deg,
+    rgba(126, 200, 227, 0.22) 0%,
+    rgba(74, 158, 196, 0.42) 55%,
+    rgba(58, 143, 183, 0.55) 100%
+  );
+}
+
+.hero-ocean-scene__horizon-line {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 20%,
+    rgba(255, 255, 255, 0.65) 50%,
+    rgba(255, 255, 255, 0.45) 80%,
+    transparent 100%
+  );
+  box-shadow: 0 0 12px 1px rgba(255, 255, 255, 0.15);
+}
+
+.hero-ocean-scene__shimmer {
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.14) 48%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(255, 255, 255, 0.14) 52%,
+    transparent 62%
+  );
+  background-size: 200% 100%;
+  animation: hero-water-shimmer 8s ease-in-out infinite;
+  mix-blend-mode: soft-light;
+}
+
+@keyframes hero-water-shimmer {
+  0%,
+  100% {
+    background-position: 120% 0;
+  }
+  50% {
+    background-position: -20% 0;
+  }
+}
+
+html.is-scrolling .hero-ocean-scene__shimmer,
+html[data-perf='low'] .hero-ocean-scene__shimmer {
+  animation: none;
+}
+
+/* Hero 文字：半透明霧面底，無厚重陰影 */
+.island-hero-copy {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.15) inset,
+    0 16px 48px -20px rgba(8, 28, 44, 0.28);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.island-hero-copy__label {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.island-hero-copy__title {
+  color: #fff;
+  text-shadow: 0 1px 16px rgba(27, 77, 110, 0.25);
+}
+
+.island-hero-copy__subtitle,
+.island-hero-copy__intro,
+.island-hero-copy__meta {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+html[data-perf='low'] .island-hero-copy {
+  background: rgba(15, 53, 80, 0.35);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .hero-ocean-scene__cloud-drift {
@@ -649,14 +781,16 @@ html.is-scrolling .island-wave-drift-slow {
 html.is-scrolling .hero-ocean-scene__cloud-drift,
 html.is-scrolling .hero-ocean-scene__wave-drift,
 html.is-scrolling .hero-ocean-scene__wave-drift-slow,
-html.is-scrolling .hero-ocean-scene__island-bob {
+html.is-scrolling .hero-ocean-scene__island-bob,
+html.is-scrolling .hero-ocean-scene__sun-pulse {
   animation-play-state: paused;
 }
 
 html[data-perf='low'] .hero-ocean-scene__cloud-drift,
 html[data-perf='low'] .hero-ocean-scene__wave-drift,
 html[data-perf='low'] .hero-ocean-scene__wave-drift-slow,
-html[data-perf='low'] .hero-ocean-scene__island-bob {
+html[data-perf='low'] .hero-ocean-scene__island-bob,
+html[data-perf='low'] .hero-ocean-scene__sun-pulse {
   animation: none;
 }
 
@@ -681,11 +815,15 @@ html[data-perf='low'] .hero-ocean-scene__island-bob {
 .hero-ocean-scene__vignette {
   background: linear-gradient(
     180deg,
-    rgba(8, 28, 44, 0.08) 0%,
-    transparent 35%,
-    transparent 72%,
-    rgba(8, 28, 44, 0.12) 100%
+    rgba(8, 28, 44, 0.04) 0%,
+    transparent 30%,
+    transparent 78%,
+    rgba(8, 28, 44, 0.08) 100%
   );
+}
+
+.hero-ocean-scene__island-svg {
+  filter: drop-shadow(0 8px 16px rgba(8, 28, 44, 0.18));
 }
 
 .island-voyage-shore {

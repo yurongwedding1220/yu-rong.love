@@ -83,20 +83,16 @@ export const IslandScrollHero: React.FC = () => {
           </>
         )}
 
-        <div
-          className="pointer-events-none absolute inset-x-0 top-[24%] bottom-[16%] bg-[radial-gradient(ellipse_at_center,rgba(8,28,44,0.18),transparent_72%)]"
-          aria-hidden
-        />
-
         <motion.div
           className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center"
           style={{ y: contentY, opacity: contentFade }}
         >
+          <div className="island-hero-copy max-w-lg rounded-3xl px-6 py-8 md:max-w-xl md:px-10 md:py-10">
           <motion.p
             initial={lite ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="mb-4 font-display text-[10px] tracking-[0.4em] text-white/80 md:text-xs"
+            className="island-hero-copy__label mb-4 font-display text-[10px] tracking-[0.4em] md:text-xs"
           >
             WEDDING INVITATION
           </motion.p>
@@ -105,10 +101,10 @@ export const IslandScrollHero: React.FC = () => {
             initial={lite ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.85, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="font-serif text-4xl font-light tracking-[0.08em] text-white md:text-6xl"
+            className="island-hero-copy__title font-serif text-4xl font-light tracking-[0.08em] md:text-6xl"
           >
             Yu{' '}
-            <span className="font-script text-[1.15em] text-white/90">&</span>{' '}
+            <span className="font-script text-[1.15em]">&</span>{' '}
             Rong
           </motion.h1>
 
@@ -116,7 +112,7 @@ export const IslandScrollHero: React.FC = () => {
             initial={lite ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.35 }}
-            className="mt-3 font-serif text-lg text-white/90 md:text-xl"
+            className="island-hero-copy__subtitle mt-3 font-serif text-lg md:text-xl"
           >
             {APP_CONTENT.chineseNames}
           </motion.p>
@@ -125,7 +121,7 @@ export const IslandScrollHero: React.FC = () => {
             initial={lite ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.5 }}
-            className="island-heading-pretty mt-8 max-w-md font-serif text-sm leading-[1.9] tracking-wide text-white/85 md:text-base"
+            className="island-hero-copy__intro island-heading-pretty mt-8 font-serif text-sm leading-[1.9] tracking-wide md:text-base"
           >
             {APP_CONTENT.intro}
           </motion.p>
@@ -134,15 +130,16 @@ export const IslandScrollHero: React.FC = () => {
             initial={lite ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.65 }}
-            className="mt-10 flex flex-col items-center gap-1"
+            className="island-hero-copy__meta mt-10 flex flex-col items-center gap-1"
           >
-            <p className="font-display text-xs tracking-[0.25em] text-white/75">
+            <p className="font-display text-xs tracking-[0.25em]">
               {APP_CONTENT.date}
             </p>
-            <p className="font-serif text-sm text-white/80">
+            <p className="font-serif text-sm">
               {APP_CONTENT.venueName} · {APP_CONTENT.venueHall}
             </p>
           </motion.div>
+          </div>
 
           {!lite && (
             <motion.div
