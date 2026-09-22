@@ -36,6 +36,49 @@ const FishSvg: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 );
 
+type DepthBubbleSpec = {
+  side: 'left' | 'right';
+  inset: string;
+  size: string;
+  duration: number;
+  delay: number;
+  drift: number;
+  romantic?: boolean;
+};
+
+/** 兩側緩升泡泡 — 入水後伴隨航程 */
+const DEPTH_SIDE_BUBBLES: DepthBubbleSpec[] = [
+  { side: 'left', inset: '4%', size: '0.5rem', duration: 18, delay: 0, drift: 4 },
+  { side: 'left', inset: '7%', size: '0.75rem', duration: 24, delay: -6, drift: -3, romantic: true },
+  { side: 'left', inset: '2.5%', size: '0.35rem', duration: 14, delay: -11, drift: 2 },
+  { side: 'left', inset: '5.5%', size: '0.55rem', duration: 20, delay: -15, drift: 5, romantic: true },
+  { side: 'right', inset: '3.5%', size: '0.6rem', duration: 19, delay: -2, drift: -4 },
+  { side: 'right', inset: '6%', size: '0.4rem', duration: 16, delay: -8, drift: 3 },
+  { side: 'right', inset: '2%', size: '0.8rem', duration: 26, delay: -13, drift: -5, romantic: true },
+  { side: 'right', inset: '5%', size: '0.45rem', duration: 21, delay: -17, drift: 2 },
+];
+
+const DepthSideBubbles: React.FC<{ opacity: number; animate: boolean }> = ({ opacity, animate }) => (
+  <div className="island-depth-bubbles" style={{ opacity }}>
+    {DEPTH_SIDE_BUBBLES.map((b, i) => (
+      <span
+        key={`${b.side}-${i}`}
+        className={`island-depth-bubble island-depth-bubble--${b.side} ${
+          b.romantic ? 'island-depth-bubble--romantic' : ''
+        } ${animate ? 'island-depth-bubble--rise' : ''}`}
+        style={{
+          ['--bubble-inset' as string]: b.inset,
+          ['--bubble-drift' as string]: `${b.drift}px`,
+          width: b.size,
+          height: b.size,
+          animationDuration: `${b.duration}s`,
+          animationDelay: `${b.delay}s`,
+        }}
+      />
+    ))}
+  </div>
+);
+
 const CoralSvg: React.FC = () => (
   <svg className="h-full w-full" viewBox="0 0 400 120" preserveAspectRatio="xMidYMax meet" aria-hidden>
     <path d="M40 120 Q45 80 55 55 T60 20" {...LINE} strokeWidth="2" />
@@ -73,6 +116,7 @@ export const IslandDepthJourney: React.FC = () => {
   const seaweedOp = depthFade(depth, 0.44, 0.54) * decorFadeOut;
   const fishOp = depthFade(depth, 0.48, 0.56) * decorFadeOut;
   const coralOp = depthFade(depth, 0.52, 0.62) * decorFadeOut * 0.58;
+  const bubbleOp = depthFade(depth, 0.45, 0.53) * decorFadeOut;
 
   const caption = useMemo(() => getDepthCaption(depth), [depth]);
 
@@ -100,6 +144,8 @@ export const IslandDepthJourney: React.FC = () => {
           className="island-depth-layer island-depth-content-calm"
           style={{ opacity: contentCalm * 0.82 }}
         />
+
+        <DepthSideBubbles opacity={bubbleOp} animate={!lite} />
 
         {!lite && (
           <>

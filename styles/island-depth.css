@@ -246,6 +246,77 @@ html[data-perf='high'] .island-depth-coral {
   animation-duration: 11s;
 }
 
+/* 兩側浪漫升泡泡 */
+.island-depth-bubbles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.island-depth-bubble {
+  position: absolute;
+  bottom: -1.5rem;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 30% 26%,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(184, 232, 245, 0.35) 55%,
+    rgba(126, 200, 227, 0.12) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  box-shadow:
+    0 0 10px rgba(255, 255, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.island-depth-bubble--left {
+  left: var(--bubble-inset, 4%);
+}
+
+.island-depth-bubble--right {
+  right: var(--bubble-inset, 4%);
+}
+
+.island-depth-bubble--romantic {
+  background: radial-gradient(
+    circle at 30% 26%,
+    rgba(255, 248, 252, 0.95) 0%,
+    rgba(245, 201, 168, 0.28) 50%,
+    rgba(232, 168, 124, 0.1) 100%
+  );
+  border-color: rgba(255, 236, 228, 0.45);
+}
+
+@keyframes island-depth-bubble-rise {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.55);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.72;
+  }
+  75% {
+    opacity: 0.48;
+  }
+  100% {
+    transform: translate3d(var(--bubble-drift, 0), calc(-100vh - 2rem), 0) scale(1);
+    opacity: 0;
+  }
+}
+
+html[data-perf='medium'] .island-depth-bubble--rise,
+html[data-perf='high'] .island-depth-bubble--rise {
+  animation: island-depth-bubble-rise linear infinite;
+}
+
+html[data-perf='low'] .island-depth-bubbles {
+  display: none;
+}
+
 /* 海面／航程段 — 完全透明，只顯示固定背景一層 */
 .island-section-shallow,
 .island-section-submerge,
@@ -450,7 +521,8 @@ html[data-perf='low'] .island-depth-fish {
 @media (prefers-reduced-motion: reduce) {
   .island-depth-seaweed,
   .island-depth-fish,
-  .island-depth-coral {
+  .island-depth-coral,
+  .island-depth-bubble--rise {
     animation: none !important;
   }
 }
