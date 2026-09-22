@@ -523,10 +523,6 @@ html[data-depth-chrome='underwater'] .island-countdown-bar .island-tabular {
   min-height: calc(100svh - var(--island-marquee-offset));
 }
 
-html.calendar-scroll-locked {
-  overscroll-behavior-y: none;
-}
-
 .island-calendar-reveal-hint {
   animation: island-calendar-hint-pulse 2.4s ease-in-out infinite;
 }
