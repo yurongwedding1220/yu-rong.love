@@ -9,7 +9,6 @@ import { IslandWaveDivider } from './components/island/IslandWaveDivider';
 import { IslandSectionReveal } from './components/island/IslandSectionReveal';
 import { IslandOrnament } from './components/island/IslandOrnament';
 import { IslandDepthJourney } from './components/island/IslandDepthJourney';
-import { VoyageJourneyProgress } from './components/island/VoyageJourneyProgress';
 import { SubmergeGate } from './components/island/SubmergeGate';
 import { ScrollJourneyProvider } from './hooks/ScrollJourneyContext';
 import { CalendarRevealSection } from './components/CalendarRevealSection';
@@ -150,7 +149,9 @@ function App() {
       const timeline = document.getElementById('timeline');
       const vh = window.innerHeight;
 
-      setShowNav(!!harbor && harbor.getBoundingClientRect().top < vh * 0.9);
+      const marqueeOn = !!harbor && harbor.getBoundingClientRect().top < vh * 0.9;
+      setShowNav(marqueeOn);
+      document.documentElement.dataset.marquee = marqueeOn ? 'visible' : 'hidden';
       setShowRSVPButton(!!timeline && timeline.getBoundingClientRect().top < vh * 0.75);
 
       if (isNavigatingRef.current) return;
@@ -183,6 +184,7 @@ function App() {
       window.removeEventListener('scroll', onScroll);
       window.clearTimeout(scrollEndTimer);
       document.documentElement.classList.remove('is-scrolling');
+      delete document.documentElement.dataset.marquee;
     };
   }, []);
 
@@ -224,7 +226,20 @@ function App() {
         跳至主要內容
       </a>
       <IslandDepthJourney />
-      <VoyageJourneyProgress visible={showNav && !isGuestBookExpanded} />
+
+      <AnimatePresence>
+        {showNav && !isGuestBookExpanded && !isInitialLoading && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-x-0 top-0 z-[45]"
+          >
+            <HarborCountdownBar timeLeft={timeLeft} lite={lite} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {isInitialLoading && (
@@ -269,7 +284,6 @@ function App() {
           data-depth-phase="harbor"
           className="island-section-harbor relative scroll-mt-20 px-4 pb-8 pt-0 md:pb-12"
         >
-          <HarborCountdownBar timeLeft={timeLeft} lite={lite} perf={perf} />
           <div className="relative z-[1] pt-8 md:pt-10">
             <VoyageSectionHeader
               chapter={VOYAGE_NARRATIVE.harborChapter}
@@ -512,12 +526,6 @@ function App() {
         )}
       </AnimatePresence>
 
-      <style>{`
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-      `}</style>
     </main>
     </ScrollJourneyProvider>
   );

@@ -1,12 +1,10 @@
 import React from 'react';
 import { APP_CONTENT, VOYAGE_NARRATIVE } from '../../constants';
-import type { PerfMode } from '../../hooks/usePerfMode';
 import { SeaMotif } from './IslandSeaMotifs';
 
 type HarborCountdownBarProps = {
   timeLeft: { days: number; hours: number; minutes: number; seconds: number };
   lite: boolean;
-  perf: PerfMode;
 };
 
 const MarqueeSegment: React.FC<{
@@ -32,11 +30,10 @@ const MarqueeSegment: React.FC<{
 export const HarborCountdownBar: React.FC<HarborCountdownBarProps> = ({
   timeLeft,
   lite,
-  perf,
 }) => (
   <div
     id="sticky-marquee"
-    className="island-blur island-countdown-bar sticky z-40 -mx-4 overflow-hidden border-b border-[#3A8FB7]/12 px-4 md:-mx-0 md:px-0"
+    className="island-blur island-countdown-bar overflow-hidden border-b border-[#3A8FB7]/12 px-4 pt-[env(safe-area-inset-top,0px)] md:px-0"
     aria-live="polite"
     aria-label={VOYAGE_NARRATIVE.countdownLabel}
   >
@@ -53,11 +50,7 @@ export const HarborCountdownBar: React.FC<HarborCountdownBarProps> = ({
       </div>
     ) : (
       <div
-        className={`island-marquee-track island-tabular flex w-max whitespace-nowrap py-2.5 text-sm tracking-[0.18em] text-[#1B4D6E] ${
-          perf === 'medium'
-            ? 'animate-[marquee_18s_linear_infinite]'
-            : 'animate-[marquee_14s_linear_infinite]'
-        }`}
+        className="island-marquee-track island-marquee-track--run island-tabular flex w-max whitespace-nowrap py-2.5 text-sm tracking-[0.18em] text-[#1B4D6E]"
       >
         {/* 兩組相同內容 + translateX(-50%) 才會無縫循環 */}
         <div className="flex shrink-0">

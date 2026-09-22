@@ -26,7 +26,6 @@ export const ScrollJourneyProvider: React.FC<{ children: React.ReactNode }> = ({
       setDepth(clamped);
       document.documentElement.style.setProperty('--scroll-depth', String(clamped));
       document.documentElement.dataset.depthChrome = clamped >= 0.52 ? 'underwater' : 'surface';
-      document.documentElement.dataset.journeyProgress = clamped >= 0.12 ? 'visible' : 'hidden';
     };
 
     const onScroll = () => {
@@ -45,7 +44,6 @@ export const ScrollJourneyProvider: React.FC<{ children: React.ReactNode }> = ({
       window.removeEventListener('resize', onScroll);
       document.documentElement.style.removeProperty('--scroll-depth');
       delete document.documentElement.dataset.depthChrome;
-      delete document.documentElement.dataset.journeyProgress;
     };
   }, [reducedMotion]);
 
