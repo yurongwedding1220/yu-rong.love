@@ -204,10 +204,10 @@ export const HeroOceanScene: React.FC<HeroOceanSceneProps> = ({ progress, lite, 
   const animate = !lite && perf === 'high';
   const vistaScale = useTransform(
     progress,
-    [0, 0.5, 1],
-    lite ? [1, 1.1, 1.2] : isMobileScene ? [1, 1.06, 1.12] : [1, 1.18, 1.38]
+    [0, 0.45, 0.85, 1],
+    lite ? [1, 1.1, 1.22, 1.28] : isMobileScene ? [1, 1.14, 1.28, 1.36] : [1, 1.18, 1.32, 1.42]
   );
-  const vistaY = useTransform(progress, [0, 1], [0, lite ? 24 : isMobileScene ? 20 : 56]);
+  const vistaY = useTransform(progress, [0, 1], [0, lite ? 24 : isMobileScene ? 36 : 56]);
   const cloudOp = useTransform(progress, [0, 0.65, 1], [1, 0.92, 0.78]);
   const shallowMix = useTransform(
     progress,
@@ -215,7 +215,12 @@ export const HeroOceanScene: React.FC<HeroOceanSceneProps> = ({ progress, lite, 
     isMobileScene ? [0, 0.08, 0.18, 0.28] : [0, 0.12, 0.3, 0.46]
   );
   const skyBright = useTransform(progress, [0, 0.85, 1], [1, 0.97, 0.9]);
-  const islandLift = useTransform(progress, [0, 1], [0, lite ? 6 : isMobileScene ? 4 : 12]);
+  const islandScale = useTransform(
+    progress,
+    [0, 0.5, 1],
+    lite ? [1, 1.05, 1.1] : isMobileScene ? [1, 1.12, 1.28] : [1, 1.08, 1.14]
+  );
+  const islandLift = useTransform(progress, [0, 1], [0, lite ? 6 : isMobileScene ? 10 : 12]);
 
   return (
     <>
@@ -265,7 +270,7 @@ export const HeroOceanScene: React.FC<HeroOceanSceneProps> = ({ progress, lite, 
 
         <motion.div
           className="absolute left-1/2 w-[min(58vw,16rem)] -translate-x-1/2 md:w-[min(42vw,19rem)]"
-          style={{ bottom: 'calc(24% - 0.25rem)', y: islandLift }}
+          style={{ bottom: 'calc(24% - 0.25rem)', y: islandLift, scale: islandScale }}
         >
           <div className={animate ? 'hero-ocean-scene__island-bob' : undefined}>
             <IslandSilhouette idPrefix={islandId} />

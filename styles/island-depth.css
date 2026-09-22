@@ -192,18 +192,19 @@ html[data-perf='high'] .island-depth-seaweed--right {
 /* 海草／小魚／珊瑚：捲動時仍保持動態（transform 動畫成本低） */
 
 /* 小魚游動 */
+/* 魚 SVG 頭朝左：向右游時 scaleX(-1) 翻轉朝向 */
 @keyframes island-fish-swim {
   0% {
-    transform: translate3d(-10%, 0, 0) scaleX(1);
+    transform: translate3d(-10%, 0, 0) scaleX(-1);
   }
   49% {
-    transform: translate3d(110vw, 0, 0) scaleX(1);
-  }
-  50% {
     transform: translate3d(110vw, 0, 0) scaleX(-1);
   }
+  50% {
+    transform: translate3d(110vw, 0, 0) scaleX(1);
+  }
   100% {
-    transform: translate3d(-10%, 0, 0) scaleX(-1);
+    transform: translate3d(-10%, 0, 0) scaleX(1);
   }
 }
 

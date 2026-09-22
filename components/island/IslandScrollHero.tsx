@@ -35,7 +35,7 @@ export const IslandScrollHero: React.FC = () => {
     perf === 'low'
       ? 'h-[160svh]'
       : perf === 'medium'
-        ? 'h-[185svh]'
+        ? 'h-[200svh]'
         : 'h-[200svh] md:h-[220svh]';
 
   return (
