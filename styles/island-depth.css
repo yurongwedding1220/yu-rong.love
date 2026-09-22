@@ -436,73 +436,78 @@ html.is-scrolling .island-submerge-gate__ripple {
   color: rgba(244, 248, 251, 0.88);
 }
 
-/* 水下區塊：淺色底 + 深色字，長輩易讀 */
+/* 水下章節：融入固定背景，與 1–3 章一致（無白底卡片） */
 .island-section-underwater .voyage-section-header,
 .island-section-abyss .voyage-section-header {
-  padding: 1.25rem 1rem 1.5rem;
-  border-radius: 1rem;
-  background: rgba(253, 248, 241, 0.96);
-  border: 1px solid rgba(27, 77, 110, 0.1);
-  box-shadow: 0 4px 20px -8px rgba(8, 28, 44, 0.12);
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
 }
 
-.island-section-underwater .voyage-section-header .island-heading,
-.island-section-abyss .voyage-section-header .island-heading {
-  color: #1a3344;
+.island-content-integrated {
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
-.island-section-underwater .voyage-section-header .island-prose,
-.island-section-abyss .voyage-section-header .island-prose {
-  color: #4a5f6b;
+.island-content-glass {
+  border: 1px solid rgba(126, 200, 227, 0.22);
+  background: rgba(15, 53, 80, 0.42);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px -12px rgba(0, 0, 0, 0.35);
 }
 
-.island-section-underwater .voyage-section-header .island-section-label,
-.island-section-abyss .voyage-section-header .island-section-label {
-  color: #2d6a8a;
+.island-berth-transport {
+  border-top: 1px solid rgba(126, 200, 227, 0.16);
 }
 
 @media (min-width: 768px) {
-  .island-section-underwater .voyage-section-header,
-  .island-section-abyss .voyage-section-header {
-    padding: 1.5rem 1.25rem 1.75rem;
+  .island-berth-transport {
+    border-top: none;
+  }
+
+  .island-berth-transport + .island-berth-transport {
+    border-left: 1px solid rgba(126, 200, 227, 0.16);
   }
 }
 
-.island-section-underwater .island-card,
-.island-section-abyss .island-card {
-  background: #fdf8f1;
-  border: 1px solid rgba(27, 77, 110, 0.12);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+/* Timeline — 時間高對比、內容無卡片 */
+.island-section-underwater .island-timeline-time {
+  color: #f4f8fb;
+  text-shadow: 0 1px 14px rgba(8, 28, 44, 0.55);
+}
+
+.island-section-underwater .island-timeline-entry {
+  padding: 0.25rem 0;
+}
+
+.island-section-underwater .island-timeline-dot--integrated {
+  border: 1px solid rgba(126, 200, 227, 0.45);
+  background: rgba(15, 53, 80, 0.55);
+  color: #e8d5bc;
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.9) inset,
-    0 8px 24px -10px rgba(8, 28, 44, 0.14);
+    0 0 0 4px rgba(15, 53, 80, 0.65),
+    0 0 20px rgba(126, 200, 227, 0.15);
 }
 
-.island-section-underwater .island-card .island-heading,
-.island-section-abyss .island-card .island-heading {
-  color: #1a3344;
+.island-section-underwater .island-content-glass {
+  color: rgba(244, 248, 251, 0.92);
 }
 
-.island-section-underwater .island-card .island-prose,
-.island-section-abyss .island-card .island-prose {
-  color: #3d4f5c;
-  font-size: 0.95rem;
-  line-height: 1.75;
-  text-shadow: none;
+.island-section-underwater .island-content-glass .island-heading {
+  color: #f4f8fb;
 }
 
-.island-section-underwater .island-card .island-section-label,
-.island-section-abyss .island-card .island-section-label {
-  color: #2d6a8a;
-  text-shadow: none;
+.island-section-underwater .island-content-glass .island-prose,
+.island-section-underwater .island-content-glass .island-meta {
+  color: rgba(126, 200, 227, 0.88);
 }
 
-.island-section-underwater .island-transport-card .island-prose,
-.island-section-abyss .island-transport-card .island-prose {
-  color: #3d4f5c;
-  font-size: 1rem;
-  line-height: 1.8;
+.island-section-underwater .island-guestbook-divider-label {
+  background: rgba(15, 53, 80, 0.65);
+  color: rgba(126, 200, 227, 0.85);
 }
 
 .island-section-abyss .island-ornament__mark--sea {

@@ -451,16 +451,6 @@ html.is-scrolling .island-bubble-drift {
     -webkit-backdrop-filter: blur(10px);
   }
 
-  /* 水下區塊覆寫玻璃效果，保持實心淺底 */
-  html[data-perf='high'] .island-section-underwater .island-card,
-  html[data-perf='high'] .island-section-abyss .island-card,
-  html[data-perf='medium'] .island-section-underwater .island-card,
-  html[data-perf='medium'] .island-section-abyss .island-card {
-    background: #fdf8f1;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-
   html[data-perf='high'] .island-blur,
   html[data-perf='medium'] .island-blur {
     backdrop-filter: blur(10px);

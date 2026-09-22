@@ -27,14 +27,14 @@ export const LocationInfo: React.FC = () => {
   return (
     <div className="space-y-12">
       <IslandSectionReveal>
-        <div className="island-card island-card--sea relative overflow-hidden rounded-2xl p-8 md:p-10">
+        <div className="island-content-integrated relative">
           <div className="flex w-full flex-col items-stretch gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex-1">
               <p className="island-section-label mb-2">停泊港</p>
-              <h3 className="island-heading font-serif text-2xl font-light text-[#1A3344] md:text-3xl">
+              <h3 className="island-heading font-serif text-2xl font-light md:text-3xl">
                 {APP_CONTENT.venueName}
               </h3>
-              <h4 className="mt-1 font-serif text-base italic text-[#3A8FB7] md:text-lg">
+              <h4 className="mt-1 font-serif text-base italic text-[var(--island-shallow)] md:text-lg">
                 {APP_CONTENT.venueHall}
               </h4>
               <p className="island-prose mt-4 max-w-md md:hidden">
@@ -43,7 +43,7 @@ export const LocationInfo: React.FC = () => {
             </div>
 
             <div className="flex flex-col items-stretch gap-3 md:items-end">
-              <p className="hidden max-w-xs text-right font-sans text-base leading-relaxed text-[#5A7380] md:block">
+              <p className="island-prose hidden max-w-xs text-right md:block">
                 {APP_CONTENT.venueDescription}
               </p>
               <a
@@ -90,15 +90,13 @@ export const LocationInfo: React.FC = () => {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {TRANSPORT_INFO.map((item, idx) => (
           <IslandSectionReveal key={idx} delay={Math.min(idx, 2) * 0.08}>
-            <div className="island-card island-transport-card flex flex-col items-center rounded-2xl p-6 text-center md:p-7">
-              <div className="mb-4 text-3xl opacity-75 grayscale" aria-hidden>{item.icon}</div>
-              <h4 className="mb-2 font-display text-[11px] uppercase tracking-[0.22em] text-[#3A8FB7]">
-                {item.title}
-              </h4>
-              <span className="island-heading mb-3 block font-serif text-lg text-[#1A3344]">
+            <div className="island-content-integrated island-berth-transport flex flex-col items-center p-6 text-center md:p-7">
+              <div className="mb-4 text-3xl opacity-80" aria-hidden>{item.icon}</div>
+              <h4 className="island-section-label mb-2">{item.title}</h4>
+              <span className="island-heading mb-3 block font-serif text-lg">
                 {item.chineseTitle}
               </span>
-              <p className="island-prose text-base leading-relaxed text-[#3d4f5c]">
+              <p className="island-prose text-base leading-relaxed">
                 {item.description}
               </p>
             </div>

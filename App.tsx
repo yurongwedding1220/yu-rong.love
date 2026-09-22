@@ -375,7 +375,7 @@ function App() {
           className="island-section-underwater island-chrome-pad scroll-mt-20 px-4 py-16 md:py-20"
         >
           <IslandSectionReveal animate={!lite}>
-            <div className="island-card island-card--sea relative z-[1] mx-auto max-w-lg rounded-2xl p-8 text-center md:p-10">
+            <div className="island-content-integrated relative z-[1] mx-auto max-w-lg p-8 text-center md:p-10">
               <p className="island-section-label">{VOYAGE_NARRATIVE.contactChapter}</p>
               <IslandOrnament seed="contact" motif="anchor" />
               <h2 className="island-heading font-serif text-2xl font-light tracking-wide md:text-3xl">

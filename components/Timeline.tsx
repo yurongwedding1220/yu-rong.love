@@ -48,36 +48,32 @@ export const Timeline: React.FC<TimelineProps> = ({ animate = true }) => (
                 isEven ? 'pr-12 text-right' : 'pl-12 text-left'
               }`}
             >
-              <span className="island-tabular font-display text-4xl font-light text-[var(--island-sea)]/80">
+              <span className="island-timeline-time island-tabular font-display text-4xl font-light">
                 {event.time}
               </span>
             </div>
 
             <div className="absolute left-0 z-10 flex items-center justify-center md:left-1/2 md:-translate-x-1/2">
-              <div className="island-timeline-dot flex h-14 w-14 items-center justify-center rounded-full border border-[var(--island-sea)]/25 bg-[var(--island-sand)] text-[var(--island-deep)]">
+              <div className="island-timeline-dot island-timeline-dot--integrated flex h-14 w-14 items-center justify-center rounded-full">
                 {getIcon(index)}
               </div>
             </div>
 
             <div className="w-full pl-20 md:w-1/2 md:pl-0">
               <div
-                className={`relative ${isEven ? 'md:ml-12' : 'md:mr-12 md:text-right'}`}
+                className={`island-timeline-entry relative ${isEven ? 'md:ml-12' : 'md:mr-12 md:text-right'}`}
               >
-                <span className="island-tabular mb-2 block font-display text-2xl font-light text-[var(--island-sea)] md:hidden">
+                <span className="island-timeline-time island-tabular mb-2 block font-display text-2xl font-light md:hidden">
                   {event.time}
                 </span>
-                <div className="island-card rounded-xl p-6 md:p-7">
-                  <div className={`flex flex-col ${!isEven ? 'md:items-end' : ''}`}>
-                    <span className="mb-1 font-display text-[11px] uppercase tracking-[0.22em] text-[var(--island-sea)]">
-                      {event.title}
-                    </span>
-                    <h3 className="island-heading mb-3 font-serif text-xl font-light md:text-2xl">
-                      {event.chineseTitle}
-                    </h3>
-                    <p className="island-prose text-left text-base md:text-[1.05rem]">
-                      {event.description}
-                    </p>
-                  </div>
+                <div className={`flex flex-col ${!isEven ? 'md:items-end' : ''}`}>
+                  <span className="island-section-label mb-1">{event.title}</span>
+                  <h3 className="island-heading mb-3 font-serif text-xl font-light md:text-2xl">
+                    {event.chineseTitle}
+                  </h3>
+                  <p className={`island-prose text-base md:text-[1.05rem] ${!isEven ? 'md:text-right' : 'text-left'}`}>
+                    {event.description}
+                  </p>
                 </div>
               </div>
             </div>
