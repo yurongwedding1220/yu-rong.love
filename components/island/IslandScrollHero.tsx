@@ -47,7 +47,7 @@ export const IslandScrollHero: React.FC = () => {
       className={`island-scroll-hero relative ${sectionHeight}`}
     >
       <div className="island-scroll-hero__sticky sticky top-0 h-[100svh] w-full overflow-hidden">
-        <HeroOceanScene progress={scrollYProgress} lite={lite} />
+        <HeroOceanScene progress={scrollYProgress} lite={lite} perf={perf} />
 
         <motion.div
           className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#c5e4f0]/20 to-[#F4E8D8]"

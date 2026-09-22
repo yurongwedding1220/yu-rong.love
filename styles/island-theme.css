@@ -554,8 +554,40 @@ html.is-scrolling .island-wave-drift-slow {
   );
 }
 
+.hero-ocean-scene__sun {
+  background: radial-gradient(circle, #fffef5 0%, #ffeaa0 42%, transparent 72%);
+  box-shadow: 0 0 48px 16px rgba(255, 234, 160, 0.28);
+}
+
+.hero-ocean-scene__ocean-deep {
+  background: linear-gradient(
+    180deg,
+    #1b4d6e 0%,
+    #134a62 38%,
+    #0f3550 100%
+  );
+}
+
+.hero-ocean-scene__ocean-mid {
+  background: linear-gradient(
+    180deg,
+    rgba(58, 143, 183, 0.45) 0%,
+    rgba(27, 77, 110, 0.72) 55%,
+    rgba(15, 53, 80, 0.9) 100%
+  );
+}
+
 .hero-ocean-scene__cloud-drift {
   animation: hero-cloud-drift 48s linear infinite;
+}
+
+.hero-ocean-scene__cloud-drift--slow {
+  animation-duration: 64s;
+  animation-direction: reverse;
+}
+
+.hero-ocean-scene__cloud-drift--mid {
+  animation-duration: 56s;
 }
 
 @keyframes hero-cloud-drift {
@@ -563,12 +595,54 @@ html.is-scrolling .island-wave-drift-slow {
     transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translate3d(-6%, 0, 0);
+    transform: translate3d(-8%, 0, 0);
   }
 }
 
-html.is-scrolling .hero-ocean-scene__cloud-drift {
+.hero-ocean-scene__wave-drift {
+  animation: hero-horizon-wave 14s ease-in-out infinite;
+}
+
+.hero-ocean-scene__wave-drift-slow {
+  animation: hero-horizon-wave 20s ease-in-out infinite reverse;
+}
+
+@keyframes hero-horizon-wave {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-2.5%, 2px, 0);
+  }
+}
+
+.hero-ocean-scene__island-bob {
+  animation: hero-island-bob 6s ease-in-out infinite;
+}
+
+@keyframes hero-island-bob {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -3px, 0);
+  }
+}
+
+html.is-scrolling .hero-ocean-scene__cloud-drift,
+html.is-scrolling .hero-ocean-scene__wave-drift,
+html.is-scrolling .hero-ocean-scene__wave-drift-slow,
+html.is-scrolling .hero-ocean-scene__island-bob {
   animation-play-state: paused;
+}
+
+html[data-perf='low'] .hero-ocean-scene__cloud-drift,
+html[data-perf='low'] .hero-ocean-scene__wave-drift,
+html[data-perf='low'] .hero-ocean-scene__wave-drift-slow,
+html[data-perf='low'] .hero-ocean-scene__island-bob {
+  animation: none;
 }
 
 .hero-ocean-scene__shallow {
