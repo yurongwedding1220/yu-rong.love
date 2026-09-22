@@ -9,6 +9,16 @@
   transform: translateZ(0);
 }
 
+/* 裝飾層：在海底背景之上、章節內容之下 */
+.island-depth-decor {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
 .island-depth-layer {
   position: absolute;
   inset: 0;
@@ -216,14 +226,16 @@ html[data-perf='high'] .island-depth-fish--slow {
   animation-duration: 36s;
 }
 
-/* 珊瑚 */
+/* 珊瑚 — 貼齊視窗底部，避開手機底部導覽 */
 .island-depth-coral {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 22vh;
-  color: rgba(232, 168, 124, 0.45);
+  height: min(30vh, 12rem);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  color: #e8a87c;
+  filter: drop-shadow(0 0 12px rgba(232, 168, 124, 0.25));
   transform-origin: bottom center;
 }
 
@@ -395,19 +407,11 @@ html.is-scrolling .island-submerge-gate__ripple {
 }
 
 .island-section-underwater {
-  background: linear-gradient(
-    180deg,
-    rgba(15, 53, 80, 0.58) 0%,
-    rgba(10, 36, 56, 0.72) 100%
-  );
+  background: transparent;
 }
 
 .island-section-abyss {
-  background: linear-gradient(
-    180deg,
-    rgba(10, 36, 56, 0.78) 0%,
-    rgba(8, 28, 44, 0.9) 100%
-  );
+  background: transparent;
 }
 
 .island-section-underwater .island-section-label,

@@ -90,17 +90,19 @@ const DepthSideBubbles: React.FC<{ opacity: number; animate: boolean; compact?: 
 
 const CoralSvg: React.FC = () => (
   <svg className="h-full w-full" viewBox="0 0 400 120" preserveAspectRatio="xMidYMax meet" aria-hidden>
-    <path d="M40 120 Q45 80 55 55 T60 20" {...LINE} strokeWidth="2" />
-    <path d="M55 120 Q60 85 70 60 T75 30" {...LINE} />
-    <path d="M120 120 Q115 75 125 45 T130 15" {...LINE} strokeWidth="2" />
-    <path d="M135 120 Q140 90 148 65" {...LINE} />
-    <path d="M200 120 Q195 70 205 40 T210 10" {...LINE} strokeWidth="2" />
-    <path d="M280 120 Q275 80 285 50 T290 25" {...LINE} strokeWidth="2" />
-    <path d="M295 120 Q300 95 308 70" {...LINE} />
-    <path d="M350 120 Q345 75 355 48 T360 18" {...LINE} strokeWidth="2" />
-    <ellipse cx="60" cy="95" rx="12" ry="8" {...LINE} strokeWidth="1.2" opacity="0.6" />
-    <ellipse cx="210" cy="100" rx="14" ry="9" {...LINE} strokeWidth="1.2" opacity="0.6" />
-    <ellipse cx="355" cy="92" rx="11" ry="7" {...LINE} strokeWidth="1.2" opacity="0.6" />
+    <g fill="rgba(232,168,124,0.22)" stroke="#e8a87c" strokeWidth="1.8">
+      <path d="M40 120 Q45 80 55 55 T60 20" fill="rgba(232,168,124,0.18)" />
+      <path d="M55 120 Q60 85 70 60 T75 30" />
+      <path d="M120 120 Q115 75 125 45 T130 15" fill="rgba(232,168,124,0.2)" />
+      <path d="M135 120 Q140 90 148 65" />
+      <path d="M200 120 Q195 70 205 40 T210 10" fill="rgba(244,180,140,0.24)" strokeWidth="2" />
+      <path d="M280 120 Q275 80 285 50 T290 25" fill="rgba(232,168,124,0.2)" />
+      <path d="M295 120 Q300 95 308 70" />
+      <path d="M350 120 Q345 75 355 48 T360 18" fill="rgba(232,168,124,0.18)" />
+    </g>
+    <ellipse cx="60" cy="95" rx="12" ry="8" fill="rgba(232,168,124,0.35)" stroke="#f0b892" strokeWidth="1.2" />
+    <ellipse cx="210" cy="100" rx="14" ry="9" fill="rgba(244,180,140,0.4)" stroke="#f0b892" strokeWidth="1.2" />
+    <ellipse cx="355" cy="92" rx="11" ry="7" fill="rgba(232,168,124,0.35)" stroke="#f0b892" strokeWidth="1.2" />
   </svg>
 );
 
@@ -126,7 +128,7 @@ export const IslandDepthJourney: React.FC = () => {
 
   const seaweedOp = decorIn;
   const fishOp = depthFade(depth, 0.48, 0.56);
-  const coralOp = depthFade(depth, 0.52, 0.62) * 0.58;
+  const coralOp = depthFade(depth, 0.5, 0.6);
   const bubbleOp = depthFade(depth, 0.45, 0.53);
 
   return (
@@ -154,6 +156,9 @@ export const IslandDepthJourney: React.FC = () => {
           style={{ opacity: contentCalm * 0.82 }}
         />
 
+      </div>
+
+      <div className="island-depth-decor" aria-hidden>
         <DepthSideBubbles opacity={bubbleOp} animate={!lite} compact={mediumOnly} />
 
         {!lite && (
@@ -172,12 +177,12 @@ export const IslandDepthJourney: React.FC = () => {
             </div>
             {!mediumOnly && (
               <>
-            <div className="island-depth-fish" style={{ opacity: fishOp * 0.8, top: '52%', left: 0, width: '1.75rem', animationDelay: '-8s' }}>
-              <FishSvg className="h-3.5 w-7" />
-            </div>
-            <div className="island-depth-fish island-depth-fish--fast" style={{ opacity: fishOp * 0.65, top: '64%', left: 0, width: '1.5rem', animationDelay: '-14s' }}>
-              <FishSvg className="h-3 w-6" />
-            </div>
+                <div className="island-depth-fish" style={{ opacity: fishOp * 0.8, top: '52%', left: 0, width: '1.75rem', animationDelay: '-8s' }}>
+                  <FishSvg className="h-3.5 w-7" />
+                </div>
+                <div className="island-depth-fish island-depth-fish--fast" style={{ opacity: fishOp * 0.65, top: '64%', left: 0, width: '1.5rem', animationDelay: '-14s' }}>
+                  <FishSvg className="h-3 w-6" />
+                </div>
               </>
             )}
             <div
@@ -198,7 +203,7 @@ export const IslandDepthJourney: React.FC = () => {
             <div className="island-depth-seaweed island-depth-seaweed--left" style={{ opacity: seaweedOp * 0.7 }}>
               <SeaweedSvg className="h-full w-full" />
             </div>
-            <div className="island-depth-coral" style={{ opacity: coralOp * 0.8 }}>
+            <div className="island-depth-coral" style={{ opacity: coralOp * 0.85 }}>
               <CoralSvg />
             </div>
           </>
