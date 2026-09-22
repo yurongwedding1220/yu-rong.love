@@ -129,10 +129,26 @@ const IslandSilhouette: React.FC<{ idPrefix: string }> = ({ idPrefix }) => (
   </svg>
 );
 
-const HorizonWaves: React.FC<{ animate: boolean }> = ({ animate }) => (
-  <div className="hero-ocean-scene__horizon-waves pointer-events-none absolute inset-x-[-8%] bottom-[33%] h-[16%]">
+const ForegroundRipple: React.FC<{ animate: boolean }> = ({ animate }) => (
+  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[12vh] overflow-hidden">
     <svg
-      className={`absolute inset-0 h-full w-full opacity-40 ${animate ? 'hero-ocean-scene__wave-drift' : ''}`}
+      className={`absolute bottom-0 h-[70%] w-full opacity-50 ${animate ? 'hero-ocean-scene__wave-drift-slow' : ''}`}
+      viewBox="0 0 1440 80"
+      preserveAspectRatio="none"
+      aria-hidden
+    >
+      <path
+        fill="rgba(255,255,255,0.35)"
+        d="M0,40 C360,20 720,56 1080,36 C1260,26 1380,34 1440,38 L1440,80 L0,80 Z"
+      />
+    </svg>
+  </div>
+);
+
+const HorizonWaves: React.FC<{ animate: boolean }> = ({ animate }) => (
+  <div className="hero-ocean-scene__horizon-waves pointer-events-none absolute inset-x-[-6%] bottom-[26%] h-[11%]">
+    <svg
+      className={`absolute inset-0 h-full w-full opacity-30 ${animate ? 'hero-ocean-scene__wave-drift' : ''}`}
       viewBox="0 0 1440 120"
       preserveAspectRatio="none"
       aria-hidden
@@ -143,7 +159,7 @@ const HorizonWaves: React.FC<{ animate: boolean }> = ({ animate }) => (
       />
     </svg>
     <svg
-      className={`absolute inset-0 h-full w-full opacity-65 ${animate ? 'hero-ocean-scene__wave-drift-slow' : ''}`}
+      className={`absolute inset-0 h-full w-full opacity-45 ${animate ? 'hero-ocean-scene__wave-drift-slow' : ''}`}
       viewBox="0 0 1440 120"
       preserveAspectRatio="none"
       aria-hidden
@@ -195,13 +211,13 @@ export const HeroOceanScene: React.FC<HeroOceanSceneProps> = ({ progress, lite, 
   const shallowMix = useTransform(progress, [0, 0.35, 0.72, 1], [0, 0.12, 0.3, 0.46]);
   const skyBright = useTransform(progress, [0, 0.85, 1], [1, 0.97, 0.9]);
   const islandLift = useTransform(progress, [0, 1], [0, lite ? 6 : 12]);
-  const shimmerOp = useTransform(progress, [0, 0.5, 1], [0.55, 0.35, 0.15]);
+  const shimmerOp = useTransform(progress, [0, 0.5, 1], [0.35, 0.22, 0.1]);
 
   return (
     <>
       <motion.div className="absolute inset-0" style={{ opacity: skyBright }} aria-hidden>
         <div className="hero-ocean-scene__sky absolute inset-0" />
-        <div className="hero-ocean-scene__sky-haze absolute inset-x-0 top-[28%] h-[22%]" />
+        <div className="hero-ocean-scene__sky-haze absolute inset-x-0 top-[32%] h-[18%]" />
 
         <SunDisc animate={animate} />
 
@@ -231,27 +247,24 @@ export const HeroOceanScene: React.FC<HeroOceanSceneProps> = ({ progress, lite, 
       </motion.div>
 
       <motion.div
-        className="hero-ocean-scene__vista pointer-events-none absolute inset-0 origin-[50%_40%] overflow-hidden"
+        className="hero-ocean-scene__vista pointer-events-none absolute inset-0 origin-[50%_46%] overflow-hidden"
         style={{ scale: vistaScale, y: vistaY }}
         aria-hidden
       >
-        <div className="hero-ocean-scene__ocean-deep absolute inset-x-0 bottom-0 top-[36%]" />
-        <div className="hero-ocean-scene__ocean-mid absolute inset-x-0 bottom-0 top-[46%]" />
-        <div className="hero-ocean-scene__ocean-surface absolute inset-x-0 bottom-0 top-[58%]" />
+        <div className="hero-ocean-scene__ocean absolute inset-x-0 bottom-0 top-[42%]" />
 
         {animate && (
           <motion.div
-            className="hero-ocean-scene__shimmer absolute inset-x-[18%] bottom-[32%] top-[40%]"
+            className="hero-ocean-scene__shimmer absolute inset-x-[12%] bottom-[24%] top-[44%]"
             style={{ opacity: shimmerOp }}
           />
         )}
 
         <HorizonWaves animate={animate} />
-        <div className="hero-ocean-scene__horizon-line absolute inset-x-0 top-[35.5%] h-px" />
 
         <motion.div
-          className="absolute left-1/2 w-[min(68vw,20rem)] -translate-x-1/2 md:w-[min(52vw,24rem)]"
-          style={{ bottom: 'calc(33% - 0.25rem)', y: islandLift }}
+          className="absolute left-1/2 w-[min(58vw,16rem)] -translate-x-1/2 md:w-[min(42vw,19rem)]"
+          style={{ bottom: 'calc(24% - 0.25rem)', y: islandLift }}
         >
           <div className={animate ? 'hero-ocean-scene__island-bob' : undefined}>
             <IslandSilhouette idPrefix={islandId} />
@@ -264,6 +277,7 @@ export const HeroOceanScene: React.FC<HeroOceanSceneProps> = ({ progress, lite, 
         />
       </motion.div>
 
+      <ForegroundRipple animate={animate} />
       <div className="hero-ocean-scene__vignette pointer-events-none absolute inset-0" aria-hidden />
     </>
   );
@@ -275,7 +289,7 @@ export const HeroOceanSceneStatic: React.FC<{ lite?: boolean }> = ({ lite = fals
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
       <div className="hero-ocean-scene__sky absolute inset-0" />
-      <div className="hero-ocean-scene__sky-haze absolute inset-x-0 top-[28%] h-[22%]" />
+      <div className="hero-ocean-scene__sky-haze absolute inset-x-0 top-[32%] h-[18%]" />
       <SunDisc animate={false} />
       {!lite && (
         <>
@@ -283,12 +297,9 @@ export const HeroOceanSceneStatic: React.FC<{ lite?: boolean }> = ({ lite = fals
           <CloudSvg variant="wisp" className="absolute right-[6%] top-[13%] h-10 w-48 opacity-55" />
         </>
       )}
-      <div className="hero-ocean-scene__ocean-deep absolute inset-x-0 bottom-0 top-[36%]" />
-      <div className="hero-ocean-scene__ocean-mid absolute inset-x-0 bottom-0 top-[46%]" />
-      <div className="hero-ocean-scene__ocean-surface absolute inset-x-0 bottom-0 top-[58%]" />
+      <div className="hero-ocean-scene__ocean absolute inset-x-0 bottom-0 top-[42%]" />
       <HorizonWaves animate={false} />
-      <div className="hero-ocean-scene__horizon-line absolute inset-x-0 top-[35.5%] h-px" />
-      <div className="absolute bottom-[calc(33%-0.25rem)] left-1/2 w-[min(64vw,18rem)] -translate-x-1/2">
+      <div className="absolute bottom-[calc(24%-0.25rem)] left-1/2 w-[min(54vw,15rem)] -translate-x-1/2">
         <IslandSilhouette idPrefix={islandId} />
       </div>
       <div className="hero-ocean-scene__vignette absolute inset-0" />

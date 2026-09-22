@@ -561,12 +561,13 @@ html.is-scrolling .island-wave-drift-slow {
 .hero-ocean-scene__sky {
   background: linear-gradient(
     180deg,
-    #4da8e0 0%,
-    #6eb8e8 14%,
-    #87ceeb 30%,
-    #b8e4f5 52%,
-    rgba(184, 228, 245, 0.45) 68%,
-    transparent 84%
+    #5aafe3 0%,
+    #7ec0ea 18%,
+    #a8d8f0 38%,
+    #c8e8f6 55%,
+    #d8eef8 68%,
+    #e8f4fa 78%,
+    transparent 88%
   );
 }
 
@@ -623,44 +624,17 @@ html.is-scrolling .island-wave-drift-slow {
   }
 }
 
-.hero-ocean-scene__ocean-deep {
+.hero-ocean-scene__ocean {
   background: linear-gradient(
     180deg,
-    #1a5270 0%,
-    #1b4d6e 28%,
-    #134a62 58%,
-    #0f3550 100%
+    #5a9ec4 0%,
+    #4a8fb5 12%,
+    #3a7fa6 28%,
+    #2d6f96 48%,
+    #1f5f86 68%,
+    #1b4d6e 88%,
+    #163f5c 100%
   );
-}
-
-.hero-ocean-scene__ocean-mid {
-  background: linear-gradient(
-    180deg,
-    rgba(74, 158, 196, 0.35) 0%,
-    rgba(58, 143, 183, 0.55) 40%,
-    rgba(27, 77, 110, 0.82) 100%
-  );
-}
-
-.hero-ocean-scene__ocean-surface {
-  background: linear-gradient(
-    180deg,
-    rgba(126, 200, 227, 0.22) 0%,
-    rgba(74, 158, 196, 0.42) 55%,
-    rgba(58, 143, 183, 0.55) 100%
-  );
-}
-
-.hero-ocean-scene__horizon-line {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.45) 20%,
-    rgba(255, 255, 255, 0.65) 50%,
-    rgba(255, 255, 255, 0.45) 80%,
-    transparent 100%
-  );
-  box-shadow: 0 0 12px 1px rgba(255, 255, 255, 0.15);
 }
 
 .hero-ocean-scene__shimmer {
@@ -692,36 +666,35 @@ html[data-perf='low'] .hero-ocean-scene__shimmer {
   animation: none;
 }
 
-/* Hero 文字：半透明霧面底，無厚重陰影 */
-.island-hero-copy {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.15) inset,
-    0 16px 48px -20px rgba(8, 28, 44, 0.28);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+/* Hero 文字：天空區深藍字，無玻璃底盒 */
+.island-hero-type__label {
+  color: rgba(58, 143, 183, 0.88);
 }
 
-.island-hero-copy__label {
-  color: rgba(255, 255, 255, 0.82);
+.island-hero-type__title {
+  color: #1b4d6e;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 
-.island-hero-copy__title {
-  color: #fff;
-  text-shadow: 0 1px 16px rgba(27, 77, 110, 0.25);
+.island-hero-type__subtitle {
+  color: #2d6080;
 }
 
-.island-hero-copy__subtitle,
-.island-hero-copy__intro,
-.island-hero-copy__meta {
-  color: rgba(255, 255, 255, 0.9);
+.island-hero-type__intro {
+  color: rgba(45, 96, 128, 0.88);
 }
 
-html[data-perf='low'] .island-hero-copy {
-  background: rgba(15, 53, 80, 0.35);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+.island-hero-type__meta {
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 8px rgba(8, 28, 44, 0.35);
+}
+
+.island-hero-type__scroll {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.island-hero-type__scroll-line {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.55), transparent);
 }
 
 .hero-ocean-scene__cloud-drift {
@@ -823,7 +796,7 @@ html[data-perf='low'] .hero-ocean-scene__sun-pulse {
 }
 
 .hero-ocean-scene__island-svg {
-  filter: drop-shadow(0 8px 16px rgba(8, 28, 44, 0.18));
+  filter: drop-shadow(0 4px 12px rgba(8, 28, 44, 0.12));
 }
 
 .island-voyage-shore {
