@@ -485,7 +485,6 @@ html[data-depth-chrome='underwater'] .island-floating-rsvp .island-btn:hover {
 }
 
 .island-depth-caption__text {
-  text-shadow: 0 1px 8px rgba(10, 36, 56, 0.45);
   transition: opacity 0.4s var(--island-ease-soft);
 }
 

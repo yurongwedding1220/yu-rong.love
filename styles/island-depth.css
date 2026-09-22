@@ -247,17 +247,14 @@ html.is-scrolling .island-depth-fish {
 /* 海面段文字：直接讀固定背景，不再加半透明底盒 */
 .island-section-surface .island-heading {
   color: #f4f8fb;
-  text-shadow: 0 1px 10px rgba(8, 28, 44, 0.5);
 }
 
 .island-section-surface .island-prose {
   color: rgba(244, 248, 251, 0.88);
-  text-shadow: 0 1px 8px rgba(8, 28, 44, 0.4);
 }
 
 .island-section-surface .island-section-label {
   color: #7ec8e3;
-  text-shadow: 0 1px 6px rgba(8, 28, 44, 0.35);
 }
 
 .island-section-surface .island-nautical-coords {
@@ -336,23 +333,17 @@ html.is-scrolling .island-submerge-gate__ripple {
 .island-section-underwater .island-heading,
 .island-section-abyss .island-heading {
   color: #f4f8fb;
-  text-shadow: 0 1px 10px rgba(8, 28, 44, 0.55);
 }
 
 .island-section-underwater .island-card .island-heading,
 .island-section-abyss .island-card .island-heading {
   color: var(--island-ink);
+  text-shadow: none;
 }
 
 .island-section-underwater .island-prose,
 .island-section-abyss .island-prose {
   color: rgba(244, 248, 251, 0.88);
-  text-shadow: 0 1px 8px rgba(8, 28, 44, 0.45);
-}
-
-.island-section-underwater .island-section-label,
-.island-section-abyss .island-section-label {
-  text-shadow: 0 1px 6px rgba(8, 28, 44, 0.4);
 }
 
 .island-section-underwater .voyage-section-header,
@@ -380,6 +371,12 @@ html.is-scrolling .island-submerge-gate__ripple {
 .island-section-underwater .island-card .island-prose,
 .island-section-abyss .island-card .island-prose {
   color: var(--island-muted);
+  text-shadow: none;
+}
+
+.island-section-underwater .island-card .island-section-label,
+.island-section-abyss .island-card .island-section-label {
+  text-shadow: none;
 }
 
 .island-section-abyss .island-ornament__mark--sea {
