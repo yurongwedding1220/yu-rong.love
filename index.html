@@ -46,16 +46,18 @@
         -ms-overflow-style: none;
         
         /* Mobile Optimizations */
+        overscroll-behavior-x: none;
         overscroll-behavior-y: none; /* Prevent Android glow / bounce */
-        touch-action: pan-y; /* Improve scroll performance */
+        touch-action: pan-y; /* 只允許上下滑，避免整頁被左右拖動 */
         -webkit-text-size-adjust: 100%; /* Prevent font scaling on orientation change */
+        max-width: 100%;
+        overflow-x: clip;
       }
 
       body {
         font-family: 'Inter', 'Noto Serif TC', sans-serif;
         background-color: transparent; /* Changed to transparent to show fixed bg */
         color: var(--text-primary);
-        overflow-x: hidden;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
@@ -65,8 +67,8 @@
         position: fixed;
         top: 0;
         left: 0;
-        width: 100vw;
-        height: 100vh;
+        width: 100%;
+        height: 100%;
         z-index: -10;
         background: linear-gradient(180deg, #87ceeb 0%, #6bb5e8 18%, #4a9ec4 38%, #1b4d6e 72%, #0f3550 100%);
         pointer-events: none;
@@ -100,8 +102,8 @@
         position: fixed;
         top: 0;
         left: 0;
-        width: 100vw;
-        height: 100vh;
+        width: 100%;
+        height: 100%;
         pointer-events: none;
         z-index: 9999;
         opacity: 0.15; /* Reduced from 0.6 to improve performance */
@@ -571,10 +573,10 @@
         }
       }
     </style>
-  <script type="module" crossorigin src="/yu-rong.love/assets/index-DEWWXeGi.js"></script>
+  <script type="module" crossorigin src="/yu-rong.love/assets/index-DJLzWBrM.js"></script>
   <link rel="modulepreload" crossorigin href="/yu-rong.love/assets/vendor-react-Cx3mXIrO.js">
   <link rel="modulepreload" crossorigin href="/yu-rong.love/assets/vendor-framer-DfASeZcB.js">
-  <link rel="stylesheet" crossorigin href="/yu-rong.love/assets/index--3jwGHTb.css">
+  <link rel="stylesheet" crossorigin href="/yu-rong.love/assets/index-DGt7YR5t.css">
 </head>
   <body>
     <!-- Persistent Gradient Background -->
