@@ -5,7 +5,7 @@ const MAX_SCALE = 4;
 const DOUBLE_TAP_MS = 280;
 const DOUBLE_TAP_SCALE = 2.5;
 
-function distance(a: Touch, b: Touch): number {
+function distance(a: { clientX: number; clientY: number }, b: { clientX: number; clientY: number }): number {
   const dx = a.clientX - b.clientX;
   const dy = a.clientY - b.clientY;
   return Math.hypot(dx, dy);

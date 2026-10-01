@@ -14,6 +14,8 @@ import {
   getChapterSunGradient,
   getGalleryPaletteAtDepth,
 } from '../../utils/galleryDepthPalette';
+import { useIsMobile } from '../../hooks/useIsMobile';
+import { useLightboxZoom } from '../../hooks/useLightboxZoom';
 import {
   GALLERY_HERO_SIZES,
   GALLERY_TILE_SIZES,
@@ -22,7 +24,10 @@ import {
   getGalleryTileSrcSet,
   getGalleryTileUrl,
   getLightboxDisplayUrl,
+  getLightboxZoomUrl,
   getThumbUrl,
+  preloadLightboxNeighbors,
+  preloadLightboxPhoto,
 } from '../../utils/photoUrls';
 
 type PhotoShape = 'arch' | 'lagoon' | 'leaf' | 'pebble';
@@ -35,14 +40,30 @@ type IslandLayout = {
   terrainShift: string;
   skyGlowAt: string;
   sunClass: string;
-  emerge: { x: number; y: number; rotate: number };
+  emerge: { x: number; y: number; scale: number; duration: number };
   isReversed?: boolean;
 };
 
+type LightboxPhoto = GalleryPhoto & {
+  chapterId: string;
+  chapterTitle: string;
+  chapterIndex: number;
+};
+
 type LightboxState = {
-  photos: GalleryPhoto[];
+  photos: LightboxPhoto[];
   index: number;
 };
+
+const buildGalleryLightboxPhotos = (): LightboxPhoto[] =>
+  WEDDING_GALLERY_CHAPTERS.flatMap((chapter, chapterIndex) =>
+    chapter.photos.map((photo) => ({
+      ...photo,
+      chapterId: chapter.id,
+      chapterTitle: chapter.title,
+      chapterIndex,
+    }))
+  );
 
 type PhotoVariant = 'hero' | 'tile';
 
@@ -54,7 +75,8 @@ const ISLAND_VISUALS: Omit<IslandLayout, 'titleAlign' | 'titleInset' | 'isRevers
     terrainShift: 'translate-x-[6%]',
     skyGlowAt: '68% 12%',
     sunClass: 'right-[14%] top-[8%]',
-    emerge: { x: 16, y: 14, rotate: 3 },
+    // 蔚藍：自海面浮現
+    emerge: { x: 0, y: 36, scale: 0.94, duration: 0.95 },
   },
   {
     photoShape: 'lagoon',
@@ -62,7 +84,8 @@ const ISLAND_VISUALS: Omit<IslandLayout, 'titleAlign' | 'titleInset' | 'isRevers
     terrainShift: '-translate-x-[8%]',
     skyGlowAt: '28% 14%',
     sunClass: 'left-[10%] top-[10%]',
-    emerge: { x: -16, y: 14, rotate: -3 },
+    // 淺灣：由右至中
+    emerge: { x: 56, y: 0, scale: 1, duration: 0.85 },
   },
   {
     photoShape: 'leaf',
@@ -70,7 +93,8 @@ const ISLAND_VISUALS: Omit<IslandLayout, 'titleAlign' | 'titleInset' | 'isRevers
     terrainShift: 'translate-x-[2%] scale-[1.06]',
     skyGlowAt: '50% 8%',
     sunClass: 'right-[20%] top-[8%]',
-    emerge: { x: 14, y: 16, rotate: 2 },
+    // 白沙：由左至中
+    emerge: { x: -56, y: 0, scale: 1, duration: 0.85 },
   },
   {
     photoShape: 'pebble',
@@ -78,7 +102,8 @@ const ISLAND_VISUALS: Omit<IslandLayout, 'titleAlign' | 'titleInset' | 'isRevers
     terrainShift: '-translate-x-[4%]',
     skyGlowAt: '72% 18%',
     sunClass: 'left-[16%] top-[12%]',
-    emerge: { x: -14, y: 16, rotate: -2 },
+    // 暮色：由上緩緩靠岸
+    emerge: { x: 0, y: -28, scale: 1.04, duration: 1 },
   },
 ];
 
@@ -90,10 +115,6 @@ const getChapterLayout = (index: number): IslandLayout => {
     isReversed,
     titleAlign: isReversed ? 'right' : 'left',
     titleInset: '',
-    emerge: {
-      ...visual.emerge,
-      x: isReversed ? -Math.abs(visual.emerge.x) : Math.abs(visual.emerge.x),
-    },
   };
 };
 
@@ -153,7 +174,7 @@ const IslandTerrain: React.FC<{
   const t = terrains[chapterId] ?? terrains.azure;
 
   return (
-    <div className={`pointer-events-none absolute inset-x-0 bottom-0 h-[32%] min-h-[160px] ${shiftClass}`}>
+    <div className={`island-chapter-terrain pointer-events-none absolute inset-x-0 bottom-0 h-[32%] min-h-[160px] ${shiftClass}`}>
       <svg
         className="absolute inset-0 h-full w-[112%] -left-[6%]"
         viewBox="0 0 560 120"
@@ -172,7 +193,7 @@ const SceneWaves: React.FC<{ palette: GalleryChapter['palette']; animate: boolea
   palette,
   animate,
 }) => (
-  <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[10vh] overflow-hidden">
+  <div className="island-chapter-waves pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[10vh] overflow-hidden">
     <svg
       className={`absolute bottom-0 h-full w-[130%] ${animate ? 'island-wave-drift-slow' : ''}`}
       viewBox="0 0 1440 80"
@@ -265,7 +286,8 @@ const PhotoPortal: React.FC<{
 
   const shellClass = isHero ? 'h-full' : `h-full ${tileStripClass(photo)}`;
 
-  if (!animate) {
+  // 副圖在橫向捲動區內，whileInView 往上滑會被判成離屏並回到透明，直接固定顯示
+  if (!animate || !isHero) {
     return <div className={shellClass}>{body}</div>;
   }
 
@@ -274,13 +296,16 @@ const PhotoPortal: React.FC<{
       className={shellClass}
       initial={{
         opacity: 0,
-        y: isHero ? layout.emerge.y : 10,
-        x: isHero ? layout.emerge.x : 0,
-        scale: 0.97,
+        x: layout.emerge.x,
+        y: layout.emerge.y,
+        scale: layout.emerge.scale,
       }}
-      whileInView={{ opacity: 1, y: 0, x: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.75, delay: photoIndex * 0.05, ease: [0.25, 0.1, 0.25, 1] }}
+      whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.45 }}
+      transition={{
+        duration: layout.emerge.duration,
+        ease: [0.22, 1, 0.36, 1],
+      }}
     >
       {body}
     </motion.div>
@@ -294,7 +319,7 @@ const IslandAdventureChapter: React.FC<{
   palette: IslandPalette;
   animate: boolean;
   isLast: boolean;
-  onPhotoClick: (photo: GalleryPhoto, chapterPhotos: GalleryPhoto[]) => void;
+  onPhotoClick: (photo: GalleryPhoto) => void;
 }> = ({ chapter, index, layout, palette, animate, isLast, onPhotoClick }) => {
   const depthValue = GALLERY_ISLAND_DEPTHS[index] ?? GALLERY_ISLAND_DEPTHS.at(-1)!;
   const isReversed = layout.isReversed ?? index % 2 === 1;
@@ -325,13 +350,6 @@ const IslandAdventureChapter: React.FC<{
 
   const tilesWing = (
     <div className="island-gallery-chapter__wing island-gallery-chapter__wing--tiles">
-      {tilePhotos.length > 1 && (
-        <p className="island-gallery-strip-hint md:hidden" aria-hidden>
-          <span aria-hidden>←</span>
-          <span>左右滑動瀏覽</span>
-          <span aria-hidden>→</span>
-        </p>
-      )}
       <div
         className={`island-gallery-wing-tiles island-gallery-wing-tiles--${tilePhotos.length}`}
       >
@@ -346,7 +364,7 @@ const IslandAdventureChapter: React.FC<{
               variant="tile"
               palette={palette}
               animate={animate}
-              onClick={() => onPhotoClick(photo, chapter.photos)}
+              onClick={() => onPhotoClick(photo)}
             />
           ))}
         </div>
@@ -364,7 +382,7 @@ const IslandAdventureChapter: React.FC<{
         variant="hero"
         palette={palette}
         animate={animate}
-        onClick={() => onPhotoClick(heroPhoto, chapter.photos)}
+        onClick={() => onPhotoClick(heroPhoto)}
       />
     </div>
   ) : null;
@@ -423,20 +441,81 @@ const GalleryLightbox: React.FC<{
   onNavigate: (index: number) => void;
 }> = ({ state, lite, onClose, onNavigate }) => {
   const filmstripRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
   const photo = state.photos[state.index];
   const hasPrev = state.index > 0;
   const hasNext = state.index < state.photos.length - 1;
-
-  const lightboxSrc = useMemo(
-    () => getLightboxDisplayUrl(photo.publicId, window.innerWidth),
-    [photo.publicId]
+  const chapterPhotos = useMemo(
+    () => state.photos.filter((p) => p.chapterId === photo.chapterId),
+    [state.photos, photo.chapterId]
   );
+  const indexInChapter = chapterPhotos.findIndex((p) => p.id === photo.id);
+  const {
+    scale,
+    offset,
+    reset: resetZoom,
+    containerRef,
+    isZoomed,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
+  } = useLightboxZoom(isMobile);
+
+  const lightboxSrc = useMemo(() => {
+    const viewportWidth = window.innerWidth;
+    return isZoomed
+      ? getLightboxZoomUrl(photo.publicId, viewportWidth)
+      : getLightboxDisplayUrl(photo.publicId, viewportWidth);
+  }, [photo.publicId, isZoomed]);
+
+  const publicIds = useMemo(() => state.photos.map((p) => p.publicId), [state.photos]);
+
+  const preloadedAllRef = useRef(false);
+
+  useEffect(() => {
+    resetZoom();
+  }, [photo.id, resetZoom]);
+
+  useEffect(() => {
+    preloadLightboxNeighbors(publicIds, state.index, window.innerWidth, 4);
+  }, [publicIds, state.index]);
+
+  useEffect(() => {
+    if (preloadedAllRef.current) return;
+    preloadedAllRef.current = true;
+    const viewportWidth = window.innerWidth;
+    const timers = state.photos.map((p, i) =>
+      window.setTimeout(() => preloadLightboxPhoto(p.publicId, viewportWidth), i * 45)
+    );
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, [state.photos]);
 
   useEffect(() => {
     const strip = filmstripRef.current;
     const active = strip?.querySelector<HTMLElement>('[data-active="true"]');
     active?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
   }, [state.index]);
+
+  const handleSwipe = useCallback(
+    (result: { direction: 'left' | 'right' | 'down' | null }) => {
+      if (result.direction === 'down') {
+        onClose();
+        return;
+      }
+      if (result.direction === 'right' && hasPrev) onNavigate(state.index - 1);
+      if (result.direction === 'left' && hasNext) onNavigate(state.index + 1);
+    },
+    [hasNext, hasPrev, onClose, onNavigate, state.index]
+  );
+
+  const prevChapter =
+    hasPrev && state.photos[state.index - 1].chapterId !== photo.chapterId
+      ? state.photos[state.index - 1].chapterTitle
+      : null;
+  const nextChapter =
+    hasNext && state.photos[state.index + 1].chapterId !== photo.chapterId
+      ? state.photos[state.index + 1].chapterTitle
+      : null;
 
   return (
     <motion.div
@@ -447,46 +526,78 @@ const GalleryLightbox: React.FC<{
       aria-modal="true"
       aria-label={photo.alt}
       className="island-lightbox fixed inset-0 z-[80] flex items-center justify-center bg-[#0f2d42]/94 p-4 backdrop-blur-md"
-      onClick={onClose}
+      onClick={() => {
+        if (isZoomed) {
+          resetZoom();
+          return;
+        }
+        onClose();
+      }}
     >
-      <div className="island-lightbox__stage" onClick={(e) => e.stopPropagation()}>
-        <motion.img
-          key={photo.id}
-          initial={lite ? false : { opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.97 }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          src={lightboxSrc}
-          alt={photo.alt}
-          className="island-lightbox__img max-h-[72vh] w-auto max-w-full rounded-2xl object-contain"
-          draggable={false}
-        />
+      <div
+        className="island-lightbox__stage"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div
+          ref={containerRef}
+          className="island-lightbox__viewport"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={(event) => handleTouchEnd(event, handleSwipe)}
+        >
+          <motion.img
+            key={photo.id}
+            initial={lite ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            src={lightboxSrc}
+            alt={photo.alt}
+            className="island-lightbox__img max-h-[72vh] w-auto max-w-full rounded-2xl object-contain"
+            style={{
+              transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${scale})`,
+              transition: isZoomed ? undefined : 'transform 0.2s ease-out',
+            }}
+            draggable={false}
+          />
+        </div>
 
-        <p className="island-lightbox__caption">{photo.alt}</p>
+        <p className="island-lightbox__caption">
+          {photo.chapterTitle} · {indexInChapter + 1} / {chapterPhotos.length}
+          {isMobile && (
+            <span className="mt-1 block text-[10px] tracking-[0.18em] text-white/40">
+              {isZoomed ? '再點兩下或下滑可還原' : '點兩下放大 · 左右滑動換圖'}
+            </span>
+          )}
+        </p>
 
-        {state.photos.length > 1 && (
-          <div ref={filmstripRef} className="island-lightbox__filmstrip" aria-label="章節照片">
+        {state.photos.length > 1 && !isZoomed && (
+          <div ref={filmstripRef} className="island-lightbox__filmstrip" aria-label="全航程照片">
             {state.photos.map((p, i) => (
-              <button
-                key={p.id}
-                type="button"
-                data-active={i === state.index ? 'true' : 'false'}
-                aria-label={`第 ${i + 1} 張`}
-                aria-current={i === state.index ? 'true' : undefined}
-                className={`island-lightbox__thumb island-focus ${i === state.index ? 'island-lightbox__thumb--active' : ''}`}
-                onClick={() => onNavigate(i)}
-              >
-                <img src={getThumbUrl(p.publicId, 72)} alt="" loading="lazy" decoding="async" />
-              </button>
+              <React.Fragment key={p.id}>
+                {i > 0 && p.chapterId !== state.photos[i - 1].chapterId && (
+                  <span className="island-lightbox__filmstrip-gap" aria-hidden />
+                )}
+                <button
+                  type="button"
+                  data-active={i === state.index ? 'true' : 'false'}
+                  aria-label={`${p.chapterTitle} 第 ${i + 1} 張`}
+                  aria-current={i === state.index ? 'true' : undefined}
+                  className={`island-lightbox__thumb island-focus ${i === state.index ? 'island-lightbox__thumb--active' : ''}`}
+                  onClick={() => onNavigate(i)}
+                >
+                  <img src={getThumbUrl(p.publicId, 72)} alt="" loading="lazy" decoding="async" />
+                </button>
+              </React.Fragment>
             ))}
           </div>
         )}
       </div>
 
-      {hasPrev && (
+      {hasPrev && !isZoomed && (
         <button
           type="button"
-          aria-label="上一張"
+          aria-label={prevChapter ? `上一張（${prevChapter}）` : '上一張'}
           className="island-focus island-touch absolute left-3 rounded-full border border-white/20 bg-white/12 px-3 py-2 text-lg text-white backdrop-blur-sm hover:bg-white/22 md:left-6"
           style={{ top: '50%', transform: 'translateY(-50%)' }}
           onClick={(e) => {
@@ -498,10 +609,10 @@ const GalleryLightbox: React.FC<{
         </button>
       )}
 
-      {hasNext && (
+      {hasNext && !isZoomed && (
         <button
           type="button"
-          aria-label="下一張"
+          aria-label={nextChapter ? `下一張（${nextChapter}）` : '下一張'}
           className="island-focus island-touch absolute right-3 rounded-full border border-white/20 bg-white/12 px-3 py-2 text-lg text-white backdrop-blur-sm hover:bg-white/22 md:right-6"
           style={{ top: '50%', transform: 'translateY(-50%)' }}
           onClick={(e) => {
@@ -518,12 +629,15 @@ const GalleryLightbox: React.FC<{
         aria-label="關閉"
         className="island-focus island-touch absolute right-5 rounded-full border border-white/20 bg-white/12 px-4 py-1.5 text-sm text-white backdrop-blur-sm hover:bg-white/22"
         style={{ top: 'max(1.25rem, env(safe-area-inset-top))' }}
-        onClick={onClose}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
       >
         關閉
       </button>
 
-      {state.photos.length > 1 && (
+      {state.photos.length > 1 && !isZoomed && (
         <p
           className="pointer-events-none absolute bottom-5 text-[10px] tracking-[0.35em] text-white/50"
           aria-hidden
@@ -541,11 +655,22 @@ export const IslandVoyageGallery: React.FC = () => {
   const animate = !lite;
   const [lightbox, setLightbox] = useState<LightboxState | null>(null);
   const palette = useMemo(() => getGalleryPaletteAtDepth(depth), [depth]);
+  const allLightboxPhotos = useMemo(() => buildGalleryLightboxPhotos(), []);
 
-  const openLightbox = useCallback((photo: GalleryPhoto, chapterPhotos: GalleryPhoto[]) => {
-    const index = chapterPhotos.findIndex((p) => p.id === photo.id);
-    setLightbox({ photos: chapterPhotos, index: index >= 0 ? index : 0 });
-  }, []);
+  const openLightbox = useCallback(
+    (photo: GalleryPhoto) => {
+      const index = allLightboxPhotos.findIndex((p) => p.id === photo.id);
+      const nextIndex = index >= 0 ? index : 0;
+      setLightbox({ photos: allLightboxPhotos, index: nextIndex });
+      preloadLightboxNeighbors(
+        allLightboxPhotos.map((p) => p.publicId),
+        nextIndex,
+        window.innerWidth,
+        4
+      );
+    },
+    [allLightboxPhotos]
+  );
 
   useEffect(() => {
     if (!lightbox) return;

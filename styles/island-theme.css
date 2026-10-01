@@ -1156,10 +1156,12 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
 @media (max-width: 767px) {
   /* 每座島：說明 + 主視覺 + 副圖 收進一個手機視窗高度 */
   .island-chapter-flow {
-    --island-gallery-mobile-tile-h: 6.5rem;
+    --island-gallery-mobile-tile-h: 5.5rem;
     min-height: 100svh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   .island-chapter-flow__body {
@@ -1168,28 +1170,62 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     justify-content: center;
     padding-top: 1.25rem;
     padding-bottom: 0.75rem;
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   .island-transition-slot {
+    position: relative;
+    z-index: 3;
     flex: 0 0 auto;
-    min-height: 1.75rem;
-    margin-top: 0.5rem;
+    min-height: 0;
+    margin-top: 0.85rem;
+    padding-bottom: 0.15rem;
+  }
+
+  .island-transition-quote {
+    color: rgba(255, 255, 255, 0.86);
+    text-shadow: 0 1px 10px rgba(8, 20, 32, 0.35);
+  }
+
+  /* 島嶼紋路停在轉場句上方，避免蓋住圖片下方的文字 */
+  .island-chapter-terrain {
+    bottom: 8rem;
+    height: 20%;
+    min-height: 0;
+  }
+
+  .island-chapter-waves {
+    height: 2.35rem;
   }
 
   .island-gallery-chapter {
-    flex: 1 1 auto;
+    flex: 0 1 auto;
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    min-height: calc(100svh - 4.5rem);
-    max-height: calc(100svh - 4.5rem);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+    min-height: 0;
+    max-height: none;
   }
 
   .island-gallery-chapter__wing-start,
   .island-gallery-chapter__wing-end {
     flex: 0 0 auto;
     min-height: 0;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .island-gallery-chapter__wing--copy {
+    align-self: center;
+    touch-action: pan-y;
   }
 
   .island-gallery-copy h3 {
@@ -1208,50 +1244,51 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     display: flex;
     align-items: center;
     justify-content: center;
+    align-self: center;
     min-height: 0;
-    max-width: min(78vw, 18.5rem);
+    width: min(72vw, 16.5rem);
+    max-width: min(72vw, 16.5rem);
+    margin-inline: auto;
+    touch-action: pan-y;
+  }
+
+  .island-gallery-chapter__hero > * {
+    width: 100%;
+    margin-inline: auto;
   }
 
   .island-gallery-chapter__hero .island-photo-portal {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
     width: 100%;
-    max-height: 100%;
-    min-height: 0;
+    margin-inline: auto;
   }
 
+  /* 與桌面同一組有機外框：直向 7:9，圖片填滿裁切 */
   .island-gallery-chapter__hero .island-photo-frame {
     width: 100%;
-    max-height: 100%;
+    height: auto;
+    aspect-ratio: 7 / 9;
+    margin-inline: auto;
   }
 
   .island-gallery-chapter__hero .island-photo-frame__img {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    max-height: min(26svh, 15.5rem);
-    height: auto;
-    aspect-ratio: unset;
+    height: 100%;
+    max-height: none;
+    aspect-ratio: auto !important;
     object-fit: cover;
   }
 
   .island-gallery-chapter__wing--tiles {
     flex: 0 0 auto;
+    align-self: stretch;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     margin-inline: 0;
-    align-items: center;
-  }
-
-  .island-gallery-strip-hint {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.45rem;
-    margin: 0 0 0.375rem;
-    padding-inline: 1.25rem;
-    font-family: var(--font-display, system-ui);
-    font-size: 9px;
-    letter-spacing: 0.28em;
-    color: rgba(255, 255, 255, 0.42);
+    overflow: hidden;
   }
 
   .island-gallery-wing-tiles {
@@ -1263,9 +1300,11 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     padding-bottom: 0;
     overflow-x: auto;
     overflow-y: hidden;
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x proximity;
     scroll-padding-inline: 1.25rem;
     -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    overscroll-behavior-x: contain;
     scrollbar-width: none;
   }
 
@@ -1274,6 +1313,12 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     gap: 0.5rem;
     width: max-content;
     height: 100%;
+    margin-inline: 0;
+    padding-inline: 0.25rem 1.25rem;
+  }
+
+  /* 兩張副圖可完整放入畫面時置中；多張仍靠左並可左右滑 */
+  .island-gallery-wing-tiles--2 .island-gallery-wing-tiles__track {
     margin-inline: auto;
     padding-inline: 0.25rem;
   }
@@ -1290,7 +1335,7 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
   .island-gallery-strip-item {
     flex: 0 0 auto;
     height: var(--island-gallery-mobile-tile-h);
-    scroll-snap-align: start;
+    scroll-snap-align: center;
   }
 
   .island-gallery-strip-item--portrait {
@@ -1400,6 +1445,16 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
   width: 100%;
 }
 
+.island-lightbox__viewport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-height: 72vh;
+  overflow: hidden;
+  touch-action: none;
+}
+
 .island-lightbox__caption {
   max-width: 36rem;
   text-align: center;
@@ -1443,6 +1498,15 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.island-lightbox__filmstrip-gap {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 1px;
+  height: 2rem;
+  margin-inline: 0.125rem;
+  background: rgba(255, 255, 255, 0.22);
 }
 
 /* Typography helpers */
@@ -1666,6 +1730,10 @@ html[data-perf='medium'] .island-marquee-track--run {
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.08),
     0 32px 80px -20px rgba(0, 0, 0, 0.55);
+  transform-origin: center center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
 }
 
 /* Calendar card polish */

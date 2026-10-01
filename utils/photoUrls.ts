@@ -150,6 +150,35 @@ export function getLightboxDisplayUrl(
   return buildUrl(publicId, `f_auto,q_auto:good,w_${width},c_limit`);
 }
 
+const lightboxPreloadCache = new Set<string>();
+
+/** 預載燈箱圖，避免左右切換時等待載入 */
+export function preloadLightboxPhoto(
+  publicId: string,
+  viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200,
+  dpr?: number
+) {
+  const url = getLightboxDisplayUrl(publicId, viewportWidth, dpr);
+  if (lightboxPreloadCache.has(url)) return;
+  lightboxPreloadCache.add(url);
+  const img = new Image();
+  img.decoding = 'async';
+  img.src = url;
+}
+
+export function preloadLightboxNeighbors(
+  publicIds: string[],
+  centerIndex: number,
+  viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1200,
+  radius = 3
+) {
+  for (let offset = -radius; offset <= radius; offset += 1) {
+    const index = centerIndex + offset;
+    if (index < 0 || index >= publicIds.length) continue;
+    preloadLightboxPhoto(publicIds[index], viewportWidth);
+  }
+}
+
 /** 燈箱放大畫面 — 只有使用者放大時才載入，避免初始流量過大 */
 export function getLightboxZoomUrl(
   publicId: string,
