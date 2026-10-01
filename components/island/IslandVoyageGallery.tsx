@@ -23,6 +23,7 @@ import {
   getGalleryHeroUrl,
   getGalleryTileSrcSet,
   getGalleryTileUrl,
+  preloadGalleryTile,
   getLightboxDisplayUrl,
   getLightboxZoomUrl,
   getThumbUrl,
@@ -277,8 +278,8 @@ const PhotoPortal: React.FC<{
           className={`island-photo-frame__img ${aspectClass(photo, variant)}`}
           style={Object.keys(imgStyle).length > 0 ? imgStyle : undefined}
           loading="eager"
-          decoding={isHero ? 'async' : 'sync'}
-          fetchPriority={isHero ? 'high' : 'low'}
+          decoding="async"
+          {...(isHero ? { fetchPriority: 'high' as const } : {})}
         />
         <div className="island-photo-frame__veil" aria-hidden />
       </div>
@@ -326,7 +327,64 @@ const IslandAdventureChapter: React.FC<{
   const isReversed = layout.isReversed ?? index % 2 === 1;
   const heroPhoto = chapter.photos[0];
   const tilePhotos = chapter.photos.slice(1);
+  const tilesStripRef = useRef<HTMLDivElement>(null);
   const copyAlign = layout.titleAlign === 'right' ? 'right' : 'left';
+  const tilesScrollable = tilePhotos.length > 2;
+
+  useEffect(() => {
+    tilePhotos.forEach((photo) => {
+      const scale = photo.tileScale && photo.tileScale > 1 ? photo.tileScale : 1;
+      preloadGalleryTile(photo.publicId, scale);
+    });
+  }, [tilePhotos]);
+
+  useEffect(() => {
+    const strip = tilesStripRef.current;
+    if (!strip || !tilesScrollable) return;
+
+    let startX = 0;
+    let startY = 0;
+    let axis: 'x' | 'y' | null = null;
+
+    const resetAxis = () => {
+      axis = null;
+      strip.style.touchAction = '';
+    };
+
+    const onTouchStart = (event: TouchEvent) => {
+      if (event.touches.length !== 1) return;
+      startX = event.touches[0].clientX;
+      startY = event.touches[0].clientY;
+      axis = null;
+      strip.style.touchAction = '';
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      if (event.touches.length !== 1) return;
+      const dx = event.touches[0].clientX - startX;
+      const dy = event.touches[0].clientY - startY;
+
+      if (axis === null) {
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      }
+
+      strip.style.touchAction = axis === 'y' ? 'pan-y' : 'pan-x pan-y';
+    };
+
+    strip.addEventListener('touchstart', onTouchStart, { passive: true });
+    strip.addEventListener('touchmove', onTouchMove, { passive: true });
+    strip.addEventListener('touchend', resetAxis, { passive: true });
+    strip.addEventListener('touchcancel', resetAxis, { passive: true });
+
+    return () => {
+      strip.removeEventListener('touchstart', onTouchStart);
+      strip.removeEventListener('touchmove', onTouchMove);
+      strip.removeEventListener('touchend', resetAxis);
+      strip.removeEventListener('touchcancel', resetAxis);
+      strip.style.touchAction = '';
+    };
+  }, [tilesScrollable]);
 
   const titleBlock = (
     <div
@@ -352,7 +410,10 @@ const IslandAdventureChapter: React.FC<{
   const tilesWing = (
     <div className="island-gallery-chapter__wing island-gallery-chapter__wing--tiles">
       <div
-        className={`island-gallery-wing-tiles island-gallery-wing-tiles--${tilePhotos.length}`}
+        ref={tilesStripRef}
+        className={`island-gallery-wing-tiles island-gallery-wing-tiles--${tilePhotos.length}${
+          tilesScrollable ? ' island-gallery-wing-tiles--scrollable' : ''
+        }`}
       >
         <div className="island-gallery-wing-tiles__track">
           {tilePhotos.map((photo, tileIndex) => (
@@ -394,7 +455,7 @@ const IslandAdventureChapter: React.FC<{
   return (
     <article
       data-depth-value={depthValue}
-      className="island-chapter-flow relative w-full overflow-x-clip overflow-y-visible"
+      className="island-chapter-flow relative w-full overflow-x-hidden overflow-y-visible md:overflow-hidden"
     >
       <div
         className={`pointer-events-none absolute ${layout.sunClass} h-14 w-14 rounded-full blur-md md:h-16 md:w-16`}
@@ -657,6 +718,15 @@ export const IslandVoyageGallery: React.FC = () => {
   const [lightbox, setLightbox] = useState<LightboxState | null>(null);
   const palette = useMemo(() => getGalleryPaletteAtDepth(depth), [depth]);
   const allLightboxPhotos = useMemo(() => buildGalleryLightboxPhotos(), []);
+
+  useEffect(() => {
+    WEDDING_GALLERY_CHAPTERS.forEach((chapter) => {
+      chapter.photos.slice(1).forEach((photo) => {
+        const scale = photo.tileScale && photo.tileScale > 1 ? photo.tileScale : 1;
+        preloadGalleryTile(photo.publicId, scale);
+      });
+    });
+  }, []);
 
   const openLightbox = useCallback(
     (photo: GalleryPhoto) => {

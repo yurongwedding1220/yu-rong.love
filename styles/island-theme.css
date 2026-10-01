@@ -1160,8 +1160,7 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     min-height: 100svh;
     display: flex;
     flex-direction: column;
-    /* clip 不會把直向捲動變成第二層 scrollport，避免手機滑動時整頁閃一下 */
-    overflow-x: clip;
+    overflow-x: hidden;
     overflow-y: visible;
     max-width: 100%;
   }
@@ -1172,8 +1171,7 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     justify-content: center;
     padding-top: 1.25rem;
     padding-bottom: 0.75rem;
-    overflow-x: clip;
-    overflow-y: visible;
+    overflow: visible;
     max-width: 100%;
   }
 
@@ -1212,8 +1210,7 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    overflow-x: clip;
-    overflow-y: visible;
+    overflow: visible;
     min-height: 0;
     max-height: none;
   }
@@ -1296,8 +1293,6 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     overflow: visible;
     position: relative;
     z-index: 2;
-    content-visibility: visible;
-    contain: none;
   }
 
   .island-gallery-wing-tiles {
@@ -1308,16 +1303,19 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     margin-inline: auto;
     padding-inline: 0;
     padding-bottom: 0;
+    overflow-x: visible;
+    overflow-y: hidden;
+    touch-action: pan-y;
+    scrollbar-width: none;
+  }
+
+  .island-gallery-wing-tiles--scrollable {
     overflow-x: auto;
-    overflow-y: visible;
     scroll-snap-type: x proximity;
     scroll-padding-inline: 1.25rem;
     -webkit-overflow-scrolling: touch;
-    touch-action: pan-x;
+    touch-action: pan-x pan-y;
     overscroll-behavior-x: contain;
-    scrollbar-width: none;
-    content-visibility: visible;
-    contain: none;
   }
 
   .island-gallery-wing-tiles__track {
@@ -1328,8 +1326,6 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     height: 100%;
     margin-inline: 0;
     padding-inline: 0.25rem 1.25rem;
-    content-visibility: visible;
-    contain: none;
   }
 
   /* 兩張副圖可完整放入畫面時置中；多張仍靠左並可左右滑 */
@@ -1352,8 +1348,7 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     height: var(--island-gallery-mobile-tile-h);
     min-height: var(--island-gallery-mobile-tile-h);
     scroll-snap-align: center;
-    content-visibility: visible;
-    contain: none;
+    flex-shrink: 0;
   }
 
   .island-gallery-strip-item--portrait {
@@ -1373,6 +1368,7 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
   }
 
   .island-gallery-strip-item .island-photo-frame {
+    background: rgba(12, 28, 42, 0.35);
     box-shadow:
       0 0 0 1px rgba(255, 255, 255, 0.08) inset,
       0 4px 12px -8px rgba(0, 0, 0, 0.28);
