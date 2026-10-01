@@ -149,7 +149,8 @@ const IslandTerrain: React.FC<{
   chapterId: string;
   palette: GalleryChapter['palette'];
   shiftClass: string;
-}> = ({ chapterId, palette, shiftClass }) => {
+  className?: string;
+}> = ({ chapterId, palette, shiftClass, className }) => {
   const terrains: Record<string, { back: string; mid: string; front: string }> = {
     azure: {
       back: 'M0,120 L0,55 Q80,25 200,42 T420,28 L560,38 L560,120 Z',
@@ -176,7 +177,9 @@ const IslandTerrain: React.FC<{
   const t = terrains[chapterId] ?? terrains.azure;
 
   return (
-    <div className={`island-chapter-terrain pointer-events-none absolute inset-x-0 bottom-0 h-[32%] min-h-[160px] ${shiftClass}`}>
+    <div
+      className={`island-chapter-terrain pointer-events-none absolute inset-x-0 bottom-0 h-[32%] min-h-[160px] ${shiftClass} ${className ?? ''}`}
+    >
       <svg
         className="absolute inset-0 h-full w-[112%] -left-[6%]"
         viewBox="0 0 560 120"
@@ -281,7 +284,7 @@ const PhotoPortal: React.FC<{
           className={`island-photo-frame__img ${aspectClass(photo, variant)}`}
           style={Object.keys(imgStyle).length > 0 ? imgStyle : undefined}
           loading="eager"
-          decoding="async"
+          decoding={isMobile && !isHero ? 'sync' : 'async'}
           {...(isHero ? { fetchPriority: 'high' as const } : {})}
         />
         <div className="island-photo-frame__veil" aria-hidden />
@@ -291,31 +294,9 @@ const PhotoPortal: React.FC<{
 
   const shellClass = isHero ? 'h-full' : `h-full ${tileStripClass(photo)}`;
 
-  // 副圖不用 whileInView：避免進場動畫在捲動時被判定離屏而消失
-  if (!animate || !isHero) {
+  // 手機副圖與主視覺都不用 whileInView：避免捲動時合成層重繪導致消失
+  if (!animate || !isHero || isMobile) {
     return <div className={shellClass}>{body}</div>;
-  }
-
-  // 手機：單層 transform（位移＋旋轉）、不做 scale，減少 iOS 合成層閃爍
-  if (isMobile) {
-    return (
-      <motion.div
-        className={`${shellClass} island-hero-motion`}
-        initial={{ opacity: 1, x: layout.emerge.x * 0.5, y: layout.emerge.y, rotate }}
-        whileInView={{ opacity: 1, x: 0, y: 0, rotate }}
-        viewport={{ once: true, amount: 0.18, margin: '100px 0px' }}
-        transition={{
-          duration: Math.min(layout.emerge.duration, 1.15),
-          ease: [0.22, 1, 0.36, 1],
-        }}
-        style={{
-          backfaceVisibility: 'hidden',
-          WebkitBackfaceVisibility: 'hidden',
-        }}
-      >
-        {body}
-      </motion.div>
-    );
   }
 
   return (
@@ -430,7 +411,7 @@ const IslandAdventureChapter: React.FC<{
   return (
     <article
       data-depth-value={depthValue}
-      className="island-chapter-flow relative w-full overflow-visible md:overflow-hidden"
+      className="island-chapter-flow relative w-full overflow-hidden"
     >
       <div
         className={`pointer-events-none absolute ${layout.sunClass} h-14 w-14 rounded-full blur-md md:h-16 md:w-16`}
@@ -445,8 +426,13 @@ const IslandAdventureChapter: React.FC<{
         aria-hidden
       />
 
-      <IslandTerrain chapterId={chapter.id} palette={palette} shiftClass={layout.terrainShift} />
-      <SceneWaves palette={palette} animate={animate} />
+      <IslandTerrain
+        chapterId={chapter.id}
+        palette={palette}
+        shiftClass={isMobile ? '' : layout.terrainShift}
+        className={isMobile ? 'hidden' : undefined}
+      />
+      {!isMobile && <SceneWaves palette={palette} animate={animate} />}
 
       <div className="island-chapter-flow__body relative z-10 mx-auto max-w-6xl px-5 py-10 md:px-8 md:py-20">
         <div
