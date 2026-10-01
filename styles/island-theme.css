@@ -1160,8 +1160,7 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     min-height: 100svh;
     display: flex;
     flex-direction: column;
-    overflow-x: hidden;
-    overflow-y: visible;
+    overflow: visible;
     max-width: 100%;
   }
 
@@ -1295,51 +1294,41 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     z-index: 2;
   }
 
+  /*
+   * 手機副圖：靜態置中排列，不用 overflow-x 橫滑。
+   * iOS/WebKit 在「頁面直滑 + 巢狀橫滑」時會跳過重繪，左右滑一下才會出現圖片。
+   */
   .island-gallery-wing-tiles {
     width: 100%;
     max-width: none;
-    height: var(--island-gallery-mobile-tile-h);
+    height: auto;
     min-height: var(--island-gallery-mobile-tile-h);
     margin-inline: auto;
     padding-inline: 0;
     padding-bottom: 0;
-    overflow-x: visible;
-    overflow-y: hidden;
+    overflow: visible;
     touch-action: pan-y;
-    scrollbar-width: none;
   }
 
-  .island-gallery-wing-tiles--scrollable {
-    overflow-x: auto;
-    scroll-snap-type: x proximity;
-    scroll-padding-inline: 1.25rem;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-x pan-y;
-    overscroll-behavior-x: contain;
+  .island-gallery-wing-tiles--3 {
+    --island-gallery-mobile-tile-h: 4.85rem;
   }
 
   .island-gallery-wing-tiles__track {
     display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    width: max-content;
+    width: 100%;
+    max-width: 100%;
     min-height: var(--island-gallery-mobile-tile-h);
-    height: 100%;
-    margin-inline: 0;
-    padding-inline: 0.25rem 1.25rem;
-  }
-
-  /* 兩張副圖可完整放入畫面時置中；多張仍靠左並可左右滑 */
-  .island-gallery-wing-tiles--2 .island-gallery-wing-tiles__track {
+    height: auto;
     margin-inline: auto;
     padding-inline: 0.25rem;
   }
 
-  /* 不在可捲動層加遮罩：滑動時會疊在照片上形成陰影 */
   .island-gallery-wing-tiles::after {
-    display: none;
-  }
-
-  .island-gallery-wing-tiles::-webkit-scrollbar {
     display: none;
   }
 
@@ -1347,7 +1336,6 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     flex: 0 0 auto;
     height: var(--island-gallery-mobile-tile-h);
     min-height: var(--island-gallery-mobile-tile-h);
-    scroll-snap-align: center;
     flex-shrink: 0;
   }
 
