@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "typecheck": "tsc --noEmit",
+    "generate:og-image": "node scripts/generate-og-image.mjs",
     "build": "tsc --noEmit && vite build && node scripts/prepare-github-pages.mjs",
     "preview": "vite preview",
     "predeploy": "npm run build",
@@ -24,6 +25,7 @@
     "three": "~0.182.0"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
