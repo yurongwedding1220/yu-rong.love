@@ -230,7 +230,7 @@ function App() {
     <ScrollJourneyProvider>
     <main
       id="main-content"
-      className="w-full min-h-screen bg-transparent text-[#1A3344] selection:bg-[#E8A87C] selection:text-white"
+      className="w-full min-h-screen max-w-full overflow-x-clip bg-transparent text-[#1A3344] selection:bg-[#E8A87C] selection:text-white"
     >
       <a href="#photos" className="island-skip-link island-focus">
         跳至主要內容

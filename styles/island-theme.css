@@ -1160,7 +1160,9 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     min-height: 100svh;
     display: flex;
     flex-direction: column;
-    overflow: visible;
+    /* 海浪／島嶼紋理比畫面寬，clip 掉橫向溢出，避免整頁可以左右滑 */
+    overflow-x: clip;
+    overflow-y: visible;
     max-width: 100%;
   }
 
@@ -1321,7 +1323,7 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
   }
 
   .island-gallery-wing-tiles--3 {
-    --island-gallery-mobile-tile-h: 4.85rem;
+    --island-gallery-mobile-tile-h: 4.35rem;
   }
 
   .island-gallery-wing-tiles__track {
