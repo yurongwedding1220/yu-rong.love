@@ -1279,6 +1279,16 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
     max-height: none;
     aspect-ratio: auto !important;
     object-fit: cover;
+    transition: none;
+  }
+
+  .island-gallery-chapter__hero .island-hero-motion {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  .island-gallery-chapter__hero .island-photo-frame {
+    background: rgba(12, 28, 42, 0.28);
   }
 
   .island-gallery-chapter__wing--tiles {

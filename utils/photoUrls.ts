@@ -57,6 +57,17 @@ export const GALLERY_HERO_SIZES = '(max-width: 768px) 94vw, 480px';
 export const GALLERY_TILE_SIZES = '(max-width: 768px) 52vw, 390px';
 
 const galleryTilePreloadCache = new Set<string>();
+const galleryHeroPreloadCache = new Set<string>();
+
+/** 預載篇章主視覺，避免進場動畫時圖片晚到造成閃爍 */
+export function preloadGalleryHero(publicId: string, opts?: GalleryHeroOpts) {
+  const url = getGalleryHeroUrl(publicId, 900, opts);
+  if (galleryHeroPreloadCache.has(url)) return;
+  galleryHeroPreloadCache.add(url);
+  const img = new Image();
+  img.decoding = 'async';
+  img.src = url;
+}
 
 /** 預載篇章副圖，避免滑入時空白或閃爍 */
 export function preloadGalleryTile(publicId: string, scale = 1) {

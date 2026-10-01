@@ -23,6 +23,7 @@ import {
   getGalleryHeroUrl,
   getGalleryTileSrcSet,
   getGalleryTileUrl,
+  preloadGalleryHero,
   preloadGalleryTile,
   getLightboxDisplayUrl,
   getLightboxZoomUrl,
@@ -218,11 +219,13 @@ const PhotoPortal: React.FC<{
   variant: PhotoVariant;
   palette: IslandPalette;
   animate: boolean;
+  isMobile: boolean;
   onClick: () => void;
-}> = ({ photo, layout, photoIndex, total, variant, palette, animate, onClick }) => {
+}> = ({ photo, layout, photoIndex, total, variant, palette, animate, isMobile, onClick }) => {
   const isHero = variant === 'hero';
   const shapeClass = isHero ? SHAPE_CLASS[layout.photoShape] : '';
   const rotate = isHero ? layout.photoRotate : 0;
+  const rotateOnPortal = isHero && !isMobile;
 
   const heroOpts = photo.heroGravity ? { gravity: photo.heroGravity } : undefined;
   const tileScale = !isHero && photo.tileScale && photo.tileScale > 1 ? photo.tileScale : 1;
@@ -250,7 +253,7 @@ const PhotoPortal: React.FC<{
       onClick={onClick}
       className="island-photo-portal island-focus group relative block h-full w-full"
       style={
-        isHero
+        rotateOnPortal
           ? ({
               '--photo-rotate': `${rotate}deg`,
               transform: `rotate(${rotate}deg)`,
@@ -258,7 +261,7 @@ const PhotoPortal: React.FC<{
           : undefined
       }
     >
-      {isHero && (
+      {isHero && !isMobile && (
         <div
           className="pointer-events-none absolute -inset-5 rounded-[50%] opacity-45 blur-2xl transition-opacity group-hover:opacity-65"
           style={{ background: `radial-gradient(circle, ${palette.glow}88, transparent 72%)` }}
@@ -293,9 +296,31 @@ const PhotoPortal: React.FC<{
     return <div className={shellClass}>{body}</div>;
   }
 
+  // 手機：單層 transform（位移＋旋轉）、不做 scale，減少 iOS 合成層閃爍
+  if (isMobile) {
+    return (
+      <motion.div
+        className={`${shellClass} island-hero-motion`}
+        initial={{ opacity: 1, x: layout.emerge.x * 0.5, y: layout.emerge.y, rotate }}
+        whileInView={{ opacity: 1, x: 0, y: 0, rotate }}
+        viewport={{ once: true, amount: 0.18, margin: '100px 0px' }}
+        transition={{
+          duration: Math.min(layout.emerge.duration, 1.15),
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        style={{
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden',
+        }}
+      >
+        {body}
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div
-      className={shellClass}
+      className={`${shellClass} island-hero-motion`}
       initial={{
         opacity: 1,
         x: layout.emerge.x,
@@ -320,9 +345,10 @@ const IslandAdventureChapter: React.FC<{
   layout: IslandLayout;
   palette: IslandPalette;
   animate: boolean;
+  isMobile: boolean;
   isLast: boolean;
   onPhotoClick: (photo: GalleryPhoto) => void;
-}> = ({ chapter, index, layout, palette, animate, isLast, onPhotoClick }) => {
+}> = ({ chapter, index, layout, palette, animate, isMobile, isLast, onPhotoClick }) => {
   const depthValue = GALLERY_ISLAND_DEPTHS[index] ?? GALLERY_ISLAND_DEPTHS.at(-1)!;
   const isReversed = layout.isReversed ?? index % 2 === 1;
   const heroPhoto = chapter.photos[0];
@@ -330,11 +356,13 @@ const IslandAdventureChapter: React.FC<{
   const copyAlign = layout.titleAlign === 'right' ? 'right' : 'left';
 
   useEffect(() => {
+    const heroOpts = heroPhoto?.heroGravity ? { gravity: heroPhoto.heroGravity } : undefined;
+    if (heroPhoto) preloadGalleryHero(heroPhoto.publicId, heroOpts);
     tilePhotos.forEach((photo) => {
       const scale = photo.tileScale && photo.tileScale > 1 ? photo.tileScale : 1;
       preloadGalleryTile(photo.publicId, scale);
     });
-  }, [tilePhotos]);
+  }, [heroPhoto, tilePhotos]);
 
   const titleBlock = (
     <div
@@ -371,6 +399,7 @@ const IslandAdventureChapter: React.FC<{
               variant="tile"
               palette={palette}
               animate={animate}
+              isMobile={isMobile}
               onClick={() => onPhotoClick(photo)}
             />
           ))}
@@ -389,6 +418,7 @@ const IslandAdventureChapter: React.FC<{
         variant="hero"
         palette={palette}
         animate={animate}
+        isMobile={isMobile}
         onClick={() => onPhotoClick(heroPhoto)}
       />
     </div>
@@ -658,6 +688,7 @@ const GalleryLightbox: React.FC<{
 
 export const IslandVoyageGallery: React.FC = () => {
   const { depth } = useScrollJourney();
+  const isMobile = useIsMobile();
   const lite = isLowPerf(usePerfMode());
   const animate = !lite;
   const [lightbox, setLightbox] = useState<LightboxState | null>(null);
@@ -666,6 +697,11 @@ export const IslandVoyageGallery: React.FC = () => {
 
   useEffect(() => {
     WEDDING_GALLERY_CHAPTERS.forEach((chapter) => {
+      const hero = chapter.photos[0];
+      if (hero) {
+        const heroOpts = hero.heroGravity ? { gravity: hero.heroGravity } : undefined;
+        preloadGalleryHero(hero.publicId, heroOpts);
+      }
       chapter.photos.slice(1).forEach((photo) => {
         const scale = photo.tileScale && photo.tileScale > 1 ? photo.tileScale : 1;
         preloadGalleryTile(photo.publicId, scale);
@@ -721,6 +757,7 @@ export const IslandVoyageGallery: React.FC = () => {
           layout={getChapterLayout(index)}
           palette={palette}
           animate={animate}
+          isMobile={isMobile}
           isLast={index === WEDDING_GALLERY_CHAPTERS.length - 1}
           onPhotoClick={openLightbox}
         />
