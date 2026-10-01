@@ -510,6 +510,38 @@ html.is-scrolling .island-submerge-gate__ripple {
   color: rgba(126, 200, 227, 0.85);
 }
 
+/* 留言卡：淺色紙面，從水下背景裡分離出來 */
+.island-section-underwater .island-guestbook {
+  background: rgba(253, 248, 241, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 22px 48px -20px rgba(0, 0, 0, 0.48);
+  color: var(--island-ink);
+}
+
+.island-section-underwater .island-guestbook .island-heading {
+  color: var(--island-ink);
+  text-shadow: none;
+}
+
+.island-section-underwater .island-guestbook .island-prose {
+  color: #3d5566;
+}
+
+.island-section-underwater .island-guestbook .island-meta {
+  color: #5a7380;
+}
+
+.island-section-underwater .island-guestbook .island-guestbook-divider-label {
+  background: #fdf8f1;
+  color: #1b4d6e;
+}
+
+.island-section-underwater .island-guestbook .island-thread-line {
+  background: rgba(27, 77, 110, 0.16);
+}
+
 .island-section-abyss .island-ornament__mark--sea {
   color: #e8a87c;
 }

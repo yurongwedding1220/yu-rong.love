@@ -76,7 +76,7 @@ const ISLAND_VISUALS: Omit<IslandLayout, 'titleAlign' | 'titleInset' | 'isRevers
     skyGlowAt: '68% 12%',
     sunClass: 'right-[14%] top-[8%]',
     // 蔚藍：自海面浮現
-    emerge: { x: 0, y: 36, scale: 0.94, duration: 0.95 },
+    emerge: { x: 0, y: 28, scale: 0.97, duration: 1.6 },
   },
   {
     photoShape: 'lagoon',
@@ -85,7 +85,7 @@ const ISLAND_VISUALS: Omit<IslandLayout, 'titleAlign' | 'titleInset' | 'isRevers
     skyGlowAt: '28% 14%',
     sunClass: 'left-[10%] top-[10%]',
     // 淺灣：由右至中
-    emerge: { x: 56, y: 0, scale: 1, duration: 0.85 },
+    emerge: { x: 44, y: 0, scale: 1, duration: 1.45 },
   },
   {
     photoShape: 'leaf',
@@ -94,7 +94,7 @@ const ISLAND_VISUALS: Omit<IslandLayout, 'titleAlign' | 'titleInset' | 'isRevers
     skyGlowAt: '50% 8%',
     sunClass: 'right-[20%] top-[8%]',
     // 白沙：由左至中
-    emerge: { x: -56, y: 0, scale: 1, duration: 0.85 },
+    emerge: { x: -44, y: 0, scale: 1, duration: 1.45 },
   },
   {
     photoShape: 'pebble',
@@ -103,7 +103,7 @@ const ISLAND_VISUALS: Omit<IslandLayout, 'titleAlign' | 'titleInset' | 'isRevers
     skyGlowAt: '72% 18%',
     sunClass: 'left-[16%] top-[12%]',
     // 暮色：由上緩緩靠岸
-    emerge: { x: 0, y: -28, scale: 1.04, duration: 1 },
+    emerge: { x: 0, y: -22, scale: 1.02, duration: 1.7 },
   },
 ];
 
@@ -276,8 +276,9 @@ const PhotoPortal: React.FC<{
           alt={photo.alt}
           className={`island-photo-frame__img ${aspectClass(photo, variant)}`}
           style={Object.keys(imgStyle).length > 0 ? imgStyle : undefined}
-          loading="lazy"
-          decoding="async"
+          loading="eager"
+          decoding={isHero ? 'async' : 'sync'}
+          fetchPriority={isHero ? 'high' : 'low'}
         />
         <div className="island-photo-frame__veil" aria-hidden />
       </div>
@@ -295,16 +296,16 @@ const PhotoPortal: React.FC<{
     <motion.div
       className={shellClass}
       initial={{
-        opacity: 0,
+        opacity: 1,
         x: layout.emerge.x,
         y: layout.emerge.y,
         scale: layout.emerge.scale,
       }}
       whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.45 }}
+      viewport={{ once: true, amount: 0.35 }}
       transition={{
         duration: layout.emerge.duration,
-        ease: [0.22, 1, 0.36, 1],
+        ease: [0.16, 1, 0.3, 1],
       }}
     >
       {body}
@@ -393,7 +394,7 @@ const IslandAdventureChapter: React.FC<{
   return (
     <article
       data-depth-value={depthValue}
-      className="island-chapter-flow relative w-full overflow-hidden"
+      className="island-chapter-flow relative w-full overflow-x-clip overflow-y-visible"
     >
       <div
         className={`pointer-events-none absolute ${layout.sunClass} h-14 w-14 rounded-full blur-md md:h-16 md:w-16`}

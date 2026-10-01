@@ -463,7 +463,7 @@ export const GuestBook: React.FC<GuestBookProps> = ({ onExpandChange, refreshTri
     return (
         <>
             {/* === PREVIEW CARD === */}
-            <div className="island-content-glass w-full max-w-[600px] mx-auto overflow-hidden rounded-2xl md:rounded-3xl">
+            <div className="island-guestbook island-card--sea w-full max-w-[600px] mx-auto overflow-hidden rounded-2xl md:rounded-3xl">
                 <div className="p-4 md:p-6 pb-2">
                     <CouplePost
                         likes={mainPostLikes}
