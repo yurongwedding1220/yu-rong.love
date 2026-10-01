@@ -88,15 +88,26 @@ export const TRANSPORT_INFO = [
     title: 'HSR',
     chineseTitle: '台灣高鐵',
     description:
-      '高鐵雲林站下車；有接送需求請於 RSVP 表單填寫 LINE ID，我們將建立聯絡群組',
+      '高鐵雲林站下車；接送聯絡資訊將於婚禮前通知',
   },
 ];
 
-/** 婚紗藝廊篇章 — 以風格／色調分章，新人照片到位後替換 src */
+/** 婚紗藝廊篇章 — 以風格／色調分章，圖片由 Cloudinary publicId 提供 */
 export type GalleryPhoto = {
   id: string;
-  src: string;
+  publicId: string;
   alt: string;
+  orientation?: 'portrait' | 'landscape';
+  kind?: 'couple' | 'solo';
+  subject?: 'rong' | 'yu';
+  /** 主視覺裁切重心（Cloudinary g_face） */
+  heroGravity?: 'face';
+  /** 主視覺橫幅較寬（適合橫式合照） */
+  heroWide?: boolean;
+  /** CSS object-position 微調 */
+  objectPosition?: string;
+  /** 拼貼格放大（>1 微幅 zoom in） */
+  tileScale?: number;
 };
 
 export type GalleryChapter = {
@@ -149,7 +160,10 @@ export const WEDDING_GALLERY_CHAPTERS: GalleryChapter[] = [
       glow: '#7EC8E3',
     },
     photos: [
-      { id: 'azure-1', src: 'featured/placeholder-1.svg', alt: '婚紗藝廊 · 蔚藍（占位）' },
+      { id: '01-1', publicId: 'wedding_gallery/01_1', alt: '婚紗 · 蔚藍', orientation: 'portrait', kind: 'couple' },
+      { id: '01-2', publicId: 'wedding_gallery/01_2', alt: '婚紗 · 蔚藍', orientation: 'landscape', kind: 'couple' },
+      { id: '01-3', publicId: 'wedding_gallery/01_3_rong', alt: '婚紗 · 蔚藍', orientation: 'portrait', kind: 'solo', subject: 'rong' },
+      { id: '01-4', publicId: 'wedding_gallery/01_4', alt: '婚紗 · 蔚藍', orientation: 'landscape', kind: 'couple' },
     ],
   },
   {
@@ -165,7 +179,35 @@ export const WEDDING_GALLERY_CHAPTERS: GalleryChapter[] = [
       glow: '#a8e6f5',
     },
     photos: [
-      { id: 'lagoon-1', src: 'featured/placeholder-2.svg', alt: '婚紗藝廊 · 淺灣（占位）' },
+      {
+        id: '02-2',
+        publicId: 'wedding_gallery/02_2_yu',
+        alt: '婚紗 · 淺灣',
+        orientation: 'landscape',
+        kind: 'solo',
+        subject: 'yu',
+        heroGravity: 'face',
+        objectPosition: 'center center',
+      },
+      {
+        id: '02-1',
+        publicId: 'wedding_gallery/02_1_rong',
+        alt: '婚紗 · 淺灣',
+        orientation: 'portrait',
+        kind: 'solo',
+        subject: 'rong',
+        objectPosition: 'center 38%',
+        tileScale: 1.22,
+      },
+      {
+        id: '02-4',
+        publicId: 'wedding_gallery/02_4',
+        alt: '婚紗 · 淺灣',
+        orientation: 'portrait',
+        kind: 'couple',
+        objectPosition: '75% center',
+      },
+      { id: '02-3', publicId: 'wedding_gallery/02_3', alt: '婚紗 · 淺灣', orientation: 'landscape', kind: 'couple' },
     ],
   },
   {
@@ -181,7 +223,19 @@ export const WEDDING_GALLERY_CHAPTERS: GalleryChapter[] = [
       glow: '#F4E8D8',
     },
     photos: [
-      { id: 'sand-1', src: 'featured/placeholder-3.svg', alt: '婚紗藝廊 · 白沙（占位）' },
+      {
+        id: '03-4',
+        publicId: 'wedding_gallery/03_4_rong',
+        alt: '婚紗 · 白沙',
+        orientation: 'portrait',
+        kind: 'solo',
+        subject: 'rong',
+        heroGravity: 'face',
+        objectPosition: 'center center',
+      },
+      { id: '03-2', publicId: 'wedding_gallery/03_2', alt: '婚紗 · 白沙', orientation: 'portrait', kind: 'couple' },
+      { id: '03-3', publicId: 'wedding_gallery/03_3', alt: '婚紗 · 白沙', orientation: 'portrait', kind: 'couple' },
+      { id: '03-1', publicId: 'wedding_gallery/03_1', alt: '婚紗 · 白沙', orientation: 'landscape', kind: 'couple' },
     ],
   },
   {
@@ -196,7 +250,31 @@ export const WEDDING_GALLERY_CHAPTERS: GalleryChapter[] = [
       glow: '#f5c9a8',
     },
     photos: [
-      { id: 'coral-1', src: 'featured/placeholder-4.svg', alt: '婚紗藝廊 · 暮色（占位）' },
+      {
+        id: '04-2',
+        publicId: 'wedding_gallery/04_2',
+        alt: '婚紗 · 暮色',
+        orientation: 'landscape',
+        kind: 'couple',
+        heroWide: true,
+        objectPosition: 'center center',
+      },
+      {
+        id: '04-1',
+        publicId: 'wedding_gallery/04_1',
+        alt: '婚紗 · 暮色',
+        orientation: 'portrait',
+        kind: 'couple',
+        objectPosition: 'center 65%',
+      },
+      {
+        id: '04-3',
+        publicId: 'wedding_gallery/04_3',
+        alt: '婚紗 · 暮色',
+        orientation: 'portrait',
+        kind: 'couple',
+        objectPosition: 'center 35%',
+      },
     ],
   },
 ];

@@ -12,6 +12,50 @@ const buildUrl = (publicId: string, transforms: string) =>
 export const getGridUrl = (publicId: string, width = 800) =>
   buildUrl(publicId, `f_auto,q_auto:eco,w_${width}`);
 
+/** 首頁島嶼 portal 縮圖 — 約 600px，eco 品質 */
+export const getGalleryPortalUrl = (publicId: string, width = 600) =>
+  buildUrl(publicId, `f_auto,q_auto:eco,w_${width},c_limit`);
+
+export const getGalleryPortalSrcSet = (publicId: string, widths: readonly number[] = [400, 600, 800]) =>
+  widths.map((w) => `${getGalleryPortalUrl(publicId, w)} ${w}w`).join(', ');
+
+export type GalleryHeroOpts = {
+  gravity?: 'face';
+};
+
+/** 篇章主視覺 — 較大但不過度載入；g_face 讓人物置中 */
+export const getGalleryHeroUrl = (publicId: string, width = 900, opts?: GalleryHeroOpts) => {
+  if (opts?.gravity === 'face') {
+    const height = Math.round(width * 1.28);
+    return buildUrl(publicId, `f_auto,q_auto:eco,w_${width},h_${height},c_fill,g_face`);
+  }
+  return buildUrl(publicId, `f_auto,q_auto:eco,w_${width},c_limit`);
+};
+
+export const getGalleryHeroSrcSet = (publicId: string, opts?: GalleryHeroOpts) =>
+  [600, 900, 1200]
+    .map((w) => `${getGalleryHeroUrl(publicId, w, opts)} ${w}w`)
+    .join(', ');
+
+const GALLERY_TILE_WIDTHS = [480, 720, 960, 1200] as const;
+
+/** 拼貼小格 — good 品質；實際格位含下排橫圖與 Retina，需較高解析度 */
+export const getGalleryTileUrl = (publicId: string, width = 720) =>
+  buildUrl(publicId, `f_auto,q_auto:good,w_${width},c_limit`);
+
+export const getGalleryTileSrcSet = (publicId: string, scale = 1) =>
+  GALLERY_TILE_WIDTHS
+    .map((w) => Math.round(w * scale))
+    .map((w) => `${getGalleryTileUrl(publicId, w)} ${w}w`)
+    .join(', ');
+
+export const GALLERY_HERO_SIZES = '(max-width: 768px) 94vw, 480px';
+/**
+ * 拼貼格以高度填滿（object-fit: cover），sizes 需預留 Retina 與下排橫圖寬度，
+ * 否則瀏覽器會選過小的 srcset 導致模糊。
+ */
+export const GALLERY_TILE_SIZES = '(max-width: 768px) 52vw, 390px';
+
 /** Blur 占位（LQIP） */
 export const getBlurUrl = (publicId: string) =>
   buildUrl(publicId, 'e_blur:300,w_40,q_auto:eco,f_auto');

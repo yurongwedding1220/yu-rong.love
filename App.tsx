@@ -100,6 +100,9 @@ function App() {
   );
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [showNav, setShowNav] = useState(false);
+  const [calendarRevealed, setCalendarRevealed] = useState(
+    () => document.documentElement.dataset.calendarRevealed === 'true'
+  );
   const [showRSVPButton, setShowRSVPButton] = useState(false);
   const [activeSection, setActiveSection] = useState('photos');
   const [isNavExpanded, setIsNavExpanded] = useState(false);
@@ -140,6 +143,12 @@ function App() {
   }, [lite]);
 
   useEffect(() => {
+    const onCalendarRevealed = () => setCalendarRevealed(true);
+    window.addEventListener('harbor-calendar-revealed', onCalendarRevealed);
+    return () => window.removeEventListener('harbor-calendar-revealed', onCalendarRevealed);
+  }, []);
+
+  useEffect(() => {
     let ticking = false;
     let scrollEndTimer = 0;
 
@@ -149,7 +158,8 @@ function App() {
       const timeline = document.getElementById('timeline');
       const vh = window.innerHeight;
 
-      const marqueeOn = !!harbor && harbor.getBoundingClientRect().top < vh * 0.9;
+      const harborInView = !!harbor && harbor.getBoundingClientRect().top < vh * 0.9;
+      const marqueeOn = calendarRevealed && harborInView;
       setShowNav(marqueeOn);
       document.documentElement.dataset.marquee = marqueeOn ? 'visible' : 'hidden';
       setShowRSVPButton(!!timeline && timeline.getBoundingClientRect().top < vh * 0.75);
@@ -186,7 +196,7 @@ function App() {
       document.documentElement.classList.remove('is-scrolling');
       delete document.documentElement.dataset.marquee;
     };
-  }, []);
+  }, [calendarRevealed]);
 
   useEffect(() => {
     if (location.pathname !== '/') return;

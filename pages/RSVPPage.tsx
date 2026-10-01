@@ -7,7 +7,7 @@ import { IslandSeaAmbience } from '../components/island/IslandSeaAmbience';
 import { IslandOrnament } from '../components/island/IslandOrnament';
 import { SeaMotif } from '../components/island/IslandSeaMotifs';
 
-type Step = 'name' | 'side' | 'relation' | 'attendance' | 'arrivalMethod' | 'lineId' | 'guests' | 'paperInvite' | 'address' | 'email' | 'message' | 'success';
+type Step = 'name' | 'side' | 'relation' | 'attendance' | 'arrivalMethod' | 'guests' | 'paperInvite' | 'address' | 'email' | 'message' | 'success';
 
 const RSVPPage: React.FC = () => {
     const navigate = useNavigate();
@@ -22,7 +22,6 @@ const RSVPPage: React.FC = () => {
         relation: '',
         attendance: '' as 'yes' | 'no' | '',
         arrivalMethod: '' as 'car' | 'train' | 'hsr' | '',
-        lineId: '',
         // Guest Counts
         adults: 1,
         children: 0,
@@ -49,13 +48,11 @@ const RSVPPage: React.FC = () => {
         let current = 0;
 
         const sequence = ['name', 'side', 'relation', 'attendance'];
-        const needsLineId = formData.attendance === 'yes' && formData.arrivalMethod === 'hsr';
 
         // Determine path length
         if (formData.attendance === 'yes') {
-            // name, side, relation, attendance, arrivalMethod, [lineId], guests, paperInvite, [address], email, message
-            total = 9; // without lineId, without address
-            if (needsLineId) total += 1;
+            // name, side, relation, attendance, arrivalMethod, guests, paperInvite, [address], email, message
+            total = 9; // without address
             if (formData.needPaperInvite === 'yes') total += 1;
         }
 
@@ -64,14 +61,12 @@ const RSVPPage: React.FC = () => {
             current = sequence.indexOf(currentStepName);
         } else if (currentStepName === 'arrivalMethod') {
             current = 4;
-        } else if (currentStepName === 'lineId') {
-            current = 5;
         } else if (currentStepName === 'guests') {
-            current = needsLineId ? 6 : 5;
+            current = 5;
         } else if (currentStepName === 'paperInvite') {
-            current = needsLineId ? 7 : 6;
+            current = 6;
         } else if (currentStepName === 'address') {
-            current = needsLineId ? 8 : 7;
+            current = 7;
         } else if (currentStepName === 'email') {
             if (formData.attendance === 'yes') {
                 current = total - 2;
@@ -97,11 +92,7 @@ const RSVPPage: React.FC = () => {
                 if (formData.attendance === 'yes') setCurrentStepName('arrivalMethod');
                 else setCurrentStepName('message');
                 break;
-            case 'arrivalMethod':
-                if (formData.arrivalMethod === 'hsr') setCurrentStepName('lineId');
-                else setCurrentStepName('guests');
-                break;
-            case 'lineId': setCurrentStepName('guests'); break;
+            case 'arrivalMethod': setCurrentStepName('guests'); break;
             case 'guests': setCurrentStepName('paperInvite'); break;
             case 'paperInvite':
                 if (formData.needPaperInvite === 'yes') setCurrentStepName('address');
@@ -121,11 +112,7 @@ const RSVPPage: React.FC = () => {
             case 'relation': setCurrentStepName('side'); break;
             case 'attendance': setCurrentStepName('relation'); break;
             case 'arrivalMethod': setCurrentStepName('attendance'); break;
-            case 'lineId': setCurrentStepName('arrivalMethod'); break;
-            case 'guests':
-                if (formData.arrivalMethod === 'hsr') setCurrentStepName('lineId');
-                else setCurrentStepName('arrivalMethod');
-                break;
+            case 'guests': setCurrentStepName('arrivalMethod'); break;
             case 'paperInvite': setCurrentStepName('guests'); break;
             case 'address': setCurrentStepName('paperInvite'); break;
             case 'email':
@@ -153,7 +140,6 @@ const RSVPPage: React.FC = () => {
             case 'relation': return !!formData.relation;
             case 'attendance': return !!formData.attendance;
             case 'arrivalMethod': return !!formData.arrivalMethod;
-            case 'lineId': return true; // 選填
             case 'guests': return true;
             case 'paperInvite': return !!formData.needPaperInvite;
             case 'address': return formData.zipCode.trim().length > 0 && formData.address.trim().length > 0;
@@ -170,13 +156,9 @@ const RSVPPage: React.FC = () => {
     const handleSubmit = async () => {
         setIsSubmitting(true);
 
-        const isHsr = formData.attendance === 'yes' && formData.arrivalMethod === 'hsr';
-
         // Ensure we don't publish empty messages
         const finalFormData = {
             ...formData,
-            // 非高鐵時不送 LINE ID
-            lineId: isHsr ? formData.lineId.trim() : '',
             arrivalMethod: formData.attendance === 'yes' ? formData.arrivalMethod : '',
             publishToGuestbook: formData.message.trim().length > 0 ? formData.publishToGuestbook : false,
             // If publishing to guestbook, decide which name to use
@@ -345,7 +327,7 @@ const RSVPPage: React.FC = () => {
                                     name="attendance"
                                     className="hidden"
                                     checked={formData.attendance === 'no'}
-                                    onChange={() => setFormData({ ...formData, attendance: 'no', arrivalMethod: '', lineId: '' })}
+                                    onChange={() => setFormData({ ...formData, attendance: 'no', arrivalMethod: '' })}
                                 />
                                 <span className="text-xl text-[var(--island-ink)] flex items-center gap-2">無法出席，謹上心意與祝福 <span className="text-red-500">❤️</span></span>
                             </label>
@@ -376,38 +358,12 @@ const RSVPPage: React.FC = () => {
                                         name="arrivalMethod"
                                         className="hidden"
                                         checked={formData.arrivalMethod === opt.val}
-                                        onChange={() => setFormData({
-                                            ...formData,
-                                            arrivalMethod: opt.val,
-                                            lineId: opt.val === 'hsr' ? formData.lineId : '',
-                                        })}
+                                        onChange={() => setFormData({ ...formData, arrivalMethod: opt.val })}
                                     />
                                     <span className="text-xl text-[var(--island-ink)]">{opt.label}</span>
                                 </label>
                             ))}
                         </div>
-                    </div>
-                );
-
-            case 'lineId':
-                return (
-                    <div className="space-y-6">
-                        <div className="space-y-2">
-                            <label className="island-field-label">
-                                LINE ID <span className="island-meta font-sans font-normal tracking-normal">（選填）</span>
-                            </label>
-                            <p className="island-hint">
-                                若有接送需求，請填寫 LINE ID，我們將建立聯絡群組
-                            </p>
-                        </div>
-                        <input
-                            type="text"
-                            value={formData.lineId}
-                            onChange={(e) => setFormData({ ...formData, lineId: e.target.value })}
-                            placeholder="請輸入您的 LINE ID"
-                            className="island-input text-xl"
-                            autoFocus
-                        />
                     </div>
                 );
 

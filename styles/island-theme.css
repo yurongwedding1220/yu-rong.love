@@ -871,6 +871,33 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
 /* 婚紗藝廊：連續捲動，不做吸附卡位 */
 .island-chapter-flow {
   scroll-margin-top: 0;
+  --island-gallery-triad-height: 22.5rem;
+  min-height: auto;
+}
+
+.island-chapter-flow__body {
+  display: flex;
+  min-height: inherit;
+  flex-direction: column;
+}
+
+.island-transition-slot {
+  flex: 0 0 auto;
+  min-height: 2.5rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 768px) {
+  .island-chapter-flow {
+    --island-chapter-height: 45.5rem;
+    height: var(--island-chapter-height);
+    min-height: var(--island-chapter-height);
+  }
+
+  .island-transition-slot {
+    min-height: 3.75rem;
+    margin-top: 4rem;
+  }
 }
 
 /* 藝廊標題區 — 無額外底色，沿用 surface 文字樣式 */
@@ -880,7 +907,7 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
 
 /* 每座島不同有機照片形狀 */
 .island-photo-arch,
-.island-photo-capsule,
+.island-photo-lagoon,
 .island-photo-leaf,
 .island-photo-pebble,
 .island-photo-crescent {
@@ -898,6 +925,524 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
   font-family: 'Noto Serif TC', 'Playfair Display', serif;
   font-style: italic;
   letter-spacing: 0.04em;
+}
+
+/* ── 婚紗藝廊：桌面三欄置中；手機單欄敘事 + 大主視覺 + 橫滑副圖 ── */
+.island-gallery-chapter {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  width: 100%;
+}
+
+.island-gallery-chapter__wing-start {
+  order: 1;
+  width: 100%;
+}
+
+.island-gallery-chapter__hero {
+  order: 2;
+  width: 100%;
+  max-width: min(88vw, 22rem);
+}
+
+.island-gallery-chapter__wing-end {
+  order: 3;
+  width: 100%;
+}
+
+/* 手機：統一 文案 → 主視覺 → 副圖（不受桌面交錯影響） */
+.island-gallery-chapter--triad-reverse .island-gallery-chapter__wing-end {
+  order: 1;
+}
+
+.island-gallery-chapter--triad-reverse .island-gallery-chapter__hero {
+  order: 2;
+}
+
+.island-gallery-chapter--triad-reverse .island-gallery-chapter__wing-start {
+  order: 3;
+}
+
+.island-gallery-chapter__wing {
+  min-width: 0;
+}
+
+.island-gallery-chapter__wing--copy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .island-gallery-chapter--triad {
+    display: grid;
+    flex: 0 0 auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 16.5rem) minmax(0, 1fr);
+    grid-template-rows: var(--island-gallery-triad-height);
+    gap: 2.5rem 2.25rem;
+    align-items: stretch;
+    height: var(--island-gallery-triad-height);
+    min-height: var(--island-gallery-triad-height);
+    max-height: var(--island-gallery-triad-height);
+    max-width: 54rem;
+    margin-inline: auto;
+  }
+
+  .island-gallery-chapter__hero,
+  .island-gallery-chapter__wing-start,
+  .island-gallery-chapter__wing-end {
+    order: unset;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    min-height: var(--island-gallery-triad-height);
+  }
+
+  .island-gallery-chapter__hero {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+    width: 100%;
+    max-width: 17.5rem;
+  }
+
+  .island-gallery-chapter__wing-start {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: end;
+    width: 100%;
+    max-width: 14.5rem;
+  }
+
+  .island-gallery-chapter__wing-end {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: start;
+    width: 100%;
+    max-width: 14.5rem;
+  }
+
+  .island-gallery-chapter__wing {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 100%;
+    overflow: hidden;
+  }
+
+  .island-gallery-chapter__wing--copy {
+    justify-content: center;
+  }
+
+  .island-gallery-chapter__hero .island-photo-portal {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+  }
+
+  .island-gallery-chapter__hero .island-photo-frame {
+    height: 100%;
+  }
+
+  .island-gallery-chapter__hero .island-photo-frame__img,
+  .island-gallery-wing-tiles--3 .island-photo-frame__img,
+  .island-gallery-wing-tiles--2 .island-photo-frame__img {
+    aspect-ratio: unset;
+    height: 100%;
+    width: 100%;
+  }
+
+  .island-gallery-chapter--triad-forward .island-gallery-chapter__wing--copy {
+    justify-content: flex-end;
+  }
+
+  .island-gallery-chapter--triad-reverse .island-gallery-chapter__wing--copy {
+    justify-content: flex-start;
+  }
+
+  .island-gallery-chapter {
+    gap: 2rem;
+  }
+
+  .island-gallery-chapter__wing--tiles {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    margin-inline: 0;
+  }
+
+  .island-gallery-wing-tiles {
+    display: flex;
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+    width: 100%;
+    max-width: none;
+    margin-inline: 0;
+    padding-inline: 0;
+    padding-bottom: 0;
+    overflow: visible;
+  }
+
+  .island-gallery-wing-tiles::after {
+    display: none;
+  }
+
+  .island-gallery-wing-tiles__track {
+    display: grid;
+    gap: 0.625rem;
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+    width: 100%;
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+
+  .island-gallery-wing-tiles--3 .island-gallery-wing-tiles__track {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: 1fr 1fr;
+  }
+
+  .island-gallery-wing-tiles--3 .island-gallery-wing-tiles__track > * {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .island-gallery-wing-tiles--3 .island-gallery-wing-tiles__track > :nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
+  .island-gallery-wing-tiles--3 .island-photo-frame {
+    height: 100%;
+  }
+
+  /* 兩張直式：上下堆疊、撐滿側欄高度 */
+  .island-gallery-wing-tiles--2 .island-gallery-wing-tiles__track {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    align-content: stretch;
+  }
+
+  .island-gallery-wing-tiles--2 .island-gallery-wing-tiles__track > * {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .island-gallery-wing-tiles--2 .island-photo-portal,
+  .island-gallery-wing-tiles--2 .island-photo-frame {
+    height: 100%;
+  }
+
+  /* 桌面：strip 外殼恢復填滿格位，保留 object-position 裁切 */
+  .island-gallery-wing-tiles .island-gallery-strip-item {
+    flex: unset;
+    width: auto;
+    height: 100%;
+    scroll-snap-align: unset;
+  }
+
+  .island-gallery-wing-tiles .island-gallery-strip-item .island-photo-portal,
+  .island-gallery-wing-tiles .island-gallery-strip-item .island-photo-frame,
+  .island-gallery-wing-tiles .island-gallery-strip-item .island-photo-frame__img {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  /* 每座島：說明 + 主視覺 + 副圖 收進一個手機視窗高度 */
+  .island-chapter-flow {
+    --island-gallery-mobile-tile-h: 6.5rem;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .island-chapter-flow__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    justify-content: center;
+    padding-top: 1.25rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .island-transition-slot {
+    flex: 0 0 auto;
+    min-height: 1.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .island-gallery-chapter {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: calc(100svh - 4.5rem);
+    max-height: calc(100svh - 4.5rem);
+  }
+
+  .island-gallery-chapter__wing-start,
+  .island-gallery-chapter__wing-end {
+    flex: 0 0 auto;
+    min-height: 0;
+  }
+
+  .island-gallery-copy h3 {
+    margin-top: 0.375rem;
+    font-size: 1.85rem;
+  }
+
+  .island-gallery-copy .island-heading-pretty {
+    margin-top: 0.375rem;
+    font-size: 0.6875rem;
+    line-height: 1.65;
+  }
+
+  .island-gallery-chapter__hero {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    max-width: min(78vw, 18.5rem);
+  }
+
+  .island-gallery-chapter__hero .island-photo-portal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-height: 100%;
+    min-height: 0;
+  }
+
+  .island-gallery-chapter__hero .island-photo-frame {
+    width: 100%;
+    max-height: 100%;
+  }
+
+  .island-gallery-chapter__hero .island-photo-frame__img {
+    width: 100%;
+    max-height: min(26svh, 15.5rem);
+    height: auto;
+    aspect-ratio: unset;
+    object-fit: cover;
+  }
+
+  .island-gallery-chapter__wing--tiles {
+    flex: 0 0 auto;
+    width: 100%;
+    margin-inline: 0;
+    align-items: center;
+  }
+
+  .island-gallery-strip-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    margin: 0 0 0.375rem;
+    padding-inline: 1.25rem;
+    font-family: var(--font-display, system-ui);
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    color: rgba(255, 255, 255, 0.42);
+  }
+
+  .island-gallery-wing-tiles {
+    width: 100%;
+    max-width: none;
+    height: var(--island-gallery-mobile-tile-h);
+    margin-inline: auto;
+    padding-inline: 0;
+    padding-bottom: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.25rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .island-gallery-wing-tiles__track {
+    display: flex;
+    gap: 0.5rem;
+    width: max-content;
+    height: 100%;
+    margin-inline: auto;
+    padding-inline: 0.25rem;
+  }
+
+  /* 不在可捲動層加遮罩：滑動時會疊在照片上形成陰影 */
+  .island-gallery-wing-tiles::after {
+    display: none;
+  }
+
+  .island-gallery-wing-tiles::-webkit-scrollbar {
+    display: none;
+  }
+
+  .island-gallery-strip-item {
+    flex: 0 0 auto;
+    height: var(--island-gallery-mobile-tile-h);
+    scroll-snap-align: start;
+  }
+
+  .island-gallery-strip-item--portrait {
+    width: calc(var(--island-gallery-mobile-tile-h) * 0.8);
+    aspect-ratio: 4 / 5;
+  }
+
+  .island-gallery-strip-item--landscape {
+    width: calc(var(--island-gallery-mobile-tile-h) * 4 / 3);
+    aspect-ratio: 4 / 3;
+  }
+
+  .island-gallery-strip-item .island-photo-portal,
+  .island-gallery-strip-item .island-photo-frame {
+    height: 100%;
+    width: 100%;
+  }
+
+  .island-gallery-strip-item .island-photo-frame {
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+      0 4px 12px -8px rgba(0, 0, 0, 0.28);
+  }
+
+  .island-gallery-strip-item .island-photo-frame__img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: unset;
+    object-fit: cover;
+  }
+}
+
+.island-photo-frame {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 20px 48px -18px rgba(0, 0, 0, 0.38);
+}
+
+.island-photo-frame--hero {
+  min-height: 0;
+}
+
+.island-photo-frame--tile {
+  border-radius: 1rem;
+  min-height: 0;
+}
+
+.island-photo-frame__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.65s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.island-photo-portal:hover .island-photo-frame__img,
+.island-photo-portal:focus-visible .island-photo-frame__img {
+  transform: scale(calc(var(--tile-scale, 1) * 1.04));
+}
+
+.island-photo-frame__veil {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 38%,
+    rgba(0, 0, 0, 0.18) 100%
+  );
+}
+
+.island-photo-badge {
+  position: absolute;
+  left: 0.65rem;
+  bottom: 0.65rem;
+  z-index: 2;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(15, 35, 55, 0.42);
+  backdrop-filter: blur(8px);
+  font-size: 0.625rem;
+  letter-spacing: 0.22em;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.island-gallery-view-all {
+  grid-column: 1 / -1;
+  margin-top: 0.25rem;
+  text-align: center;
+  font-size: 0.6875rem;
+  letter-spacing: 0.28em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* 燈箱 filmstrip */
+.island-lightbox__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: min(96vw, 72rem);
+  width: 100%;
+}
+
+.island-lightbox__caption {
+  max-width: 36rem;
+  text-align: center;
+  font-size: 0.8125rem;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.island-lightbox__filmstrip {
+  display: flex;
+  gap: 0.5rem;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 0.25rem 0.5rem 0.5rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.island-lightbox__thumb {
+  flex: 0 0 auto;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 0.65rem;
+  overflow: hidden;
+  border: 2px solid transparent;
+  opacity: 0.55;
+  scroll-snap-align: center;
+  transition:
+    opacity 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.island-lightbox__thumb--active {
+  opacity: 1;
+  border-color: rgba(255, 255, 255, 0.75);
+  transform: scale(1.05);
+}
+
+.island-lightbox__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* Typography helpers */
@@ -1159,8 +1704,9 @@ html[data-perf='medium'] .island-marquee-track--run {
   border-radius: 50% 50% 40% 40% / 12% 12% 88% 88%;
 }
 
-.island-photo-capsule {
-  border-radius: 46% 46% 54% 54% / 6% 6% 94% 94%;
+/* 淺灣：柔和水灣／潮池，上弧開闊、底部圓潤不尖 */
+.island-photo-lagoon {
+  border-radius: 48% 52% 50% 50% / 28% 26% 72% 74%;
 }
 
 .island-photo-leaf {

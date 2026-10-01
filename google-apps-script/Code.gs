@@ -4,9 +4,9 @@
  *  1 提交時間 | 2 姓名 | 3 親友別 | 4 關係 | 5 是否出席
  *  6 成人 | 7 兒童 | 8 兒童椅 | 9 素食 | 10 紙本喜帖
  *  11 郵遞區號 | 12 地址 | 13 Email | 14 留言 | 15 顯示留言板
- *  16 愛心數 | 17 留言板顯示名稱 | 18 抵達方式 | 19 LINE ID
+ *  16 愛心數 | 17 留言板顯示名稱 | 18 抵達方式
  *
- * 請在標題列 R、S 欄手動加上「抵達方式」「LINE ID」
+ * 請在標題列 R 欄手動加上「抵達方式」
  * 貼上後：部署 → 管理部署 → 編輯 → 新版本（權限：所有人）
  */
 
@@ -97,7 +97,6 @@ function doPost(e) {
       0, // 16. 愛心數
       displayPropsName, // 17. 留言板顯示名稱
       isAttending ? formatArrivalMethod(data.arrivalMethod) : '', // 18. 抵達方式
-      isAttending && data.arrivalMethod === 'hsr' ? data.lineId || '' : '', // 19. LINE ID（僅高鐵）
     ];
 
     sheet.appendRow(row);

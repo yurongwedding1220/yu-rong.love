@@ -1,12 +1,23 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import {
   motion,
+  useMotionValueEvent,
   useScroll,
   useTransform,
   MotionValue,
 } from 'framer-motion';
 import { APP_CONTENT, CALENDAR_COVER_IMAGE } from '../constants';
 import { usePerfMode, isLowPerf, isHighPerf } from '../hooks/usePerfMode';
+
+/** 封面翻開、日期格可見後才觸發跑馬燈（對齊 FlippingCalendar rotateX 進度） */
+const CALENDAR_REVEAL_PROGRESS = 0.58;
+const HARBOR_CALENDAR_REVEALED_EVENT = 'harbor-calendar-revealed';
+
+const markHarborCalendarRevealed = () => {
+  if (document.documentElement.dataset.calendarRevealed === 'true') return;
+  document.documentElement.dataset.calendarRevealed = 'true';
+  window.dispatchEvent(new CustomEvent(HARBOR_CALENDAR_REVEALED_EVENT));
+};
 
 /** December 2026: 1st is Tuesday → 2 empty slots. Wedding day = 20 */
 const CalendarBase = ({ pulseHeart }: { pulseHeart: boolean }) => {
@@ -137,8 +148,13 @@ const CalendarCover = () => (
 );
 
 /** Low-end: 靜態月曆，輕觸揭開封面 */
-const SimpleCalendar = () => {
+const SimpleCalendar = ({ onRevealed }: { onRevealed: () => void }) => {
   const [revealed, setRevealed] = React.useState(false);
+
+  const reveal = () => {
+    setRevealed(true);
+    onRevealed();
+  };
 
   return (
     <div className="island-calendar-card island-card--elevated island-card--sea relative mx-auto aspect-[3/4.2] w-full max-w-[320px] overflow-hidden rounded-xl border border-[#3A8FB7]/15 bg-[var(--island-paper)]">
@@ -146,7 +162,7 @@ const SimpleCalendar = () => {
       {!revealed && (
         <button
           type="button"
-          onClick={() => setRevealed(true)}
+          onClick={reveal}
           className="island-focus absolute inset-0 z-30 overflow-hidden rounded-xl shadow-lg"
           aria-label="揭開月曆封面"
         >
@@ -272,17 +288,22 @@ export const CalendarRevealSection: React.FC = () => {
   const perf = usePerfMode();
   const lite = isLowPerf(perf);
   const containerRef = useRef<HTMLDivElement>(null);
+  const onRevealed = useCallback(() => markHarborCalendarRevealed(), []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
   });
 
+  useMotionValueEvent(scrollYProgress, 'change', (progress) => {
+    if (progress >= CALENDAR_REVEAL_PROGRESS) onRevealed();
+  });
+
   if (lite) {
     return (
       <div className="relative w-full bg-transparent py-8">
         <div className="flex flex-col items-center justify-center px-4 md:px-6">
-          <SimpleCalendar />
+          <SimpleCalendar onRevealed={onRevealed} />
         </div>
       </div>
     );
