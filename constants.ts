@@ -195,7 +195,7 @@ export const WEDDING_GALLERY_CHAPTERS: GalleryChapter[] = [
         orientation: 'portrait',
         kind: 'solo',
         subject: 'rong',
-        objectPosition: 'center 30%',
+        objectPosition: 'center 52%',
         tileScale: 1.22,
       },
       {
