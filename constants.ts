@@ -82,8 +82,7 @@ export const TRANSPORT_INFO = [
     icon: '🚄',
     title: 'HSR',
     chineseTitle: '台灣高鐵',
-    description:
-      '高鐵雲林站下車。女方親友若搭乘 813 車次（台北 09:11 → 雲林 10:41），可於 RSVP 填寫接送與 LINE ID。',
+    description: '高鐵雲林站下車，轉乘計程車約 20–25 分鐘可抵達會場。',
   },
 ];
 
