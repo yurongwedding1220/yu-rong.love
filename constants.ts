@@ -163,7 +163,6 @@ export const WEDDING_GALLERY_CHAPTERS: GalleryChapter[] = [
       { id: '01-1', publicId: 'wedding_gallery/01_1', alt: '婚紗 · 蔚藍', orientation: 'portrait', kind: 'couple' },
       { id: '01-2', publicId: 'wedding_gallery/01_2', alt: '婚紗 · 蔚藍', orientation: 'landscape', kind: 'couple' },
       { id: '01-3', publicId: 'wedding_gallery/01_3_rong', alt: '婚紗 · 蔚藍', orientation: 'portrait', kind: 'solo', subject: 'rong' },
-      { id: '01-4', publicId: 'wedding_gallery/01_4', alt: '婚紗 · 蔚藍', orientation: 'landscape', kind: 'couple' },
     ],
   },
   {
@@ -207,7 +206,6 @@ export const WEDDING_GALLERY_CHAPTERS: GalleryChapter[] = [
         kind: 'couple',
         objectPosition: '75% center',
       },
-      { id: '02-3', publicId: 'wedding_gallery/02_3', alt: '婚紗 · 淺灣', orientation: 'landscape', kind: 'couple' },
     ],
   },
   {
