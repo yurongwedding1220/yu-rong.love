@@ -165,7 +165,7 @@ function App() {
       setShowRSVPButton(!!timeline && timeline.getBoundingClientRect().top < vh * 0.75);
 
       if (isNavigatingRef.current) return;
-      const sections = ['line', 'guestbook', 'location', 'timeline', 'harbor', 'photos'];
+      const sections = ['guestbook', 'location', 'timeline', 'harbor', 'photos'];
       for (const id of sections) {
         const el = document.getElementById(id);
         if (el && el.getBoundingClientRect().top <= vh * 0.42) {
@@ -377,37 +377,6 @@ function App() {
             </Suspense>
           </IslandSectionReveal>
           </div>
-        </section>
-
-        <section
-          id="line"
-          data-depth-value="0.88"
-          className="island-section-underwater island-chrome-pad scroll-mt-20 px-4 py-16 md:py-20"
-        >
-          <IslandSectionReveal animate={!lite}>
-            <div className="island-content-integrated relative z-[1] mx-auto max-w-lg p-8 text-center md:p-10">
-              <p className="island-section-label">{VOYAGE_NARRATIVE.contactChapter}</p>
-              <IslandOrnament seed="contact" motif="anchor" />
-              <h2 className="island-heading font-serif text-2xl font-light tracking-wide md:text-3xl">
-                {VOYAGE_NARRATIVE.contactTitle}
-              </h2>
-              <p className="island-prose mt-4">{VOYAGE_NARRATIVE.contactIntro}</p>
-              {APP_CONTENT.lineLink ? (
-                <a
-                  href={APP_CONTENT.lineLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="island-btn island-focus mt-6 inline-flex px-8 py-3 text-sm font-medium"
-                >
-                  加入 LINE 好友
-                </a>
-              ) : (
-                <div className="mt-6 inline-flex rounded-full border border-dashed border-[var(--island-sea)]/40 px-6 py-2.5 text-xs tracking-wider text-[var(--island-sea)]">
-                  LINE 即將開放
-                </div>
-              )}
-            </div>
-          </IslandSectionReveal>
         </section>
 
         <footer

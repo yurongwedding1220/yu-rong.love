@@ -7,7 +7,19 @@ import { IslandSeaAmbience } from '../components/island/IslandSeaAmbience';
 import { IslandOrnament } from '../components/island/IslandOrnament';
 import { SeaMotif } from '../components/island/IslandSeaMotifs';
 
-type Step = 'name' | 'side' | 'relation' | 'attendance' | 'arrivalMethod' | 'guests' | 'paperInvite' | 'address' | 'email' | 'message' | 'success';
+type Step =
+    | 'name'
+    | 'side'
+    | 'relation'
+    | 'attendance'
+    | 'arrivalMethod'
+    | 'guests'
+    | 'shuttle'
+    | 'paperInvite'
+    | 'address'
+    | 'email'
+    | 'message'
+    | 'success';
 
 const RSVPPage: React.FC = () => {
     const navigate = useNavigate();
@@ -27,6 +39,9 @@ const RSVPPage: React.FC = () => {
         children: 0,
         highChairs: 0,
         vegetarian: 0,
+        // Bride + HSR shuttle
+        needShuttle: '' as 'yes' | 'no' | '',
+        lineId: '',
         // Paper Invite
         needPaperInvite: '' as 'yes' | 'no' | '',
         // Address
@@ -42,42 +57,36 @@ const RSVPPage: React.FC = () => {
         animeSource: '' // New field to store the anime source title for display (not sent to submission)
     });
 
+    const needsShuttleStep =
+        formData.side === 'bride' && formData.arrivalMethod === 'hsr';
+
+    const buildStepSequence = (): Step[] => {
+        if (formData.attendance !== 'yes') {
+            return ['name', 'side', 'relation', 'attendance', 'message'];
+        }
+        const steps: Step[] = [
+            'name',
+            'side',
+            'relation',
+            'attendance',
+            'arrivalMethod',
+            'guests',
+        ];
+        if (needsShuttleStep) steps.push('shuttle');
+        steps.push('paperInvite');
+        if (formData.needPaperInvite === 'yes') steps.push('address');
+        steps.push('email', 'message');
+        return steps;
+    };
+
     // Calculate progress based on logical path
     const getStepProgress = () => {
-        let total = 5; // 不到場時總步數為 5
-        let current = 0;
-
-        const sequence = ['name', 'side', 'relation', 'attendance'];
-
-        // Determine path length
-        if (formData.attendance === 'yes') {
-            // name, side, relation, attendance, arrivalMethod, guests, paperInvite, [address], email, message
-            total = 9; // without address
-            if (formData.needPaperInvite === 'yes') total += 1;
-        }
-
-        // Determine current index
-        if (sequence.includes(currentStepName)) {
-            current = sequence.indexOf(currentStepName);
-        } else if (currentStepName === 'arrivalMethod') {
-            current = 4;
-        } else if (currentStepName === 'guests') {
-            current = 5;
-        } else if (currentStepName === 'paperInvite') {
-            current = 6;
-        } else if (currentStepName === 'address') {
-            current = 7;
-        } else if (currentStepName === 'email') {
-            if (formData.attendance === 'yes') {
-                current = total - 2;
-            }
-        } else if (currentStepName === 'message') {
-            current = total - 1;
-        } else if (currentStepName === 'success') {
-            current = total;
-        }
-
-        return ((current + 1) / total) * 100;
+        const sequence = buildStepSequence();
+        const total = Math.max(sequence.length, 1);
+        if (currentStepName === 'success') return 100;
+        const current = sequence.indexOf(currentStepName);
+        const idx = current >= 0 ? current : 0;
+        return ((idx + 1) / total) * 100;
     };
 
     const handleNext = () => {
@@ -93,7 +102,10 @@ const RSVPPage: React.FC = () => {
                 else setCurrentStepName('message');
                 break;
             case 'arrivalMethod': setCurrentStepName('guests'); break;
-            case 'guests': setCurrentStepName('paperInvite'); break;
+            case 'guests':
+                setCurrentStepName(needsShuttleStep ? 'shuttle' : 'paperInvite');
+                break;
+            case 'shuttle': setCurrentStepName('paperInvite'); break;
             case 'paperInvite':
                 if (formData.needPaperInvite === 'yes') setCurrentStepName('address');
                 else setCurrentStepName('email');
@@ -113,7 +125,10 @@ const RSVPPage: React.FC = () => {
             case 'attendance': setCurrentStepName('relation'); break;
             case 'arrivalMethod': setCurrentStepName('attendance'); break;
             case 'guests': setCurrentStepName('arrivalMethod'); break;
-            case 'paperInvite': setCurrentStepName('guests'); break;
+            case 'shuttle': setCurrentStepName('guests'); break;
+            case 'paperInvite':
+                setCurrentStepName(needsShuttleStep ? 'shuttle' : 'guests');
+                break;
             case 'address': setCurrentStepName('paperInvite'); break;
             case 'email':
                 if (formData.needPaperInvite === 'yes') setCurrentStepName('address');
@@ -141,8 +156,12 @@ const RSVPPage: React.FC = () => {
             case 'attendance': return !!formData.attendance;
             case 'arrivalMethod': return !!formData.arrivalMethod;
             case 'guests': return true;
+            case 'shuttle':
+                if (!formData.needShuttle) return false;
+                if (formData.needShuttle === 'yes') return formData.lineId.trim().length > 0;
+                return true;
             case 'paperInvite': return !!formData.needPaperInvite;
-            case 'address': return formData.zipCode.trim().length > 0 && formData.address.trim().length > 0;
+            case 'address': return true; // 區號／地址皆為選填
             case 'email': {
                 if (formData.email.trim().length === 0) return true;
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -157,9 +176,19 @@ const RSVPPage: React.FC = () => {
         setIsSubmitting(true);
 
         // Ensure we don't publish empty messages
+        const shuttleApplies =
+            formData.attendance === 'yes' &&
+            formData.side === 'bride' &&
+            formData.arrivalMethod === 'hsr';
+
         const finalFormData = {
             ...formData,
             arrivalMethod: formData.attendance === 'yes' ? formData.arrivalMethod : '',
+            needShuttle: shuttleApplies ? formData.needShuttle : '',
+            lineId:
+                shuttleApplies && formData.needShuttle === 'yes'
+                    ? formData.lineId.trim()
+                    : '',
             publishToGuestbook: formData.message.trim().length > 0 ? formData.publishToGuestbook : false,
             // If publishing to guestbook, decide which name to use
             guestbookName: (formData.publishToGuestbook && formData.useAnonymous) ? formData.nickname : formData.name
@@ -254,7 +283,14 @@ const RSVPPage: React.FC = () => {
                                         name="side"
                                         className="hidden"
                                         checked={formData.side === opt.val}
-                                        onChange={() => setFormData({ ...formData, side: opt.val as any })}
+                                        onChange={() =>
+                                            setFormData({
+                                                ...formData,
+                                                side: opt.val as 'groom' | 'bride',
+                                                needShuttle: '',
+                                                lineId: '',
+                                            })
+                                        }
                                     />
                                     <span className="text-xl text-[var(--island-ink)]">{opt.label}</span>
                                 </label>
@@ -358,7 +394,14 @@ const RSVPPage: React.FC = () => {
                                         name="arrivalMethod"
                                         className="hidden"
                                         checked={formData.arrivalMethod === opt.val}
-                                        onChange={() => setFormData({ ...formData, arrivalMethod: opt.val })}
+                                        onChange={() =>
+                                            setFormData({
+                                                ...formData,
+                                                arrivalMethod: opt.val,
+                                                needShuttle: '',
+                                                lineId: '',
+                                            })
+                                        }
                                     />
                                     <span className="text-xl text-[var(--island-ink)]">{opt.label}</span>
                                 </label>
@@ -416,6 +459,67 @@ const RSVPPage: React.FC = () => {
                     </div>
                 );
 
+            case 'shuttle':
+                return (
+                    <div className="space-y-6">
+                        <div className="space-y-2">
+                            <label className="island-field-label">
+                                需要接送嗎？ <span className="text-[var(--island-deep)]">*</span>
+                            </label>
+                            <div className="island-rsvp-info rounded-xl p-4 text-left text-sm leading-relaxed md:text-base">
+                                <p className="font-medium text-[var(--island-sea)]">提供 813 車次接送</p>
+                                <p className="mt-1 text-[var(--island-ink)]">台北 09:11 → 雲林 10:41</p>
+                            </div>
+                        </div>
+                        <div className="space-y-3">
+                            <label className={`island-radio-option ${formData.needShuttle === 'yes' ? 'island-radio-option--selected' : ''}`}>
+                                <div className={`island-radio-dot ${formData.needShuttle === 'yes' ? 'island-radio-dot--selected' : ''}`}>
+                                    {formData.needShuttle === 'yes' && <div className="island-radio-dot__fill" />}
+                                </div>
+                                <input
+                                    type="radio"
+                                    name="needShuttle"
+                                    className="hidden"
+                                    checked={formData.needShuttle === 'yes'}
+                                    onChange={() => setFormData({ ...formData, needShuttle: 'yes' })}
+                                />
+                                <span className="text-xl text-[var(--island-ink)]">需要，請幫我安排</span>
+                            </label>
+
+                            <label className={`island-radio-option ${formData.needShuttle === 'no' ? 'island-radio-option--selected' : ''}`}>
+                                <div className={`island-radio-dot ${formData.needShuttle === 'no' ? 'island-radio-dot--selected' : ''}`}>
+                                    {formData.needShuttle === 'no' && <div className="island-radio-dot__fill" />}
+                                </div>
+                                <input
+                                    type="radio"
+                                    name="needShuttle"
+                                    className="hidden"
+                                    checked={formData.needShuttle === 'no'}
+                                    onChange={() => setFormData({ ...formData, needShuttle: 'no', lineId: '' })}
+                                />
+                                <span className="text-xl text-[var(--island-ink)]">不用，謝謝</span>
+                            </label>
+                        </div>
+
+                        {formData.needShuttle === 'yes' && (
+                            <div className="space-y-2">
+                                <label className="island-field-label text-xl md:text-2xl">
+                                    LINE ID <span className="text-[var(--island-deep)]">*</span>
+                                </label>
+                                <p className="island-hint">方便我們聯繫接送細節</p>
+                                <input
+                                    type="text"
+                                    value={formData.lineId}
+                                    onChange={(e) => setFormData({ ...formData, lineId: e.target.value })}
+                                    placeholder="請輸入您的 LINE ID"
+                                    className="island-input text-lg"
+                                    autoFocus
+                                />
+                            </div>
+                        )}
+                    </div>
+                );
+
             case 'paperInvite':
                 return (
                     <div className="space-y-6">
@@ -460,23 +564,27 @@ const RSVPPage: React.FC = () => {
                 return (
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="island-field-label text-xl md:text-2xl">郵遞區號 <span className="text-[var(--island-deep)]">*</span></label>
+                            <label className="island-field-label text-xl md:text-2xl">
+                                郵遞區號 <span className="island-meta text-lg md:text-xl font-normal">(選填)</span>
+                            </label>
                             <input
                                 type="text"
                                 value={formData.zipCode}
                                 onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
-                                placeholder="請輸入郵遞區號"
+                                placeholder="請輸入郵遞區號（可留空）"
                                 className="island-input text-lg"
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <label className="island-field-label text-xl md:text-2xl">地址 <span className="text-[var(--island-deep)]">*</span></label>
+                            <label className="island-field-label text-xl md:text-2xl">
+                                地址 <span className="island-meta text-lg md:text-xl font-normal">(選填)</span>
+                            </label>
                             <input
                                 type="text"
                                 value={formData.address}
                                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                placeholder="請輸入完整地址"
+                                placeholder="請輸入完整地址（可留空）"
                                 className="island-input text-lg"
                             />
                         </div>
@@ -673,12 +781,6 @@ const RSVPPage: React.FC = () => {
                         <h2 className="island-heading font-serif text-xl font-light md:text-2xl">感謝您的回覆</h2>
                         <p className="island-prose text-sm md:text-base">我們已收到您的出席資訊，靠岸日見。</p>
                     </div>
-
-                    <div className="h-px w-full bg-[var(--island-sea)]/12" />
-
-                    <p className="island-meta font-serif leading-relaxed">
-                        LINE 聯絡資訊將於婚禮前通知
-                    </p>
 
                     <div className="pt-2">
                         <button

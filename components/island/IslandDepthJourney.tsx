@@ -100,21 +100,92 @@ const DepthSideBubbles: React.FC<{ opacity: number; animate: boolean; compact?: 
   );
 };
 
+/** 海底珊瑚群 — 分枝剪影，避免與海草混淆 */
 const CoralSvg: React.FC = () => (
   <svg className="h-full w-full" viewBox="0 0 400 120" preserveAspectRatio="xMidYMax meet" aria-hidden>
-    <g fill="rgba(232,168,124,0.22)" stroke="#e8a87c" strokeWidth="1.8">
-      <path d="M40 120 Q45 80 55 55 T60 20" fill="rgba(232,168,124,0.18)" />
-      <path d="M55 120 Q60 85 70 60 T75 30" />
-      <path d="M120 120 Q115 75 125 45 T130 15" fill="rgba(232,168,124,0.2)" />
-      <path d="M135 120 Q140 90 148 65" />
-      <path d="M200 120 Q195 70 205 40 T210 10" fill="rgba(244,180,140,0.24)" strokeWidth="2" />
-      <path d="M280 120 Q275 80 285 50 T290 25" fill="rgba(232,168,124,0.2)" />
-      <path d="M295 120 Q300 95 308 70" />
-      <path d="M350 120 Q345 75 355 48 T360 18" fill="rgba(232,168,124,0.18)" />
+    <defs>
+      <linearGradient id="island-coral-fill" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%" stopColor="#e8a87c" stopOpacity="0.42" />
+        <stop offset="55%" stopColor="#f0b892" stopOpacity="0.22" />
+        <stop offset="100%" stopColor="#f4c4a0" stopOpacity="0.08" />
+      </linearGradient>
+      <linearGradient id="island-coral-accent" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%" stopColor="#e89b6a" stopOpacity="0.5" />
+        <stop offset="100%" stopColor="#f4c4a0" stopOpacity="0.12" />
+      </linearGradient>
+    </defs>
+
+    {/* 左簇：鹿角珊瑚 */}
+    <g fill="url(#island-coral-fill)" stroke="#e8a87c" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M48 120 C46 98 42 82 38 68 C34 54 28 48 22 42 C28 46 36 52 40 64 C42 72 44 88 48 120 Z" />
+      <path d="M48 120 C50 96 54 78 58 62 C62 48 70 40 78 34 C70 38 62 46 58 58 C54 72 52 92 48 120 Z" />
+      <path d="M48 120 C47 102 48 86 50 72 C52 58 50 46 46 34 C50 44 54 56 54 70 C54 86 52 102 48 120 Z" />
+      <path
+        d="M36 78 C30 72 24 70 18 68 C24 70 30 74 34 80"
+        fill="none"
+        stroke="#f0b892"
+        strokeWidth="1.1"
+        opacity="0.75"
+      />
+      <path
+        d="M62 72 C68 66 76 62 84 58 C76 62 68 68 64 74"
+        fill="none"
+        stroke="#f0b892"
+        strokeWidth="1.1"
+        opacity="0.75"
+      />
     </g>
-    <ellipse cx="60" cy="95" rx="12" ry="8" fill="rgba(232,168,124,0.35)" stroke="#f0b892" strokeWidth="1.2" />
-    <ellipse cx="210" cy="100" rx="14" ry="9" fill="rgba(244,180,140,0.4)" stroke="#f0b892" strokeWidth="1.2" />
-    <ellipse cx="355" cy="92" rx="11" ry="7" fill="rgba(232,168,124,0.35)" stroke="#f0b892" strokeWidth="1.2" />
+
+    {/* 左中：扇形軟珊瑚 */}
+    <g fill="url(#island-coral-accent)" stroke="#e89b6a" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M118 120 C116 104 112 92 108 82 C104 72 98 68 92 66 C100 68 108 74 112 84 C114 94 116 108 118 120 Z" />
+      <path d="M118 120 C120 102 124 88 130 76 C136 64 146 56 156 52 C146 56 136 64 132 76 C126 90 122 106 118 120 Z" />
+      <path d="M118 120 C119 106 122 94 126 84 C130 74 130 64 128 54 C130 64 132 74 130 86 C126 98 122 110 118 120 Z" />
+      <ellipse cx="118" cy="108" rx="10" ry="5" fill="rgba(232,168,124,0.28)" stroke="none" />
+    </g>
+
+    {/* 中央偏後：較高枝 */}
+    <g fill="url(#island-coral-fill)" stroke="#e8a87c" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" opacity="0.9">
+      <path d="M198 120 C196 94 190 72 184 54 C178 36 168 28 158 24 C170 28 182 38 188 54 C192 70 196 94 198 120 Z" />
+      <path d="M198 120 C200 92 206 68 214 48 C222 28 236 18 248 14 C234 20 222 30 216 48 C208 70 202 94 198 120 Z" />
+      <path d="M198 120 C197 98 198 78 200 58 C202 40 198 26 192 14 C198 26 204 42 204 60 C204 80 202 100 198 120 Z" />
+      <path
+        d="M178 58 C170 50 160 46 150 44"
+        fill="none"
+        stroke="#f4c4a0"
+        strokeWidth="1.05"
+        opacity="0.7"
+      />
+      <path
+        d="M220 50 C230 40 242 34 254 30"
+        fill="none"
+        stroke="#f4c4a0"
+        strokeWidth="1.05"
+        opacity="0.7"
+      />
+    </g>
+
+    {/* 右中：矮叢 */}
+    <g fill="url(#island-coral-accent)" stroke="#e89b6a" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M286 120 C284 106 280 96 274 88 C268 80 260 78 252 78 C262 78 272 84 278 94 C282 102 284 112 286 120 Z" />
+      <path d="M286 120 C288 104 294 92 302 82 C310 72 322 66 332 64 C320 66 310 74 304 84 C296 96 290 108 286 120 Z" />
+      <path d="M286 120 C287 108 290 98 294 90 C298 82 298 74 296 66 C298 74 300 84 298 94 C294 104 290 112 286 120 Z" />
+      <ellipse cx="286" cy="110" rx="11" ry="5.5" fill="rgba(232,155,106,0.3)" stroke="none" />
+    </g>
+
+    {/* 最右：尖枝 */}
+    <g fill="url(#island-coral-fill)" stroke="#e8a87c" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M356 120 C354 100 348 84 342 70 C336 56 328 50 320 46 C330 50 340 58 344 70 C348 84 352 102 356 120 Z" />
+      <path d="M356 120 C358 98 364 80 372 64 C380 48 392 40 400 36 C390 40 380 50 374 64 C366 82 360 100 356 120 Z" />
+      <path d="M356 120 C355 104 356 88 358 74 C360 60 358 48 354 38 C358 48 362 60 362 76 C362 92 360 108 356 120 Z" />
+    </g>
+
+    {/* 底部礁石暗示 */}
+    <path
+      d="M20 120 Q60 112 100 118 Q160 108 210 116 Q270 106 330 118 Q360 112 390 120 L20 120 Z"
+      fill="rgba(232,168,124,0.16)"
+      stroke="none"
+    />
   </svg>
 );
 

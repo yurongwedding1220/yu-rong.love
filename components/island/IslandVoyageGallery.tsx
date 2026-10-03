@@ -32,7 +32,7 @@ import {
   preloadLightboxPhoto,
 } from '../../utils/photoUrls';
 
-type PhotoShape = 'arch' | 'lagoon' | 'leaf' | 'pebble';
+type PhotoShape = 'lagoon' | 'leaf' | 'pebble' | 'lagoonFlip';
 
 type IslandLayout = {
   titleAlign: 'left' | 'right' | 'center';
@@ -72,7 +72,7 @@ type PhotoVariant = 'hero' | 'tile';
 /** 每座島的造型差異 */
 const ISLAND_VISUALS: Omit<IslandLayout, 'titleAlign' | 'titleInset' | 'isReversed'>[] = [
   {
-    photoShape: 'arch',
+    photoShape: 'pebble',
     photoRotate: -3,
     terrainShift: 'translate-x-[6%]',
     skyGlowAt: '68% 12%',
@@ -99,7 +99,7 @@ const ISLAND_VISUALS: Omit<IslandLayout, 'titleAlign' | 'titleInset' | 'isRevers
     emerge: { x: -44, y: 0, scale: 1, duration: 1.45 },
   },
   {
-    photoShape: 'pebble',
+    photoShape: 'lagoonFlip',
     photoRotate: 3,
     terrainShift: '-translate-x-[4%]',
     skyGlowAt: '72% 18%',
@@ -121,10 +121,10 @@ const getChapterLayout = (index: number): IslandLayout => {
 };
 
 const SHAPE_CLASS: Record<PhotoShape, string> = {
-  arch: 'island-photo-arch',
   lagoon: 'island-photo-lagoon',
   leaf: 'island-photo-leaf',
   pebble: 'island-photo-pebble',
+  lagoonFlip: 'island-photo-lagoon-flip',
 };
 
 const copyAlignClass = (align: 'left' | 'right') =>

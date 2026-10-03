@@ -233,30 +233,40 @@ html[data-perf='high'] .island-depth-fish--slow {
   bottom: 0;
   left: 0;
   right: 0;
-  height: min(30vh, 12rem);
+  height: min(34vh, 14rem);
   padding-bottom: env(safe-area-inset-bottom, 0px);
   color: #e8a87c;
-  filter: drop-shadow(0 0 12px rgba(232, 168, 124, 0.25));
+  filter:
+    drop-shadow(0 1px 0 rgba(15, 53, 80, 0.35))
+    drop-shadow(0 0 18px rgba(232, 168, 124, 0.22));
   transform-origin: bottom center;
+  pointer-events: none;
+}
+
+.island-depth-coral svg {
+  overflow: visible;
 }
 
 @keyframes island-coral-sway {
   0%,
   100% {
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0) scaleY(1);
   }
-  50% {
-    transform: translate3d(0, -4px, 0);
+  40% {
+    transform: translate3d(0, -3px, 0) scaleY(1.02);
+  }
+  70% {
+    transform: translate3d(0, -1px, 0) scaleY(0.99);
   }
 }
 
 html[data-perf='medium'] .island-depth-coral,
 html[data-perf='high'] .island-depth-coral {
-  animation: island-coral-sway 9s ease-in-out infinite;
+  animation: island-coral-sway 10s ease-in-out infinite;
 }
 
 html[data-perf='high'] .island-depth-coral {
-  animation-duration: 11s;
+  animation-duration: 12s;
 }
 
 /* 兩側浪漫升泡泡 */

@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GuestBookEntry } from '../types';
 import { APP_CONTENT, THREADS_POST_IMAGE } from '../constants';
+import { getGalleryTileUrl } from '../utils/photoUrls';
 
 // --- Mock Data for Fallback ---
 const MOCK_ENTRIES: GuestBookEntry[] = [
@@ -152,7 +153,7 @@ const CouplePost: React.FC<CouplePostProps> = ({ likes, isLiked, onLike, onComme
 
                 <div className="mt-3 rounded-xl overflow-hidden border border-[#3A8FB7]/15 shadow-sm relative bg-[#F4E8D8] h-[240px] sm:h-[300px] md:h-[340px]">
                     <img
-                        src={`${import.meta.env.BASE_URL}${THREADS_POST_IMAGE}`}
+                        src={getGalleryTileUrl(THREADS_POST_IMAGE, 1600)}
                         alt={`${APP_CONTENT.chineseNames} 婚禮`}
                         className="w-full h-full object-cover object-center"
                         loading="lazy"

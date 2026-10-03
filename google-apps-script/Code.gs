@@ -5,8 +5,10 @@
  *  6 成人 | 7 兒童 | 8 兒童椅 | 9 素食 | 10 紙本喜帖
  *  11 郵遞區號 | 12 地址 | 13 Email | 14 留言 | 15 顯示留言板
  *  16 愛心數 | 17 留言板顯示名稱 | 18 抵達方式
+ *  19 需要接送 | 20 LINE ID
  *
- * 請在標題列 R 欄手動加上「抵達方式」
+ * 請在標題列確認：
+ *  R 欄「抵達方式」、S 欄「需要接送」、T 欄「LINE ID」
  * 貼上後：部署 → 管理部署 → 編輯 → 新版本（權限：所有人）
  */
 
@@ -14,6 +16,12 @@ function formatArrivalMethod(code) {
   if (code === 'car') return '自行開車';
   if (code === 'train') return '台鐵火車';
   if (code === 'hsr') return '高鐵';
+  return '';
+}
+
+function formatNeedShuttle(code) {
+  if (code === 'yes') return '需要';
+  if (code === 'no') return '不用';
   return '';
 }
 
@@ -97,6 +105,8 @@ function doPost(e) {
       0, // 16. 愛心數
       displayPropsName, // 17. 留言板顯示名稱
       isAttending ? formatArrivalMethod(data.arrivalMethod) : '', // 18. 抵達方式
+      formatNeedShuttle(data.needShuttle), // 19. 需要接送（女方親友＋高鐵）
+      data.lineId || '', // 20. LINE ID
     ];
 
     sheet.appendRow(row);

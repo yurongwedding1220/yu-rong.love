@@ -746,6 +746,211 @@ html[data-perf='medium'] .hero-ocean-scene__horizon-waves .hero-ocean-scene__wav
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.55), transparent);
 }
 
+/* 海鷗飛行 — 近大遠小／近快遠遠／近低遠高 */
+.hero-ocean-scene__seagull {
+  position: absolute;
+  left: 22%;
+  will-change: transform;
+}
+
+.hero-ocean-scene__seagull--far:not(.hero-ocean-scene__seagull--fly) {
+  left: 48%;
+  filter: blur(0.35px);
+}
+
+.hero-ocean-scene__seagull--mid:not(.hero-ocean-scene__seagull--fly) {
+  left: 64%;
+}
+
+.hero-ocean-scene__seagull--near:not(.hero-ocean-scene__seagull--fly) {
+  left: 18%;
+}
+
+.hero-ocean-scene__seagull--far.hero-ocean-scene__seagull--fly {
+  filter: blur(0.4px);
+}
+
+.hero-ocean-scene__seagull--reverse:not(.hero-ocean-scene__seagull--fly) {
+  transform: scaleX(-1);
+}
+
+.hero-ocean-scene__seagull--fly {
+  left: -12%;
+  animation-name: hero-seagull-fly-mid;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.hero-ocean-scene__seagull--far.hero-ocean-scene__seagull--fly {
+  animation-name: hero-seagull-fly-far;
+}
+
+.hero-ocean-scene__seagull--near.hero-ocean-scene__seagull--fly {
+  animation-name: hero-seagull-fly-near;
+}
+
+.hero-ocean-scene__seagull--reverse.hero-ocean-scene__seagull--fly {
+  left: auto;
+  right: -12%;
+  animation-name: hero-seagull-fly-mid-reverse;
+}
+
+.hero-ocean-scene__seagull--far.hero-ocean-scene__seagull--reverse.hero-ocean-scene__seagull--fly {
+  animation-name: hero-seagull-fly-far-reverse;
+}
+
+.hero-ocean-scene__seagull--near.hero-ocean-scene__seagull--reverse.hero-ocean-scene__seagull--fly {
+  animation-name: hero-seagull-fly-near-reverse;
+}
+
+.hero-ocean-scene__seagull--flap .hero-ocean-scene__seagull-wing {
+  transform-box: view-box;
+  transform-origin: 24px 14px;
+  animation: hero-seagull-flap var(--seagull-flap, 0.85s) ease-in-out infinite;
+}
+
+.hero-ocean-scene__seagull--flap .hero-ocean-scene__seagull-wing:last-child {
+  animation-delay: 0.08s;
+}
+
+/* 遠景：慢、軌跡平緩、位移較短感 */
+@keyframes hero-seagull-fly-far {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    transform: translate3d(55vw, -4px, 0);
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(110vw, 2px, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes hero-seagull-fly-far-reverse {
+  0% {
+    transform: scaleX(-1) translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    transform: scaleX(-1) translate3d(55vw, 3px, 0);
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(-1) translate3d(110vw, -2px, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes hero-seagull-fly-mid {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  50% {
+    transform: translate3d(58vw, -10px, 0);
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(118vw, 4px, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes hero-seagull-fly-mid-reverse {
+  0% {
+    transform: scaleX(-1) translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  50% {
+    transform: scaleX(-1) translate3d(58vw, 8px, 0);
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(-1) translate3d(118vw, -2px, 0);
+    opacity: 0;
+  }
+}
+
+/* 近景：快、起伏大、線條更重 */
+@keyframes hero-seagull-fly-near {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  35% {
+    transform: translate3d(40vw, -18px, 0) scale(1.04);
+  }
+  70% {
+    transform: translate3d(80vw, 6px, 0) scale(1.08);
+  }
+  94% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(120vw, 14px, 0) scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes hero-seagull-fly-near-reverse {
+  0% {
+    transform: scaleX(-1) translate3d(0, 0, 0) scale(1);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  40% {
+    transform: scaleX(-1) translate3d(42vw, 12px, 0) scale(1.05);
+  }
+  75% {
+    transform: scaleX(-1) translate3d(85vw, -8px, 0) scale(1.08);
+  }
+  94% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(-1) translate3d(120vw, 4px, 0) scale(1.1);
+    opacity: 0;
+  }
+}
+
+@keyframes hero-seagull-flap {
+  0%,
+  100% {
+    transform: scaleY(1) translateY(0);
+  }
+  50% {
+    transform: scaleY(0.55) translateY(1px);
+  }
+}
+
 .hero-ocean-scene__cloud-drift {
   animation: hero-cloud-drift 48s linear infinite;
 }
@@ -804,7 +1009,9 @@ html.is-scrolling .hero-ocean-scene__cloud-drift,
 html.is-scrolling .hero-ocean-scene__wave-drift,
 html.is-scrolling .hero-ocean-scene__wave-drift-slow,
 html.is-scrolling .hero-ocean-scene__island-bob,
-html.is-scrolling .hero-ocean-scene__sun-pulse {
+html.is-scrolling .hero-ocean-scene__sun-pulse,
+html.is-scrolling .hero-ocean-scene__seagull--fly,
+html.is-scrolling .hero-ocean-scene__seagull--flap .hero-ocean-scene__seagull-wing {
   animation-play-state: paused;
 }
 
@@ -819,6 +1026,30 @@ html[data-perf='medium'] .hero-ocean-scene__wave-drift-slow,
 html[data-perf='medium'] .hero-ocean-scene__island-bob,
 html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
   animation: none;
+}
+
+/* medium 仍保留海鷗輕飛；low 關閉飛行只留靜態位置 */
+html[data-perf='low'] .hero-ocean-scene__seagull--fly,
+html[data-perf='low'] .hero-ocean-scene__seagull--flap .hero-ocean-scene__seagull-wing {
+  animation: none;
+}
+
+html[data-perf='low'] .hero-ocean-scene__seagull--fly {
+  left: 22%;
+  right: auto;
+  filter: none;
+}
+
+html[data-perf='low'] .hero-ocean-scene__seagull--far {
+  left: 52%;
+}
+
+html[data-perf='low'] .hero-ocean-scene__seagull--near {
+  left: 16%;
+}
+
+html[data-perf='low'] .hero-ocean-scene__seagull--mid {
+  display: none;
 }
 
 .hero-ocean-scene__shallow {
@@ -906,11 +1137,10 @@ html[data-perf='medium'] .hero-ocean-scene__sun-pulse {
 }
 
 /* 每座島不同有機照片形狀 */
-.island-photo-arch,
 .island-photo-lagoon,
+.island-photo-lagoon-flip,
 .island-photo-leaf,
-.island-photo-pebble,
-.island-photo-crescent {
+.island-photo-pebble {
   border: 1px solid rgba(255, 255, 255, 0.38);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.08) inset,
@@ -1766,13 +1996,14 @@ html[data-perf='medium'] .island-marquee-track--run {
   );
 }
 
-.island-photo-arch {
-  border-radius: 50% 50% 40% 40% / 12% 12% 88% 88%;
-}
-
 /* 淺灣：柔和水灣／潮池，上弧開闊、底部圓潤不尖 */
 .island-photo-lagoon {
   border-radius: 48% 52% 50% 50% / 28% 26% 72% 74%;
+}
+
+/* 淺灣外框上下翻轉（頂／底橢圓半徑對調） */
+.island-photo-lagoon-flip {
+  border-radius: 50% 50% 52% 48% / 74% 72% 26% 28%;
 }
 
 .island-photo-leaf {
@@ -1781,10 +2012,6 @@ html[data-perf='medium'] .island-marquee-track--run {
 
 .island-photo-pebble {
   border-radius: 44% 56% 48% 52% / 42% 38% 62% 58%;
-}
-
-.island-photo-crescent {
-  border-radius: 58% 42% 62% 38% / 38% 62% 38% 62%;
 }
 
 @media (prefers-reduced-motion: reduce) {

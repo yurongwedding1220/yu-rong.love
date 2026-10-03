@@ -8,6 +8,143 @@ type HeroOceanSceneProps = {
   perf: PerfMode;
 };
 
+/** 極簡海鷗剪影 — 近處線條較粗、遠處較淡 */
+const SeagullSvg: React.FC<{ className?: string; depth: 'near' | 'mid' | 'far' }> = ({
+  className,
+  depth,
+}) => {
+  const stroke =
+    depth === 'near'
+      ? 'rgba(27, 77, 110, 0.55)'
+      : depth === 'mid'
+        ? 'rgba(27, 77, 110, 0.38)'
+        : 'rgba(58, 143, 183, 0.32)';
+  const width = depth === 'near' ? 2 : depth === 'mid' ? 1.5 : 1.15;
+
+  return (
+    <svg viewBox="0 0 48 24" className={className} aria-hidden>
+      <g
+        fill="none"
+        stroke={stroke}
+        strokeWidth={width}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path className="hero-ocean-scene__seagull-wing" d="M24 14 C16 8 10 7 2 11" />
+        <path className="hero-ocean-scene__seagull-wing" d="M24 14 C32 8 38 7 46 11" />
+      </g>
+    </svg>
+  );
+};
+
+type SeagullSpec = {
+  depth: 'near' | 'mid' | 'far';
+  top: string;
+  /** 手機較矮視窗：略往下，避開 Yu & Rong */
+  mobileTop?: string;
+  size: string;
+  duration: number;
+  delay: number;
+  opacity: number;
+  flapDuration: number;
+  reverse?: boolean;
+};
+
+/**
+ * 景深分層：遠＝小／淡／高／慢；近＝大／深／低／快
+ */
+const SEAGULL_FLOCK: SeagullSpec[] = [
+  {
+    depth: 'far',
+    top: '5%',
+    mobileTop: '14%',
+    size: '0.72rem',
+    duration: 52,
+    delay: -6,
+    opacity: 0.32,
+    flapDuration: 1.15,
+  },
+  {
+    depth: 'far',
+    top: '8%',
+    mobileTop: '17%',
+    size: '0.58rem',
+    duration: 58,
+    delay: -22,
+    opacity: 0.24,
+    flapDuration: 1.25,
+    reverse: true,
+  },
+  {
+    depth: 'mid',
+    top: '12%',
+    size: '1.2rem',
+    duration: 38,
+    delay: -12,
+    opacity: 0.5,
+    flapDuration: 0.95,
+    reverse: true,
+  },
+  {
+    depth: 'near',
+    top: '20%',
+    mobileTop: '28%',
+    size: '2.15rem',
+    duration: 22,
+    delay: 0,
+    opacity: 0.78,
+    flapDuration: 0.72,
+  },
+  {
+    depth: 'near',
+    top: '26%',
+    mobileTop: '33%',
+    size: '1.75rem',
+    duration: 26,
+    delay: -8,
+    opacity: 0.62,
+    flapDuration: 0.8,
+    reverse: true,
+  },
+];
+
+const SeagullFlock: React.FC<{ animate: boolean; compact?: boolean }> = ({
+  animate,
+  compact = false,
+}) => {
+  /* 手機保留遠＋近，維持景深對比 */
+  const birds = compact
+    ? SEAGULL_FLOCK.filter((b) => b.depth !== 'mid').slice(0, 3)
+    : SEAGULL_FLOCK;
+
+  return (
+    <div className="hero-ocean-scene__seagulls pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+      {birds.map((bird, i) => (
+        <div
+          key={`${bird.depth}-${i}`}
+          className={`hero-ocean-scene__seagull hero-ocean-scene__seagull--${bird.depth} ${
+            animate ? 'hero-ocean-scene__seagull--fly' : ''
+          } ${bird.reverse ? 'hero-ocean-scene__seagull--reverse' : ''}`}
+          style={{
+            top: compact && bird.mobileTop ? bird.mobileTop : bird.top,
+            width: bird.size,
+            opacity: bird.opacity,
+            zIndex: bird.depth === 'near' ? 3 : bird.depth === 'mid' ? 2 : 1,
+            animationDuration: animate ? `${bird.duration}s` : undefined,
+            animationDelay: animate ? `${bird.delay}s` : undefined,
+            ['--seagull-flap' as string]: `${bird.flapDuration}s`,
+          }}
+        >
+          <SeagullSvg
+            depth={bird.depth}
+            className={`h-full w-full ${animate ? 'hero-ocean-scene__seagull--flap' : ''}`}
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const CloudSvg: React.FC<{ className?: string; variant?: 'cumulus' | 'wisp' }> = ({
   className,
   variant = 'cumulus',
@@ -230,6 +367,11 @@ export const HeroOceanScene: React.FC<HeroOceanSceneProps> = ({ progress, lite, 
 
         <SunDisc animate={animate && !isMobileScene} />
 
+        {/* 海鷗：high 全動；medium 輕量飛；low 靜態剪影 */}
+        {!lite && (
+          <SeagullFlock animate={animate || isMobileScene} compact={isMobileScene} />
+        )}
+
         <motion.div className="pointer-events-none absolute inset-0" style={{ opacity: cloudOp }}>
           {lite || isMobileScene ? (
             <>
@@ -297,6 +439,7 @@ export const HeroOceanSceneStatic: React.FC<{ lite?: boolean }> = ({ lite = fals
       <div className="hero-ocean-scene__sky absolute inset-0" />
       <div className="hero-ocean-scene__sky-haze absolute inset-x-0 top-[32%] h-[18%]" />
       <SunDisc animate={false} />
+      {!lite && <SeagullFlock animate={false} compact />}
       {!lite && (
         <>
           <CloudSvg className="absolute left-[8%] top-[9%] h-16 w-40 opacity-85" />

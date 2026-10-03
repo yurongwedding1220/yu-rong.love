@@ -15,8 +15,6 @@ export const APP_CONTENT = {
   intro: '誠邀你來見證我們靠岸的這一天。',
   googleScriptUrl:
     'https://script.google.com/macros/s/AKfycbyHpBAbJVEftXr2cunc1M7sMlcZSxxLc-4GGvwpK3ZRZL_n0Aqo0FF5XX5Hsy0LLZOO/exec',
-  lineLink: '',
-  lineQrCode: '',
   mapsQuery: '緻麗伯爵酒店 斗六',
 };
 
@@ -39,9 +37,6 @@ export const VOYAGE_NARRATIVE = {
   berthChapter: '第五章 · 停泊',
   berthTitle: '停泊資訊',
   berthIntro: '婚禮當天的交通與抵達方式。',
-  contactChapter: '聯絡',
-  contactTitle: '聯絡我們',
-  contactIntro: '有任何問題，歡迎透過 LINE 與我們聯繫。',
   finaleChapter: '終章 · 登船',
   finaleTitle: '這趟航程，希望你能同行',
   finaleIntro: '您的蒞臨是我們最大的榮幸。請盡早確認出席，讓我們好好準備。',
@@ -51,8 +46,8 @@ export const VOYAGE_NARRATIVE = {
   rsvpCta: '確認登船',
 };
 
-/** 留言板主貼文封面（占位，可替換為婚紗照） */
-export const THREADS_POST_IMAGE = 'featured/placeholder-1.svg';
+/** 留言板主貼文封面（Cloudinary publicId） */
+export const THREADS_POST_IMAGE = 'wedding_gallery/01_4';
 
 export const TIMELINE_EVENTS = [
   {
@@ -88,7 +83,7 @@ export const TRANSPORT_INFO = [
     title: 'HSR',
     chineseTitle: '台灣高鐵',
     description:
-      '高鐵雲林站下車；接送聯絡資訊將於婚禮前通知',
+      '高鐵雲林站下車。女方親友若搭乘 813 車次（台北 09:11 → 雲林 10:41），可於 RSVP 填寫接送與 LINE ID。',
   },
 ];
 
@@ -195,7 +190,7 @@ export const WEDDING_GALLERY_CHAPTERS: GalleryChapter[] = [
         orientation: 'portrait',
         kind: 'solo',
         subject: 'rong',
-        objectPosition: 'center 52%',
+        objectPosition: 'center 60%',
         tileScale: 1.22,
       },
       {
@@ -261,7 +256,7 @@ export const WEDDING_GALLERY_CHAPTERS: GalleryChapter[] = [
         orientation: 'landscape',
         kind: 'couple',
         heroWide: true,
-        objectPosition: 'center center',
+        objectPosition: '52% 78%',
       },
       {
         id: '04-1',
