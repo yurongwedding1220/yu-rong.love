@@ -1,13 +1,8 @@
-import React, { useEffect, useRef } from 'react';
-import { INVITATION, invitationThemeAsset, preloadInvitationPortraits } from '../../data/invitation';
-
-export type RevealOrigin = {
-  x: number;
-  y: number;
-};
+import React, { useEffect } from 'react';
+import { INVITATION, invitationThemeAsset, preloadInvitationOpening, preloadInvitationPortraits } from '../../data/invitation';
 
 type Props = {
-  onOpen: (origin: RevealOrigin) => void;
+  onOpen: () => void;
 };
 
 const MOTIFS: Array<{ top: string; left?: string; right?: string; size: number; rotate: number; opacity: number }> = [
@@ -37,19 +32,10 @@ const FlowerMotif: React.FC<{ size: number }> = ({ size }) => (
 );
 
 export const InvitationLanding: React.FC<Props> = ({ onOpen }) => {
-  const heartRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     preloadInvitationPortraits();
+    preloadInvitationOpening();
   }, []);
-
-  const handleOpen = () => {
-    const rect = heartRef.current?.getBoundingClientRect();
-    const origin = rect
-      ? { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
-      : { x: window.innerWidth / 2, y: window.innerHeight * 0.38 };
-    onOpen(origin);
-  };
 
   return (
     <div className="inv-landing">
@@ -91,14 +77,14 @@ export const InvitationLanding: React.FC<Props> = ({ onOpen }) => {
           className="inv-cover-flower inv-cover-flower--br"
         />
 
-        <div className="inv-cover-heart" ref={heartRef} aria-hidden="true">
-          <svg viewBox="0 0 24 24">
+        <button type="button" className="inv-cover-heart" onClick={onOpen} aria-label="開啟喜帖">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
             <path
               d="M12 21s-7.2-4.6-9.2-8.9C1.1 8.6 3.2 5.2 6.6 5.2c2 0 3.5 1.1 4.4 2.7.9-1.6 2.4-2.7 4.4-2.7 3.4 0 5.5 3.4 3.8 6.9C19.2 16.4 12 21 12 21Z"
               fill="currentColor"
             />
           </svg>
-        </div>
+        </button>
 
         <h1 className="inv-cover-names">
           <span>{INVITATION.groom}</span>
@@ -120,7 +106,7 @@ export const InvitationLanding: React.FC<Props> = ({ onOpen }) => {
         <p className="inv-cover-date">{INVITATION.dateLabel}</p>
         <p className="inv-cover-kicker">誠摯邀請</p>
 
-        <button type="button" className="inv-open-btn" onClick={handleOpen}>
+        <button type="button" className="inv-open-btn" onClick={onOpen}>
           <span>開啟喜帖</span>
         </button>
       </div>

@@ -33,7 +33,8 @@
   z-index: 0;
   pointer-events: none;
   background-image: var(--inv-paper-image);
-  background-size: 666px 1000px;
+  background-size: cover;
+  background-position: center;
   background-repeat: repeat;
   mix-blend-mode: multiply;
   opacity: 0.5;
@@ -203,10 +204,25 @@ body:has(.invitation-page) .bg-grid-fixed {
   width: 64px;
   height: 64px;
   margin: 0 auto 18px;
+  padding: 0;
+  border: 0;
   border-radius: 50%;
   background: var(--inv-navy);
   color: var(--inv-cream);
   box-shadow: 0 10px 24px rgba(0, 17, 40, 0.28);
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+button.inv-cover-heart:hover {
+  transform: scale(1.04);
+}
+
+button.inv-cover-heart:focus-visible {
+  outline: 2px solid var(--inv-cream);
+  outline-offset: 3px;
 }
 
 .inv-cover-heart svg {
@@ -310,38 +326,344 @@ body:has(.invitation-page) .bg-grid-fixed {
   transform: translateY(-1px);
 }
 
-/* ---------- circular reveal ---------- */
+/* ---------- opening ceremony (replaces circular reveal) ---------- */
 
-.invitation-page.is-revealing,
-.invitation-page.is-revealing body {
+.invitation-page.is-opening {
   overflow: hidden;
 }
 
-.inv-reveal.is-animating {
+.inv-reveal.is-waiting {
   position: fixed;
   inset: 0;
-  z-index: 80;
-  overflow: hidden;
+  z-index: 70;
+  overflow: auto;
+  pointer-events: none;
+  opacity: 0;
   background: var(--inv-cream);
-  clip-path: circle(0px at var(--inv-reveal-x, 50%) var(--inv-reveal-y, 38%));
+  animation: invOpeningPageIn 0.4s ease-out 1.6s forwards;
 }
 
 .inv-reveal.is-done {
   position: relative;
   z-index: 1;
+  pointer-events: auto;
+  opacity: 1;
   clip-path: none !important;
+  animation: none;
 }
 
-@keyframes invCircleReveal {
-  to {
-    clip-path: circle(150vmax at var(--inv-reveal-x, 50%) var(--inv-reveal-y, 38%));
+@keyframes invOpeningPageIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.inv-opening {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 30%, #06356a 0%, var(--inv-navy) 42%, var(--inv-navy-deep) 100%);
+  animation: invOpeningFadeOut 0.35s ease-in 1.65s forwards;
+}
+
+@keyframes invOpeningFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; pointer-events: none; }
+}
+
+.inv-opening-stage {
+  position: relative;
+  z-index: 3;
+  width: min(78vw, 320px);
+  aspect-ratio: 851 / 984;
+}
+
+.inv-opening-3d {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  perspective: 1100px;
+  transform-style: preserve-3d;
+}
+
+@media (min-width: 768px) {
+  .inv-opening-stage {
+    width: min(52vw, 420px);
+  }
+}
+.inv-opening-body {
+  position: absolute;
+  left: 0;
+  top: 40.65%;
+  width: 100%;
+  z-index: 1;
+  line-height: 0;
+  filter: drop-shadow(0 18px 28px rgba(0, 8, 24, 0.45));
+}
+
+.inv-opening-body img {
+  display: block;
+  width: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.inv-opening-letter {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  width: 100vw;
+  height: max(100dvh, 150vw);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--inv-cream);
+  background-image: var(--inv-paper-image);
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 20px 50px rgba(0, 8, 24, 0.28);
+  border-radius: 18px;
+  transform-origin: center center;
+  transform: translate(-50%, -50%) translateY(6vh) scale(0.28);
+  animation: invLetterOut 1.25s cubic-bezier(0.22, 0.8, 0.28, 1) 0.7s forwards;
+  will-change: transform, border-radius, z-index;
+}
+
+@media (min-width: 768px) {
+  .inv-opening-letter {
+    transform: translate(-50%, -50%) translateY(4vh) scale(0.22);
+  }
+}
+
+@keyframes invLetterOut {
+  0% {
+    z-index: 1;
+    transform: translate(-50%, -50%) translateY(6vh) scale(0.28);
+    border-radius: 18px;
+  }
+  12% {
+    z-index: 6;
+  }
+  40% {
+    z-index: 6;
+    transform: translate(-50%, -50%) translateY(-16vh) scale(0.5);
+    border-radius: 14px;
+  }
+  100% {
+    z-index: 6;
+    transform: translate(-50%, -50%) scale(1);
+    border-radius: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  @keyframes invLetterOut {
+    0% {
+      z-index: 1;
+      transform: translate(-50%, -50%) translateY(4vh) scale(0.22);
+      border-radius: 18px;
+    }
+    12% {
+      z-index: 6;
+    }
+    40% {
+      z-index: 6;
+      transform: translate(-50%, -50%) translateY(-14vh) scale(0.42);
+      border-radius: 14px;
+    }
+    100% {
+      z-index: 6;
+      transform: translate(-50%, -50%) scale(1);
+      border-radius: 0;
+    }
+  }
+}
+
+.inv-opening-letter-face {
+  text-align: center;
+  color: var(--inv-navy);
+  opacity: 0.95;
+  animation: invLetterFaceOut 0.35s ease-in 1.55s forwards;
+}
+
+@keyframes invLetterFaceOut {
+  to { opacity: 0; }
+}
+
+.inv-opening-letter-names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  font-family: var(--inv-font-display);
+  font-size: clamp(40px, 11vw, 64px);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  line-height: 0.95;
+}
+
+.inv-opening-letter-amp {
+  margin: 4px 0 2px;
+  font-family: var(--inv-font-script);
+  font-size: 0.55em;
+  letter-spacing: 0;
+  opacity: 0.55;
+}
+
+.inv-opening-letter-date {
+  margin: 22px 0 0;
+  font-size: 15px;
+  letter-spacing: 0.16em;
+  color: var(--inv-ink);
+}
+
+.inv-opening-flap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 41.7%;
+  z-index: 4;
+  transform-origin: 50% 100%;
+  transform-style: preserve-3d;
+  transform: rotateX(180deg);
+  animation: invFlapOpen 0.6s cubic-bezier(0.22, 0.7, 0.3, 1) 0.32s forwards;
+  will-change: transform;
+}
+
+@keyframes invFlapOpen {
+  from { transform: rotateX(180deg); }
+  to { transform: rotateX(0deg); }
+}
+
+.inv-opening-flap-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  line-height: 0;
+  filter: drop-shadow(0 12px 16px rgba(0, 0, 0, 0.38));
+}
+
+.inv-opening-flap-face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.inv-opening-flap-face--back {
+  background:
+    linear-gradient(180deg, #06244a 0%, #001531 100%);
+  transform: rotateX(180deg);
+  -webkit-mask-image: var(--inv-flap-mask);
+  mask-image: var(--inv-flap-mask);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.inv-opening-seal {
+  position: absolute;
+  left: 50%;
+  top: 81%;
+  z-index: 8;
+  width: 20%;
+  aspect-ratio: 169 / 173;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.35));
+}
+
+.inv-opening-seal-half {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+
+.inv-opening-seal-half img {
+  display: block;
+  width: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.inv-opening-seal-half--left {
+  clip-path: polygon(0 0, 56% 0, 44% 100%, 0 100%);
+  animation: invSealDropLeft 0.48s cubic-bezier(0.4, 0.1, 0.8, 0.4) 0.08s forwards;
+}
+
+.inv-opening-seal-half--right {
+  clip-path: polygon(56% 0, 100% 0, 100% 100%, 44% 100%);
+  animation: invSealDropRight 0.5s cubic-bezier(0.4, 0.1, 0.8, 0.4) 0.1s forwards;
+}
+
+@keyframes invSealDropLeft {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  18% { transform: translate(-4%, 2%) rotate(-8deg); opacity: 1; }
+  100% { transform: translate(-28%, 88%) rotate(-28deg); opacity: 0; }
+}
+
+@keyframes invSealDropRight {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  18% { transform: translate(5%, 3%) rotate(10deg); opacity: 1; }
+  100% { transform: translate(32%, 96%) rotate(34deg); opacity: 0; }
+}
+
+.inv-opening-petals {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+}
+
+.inv-opening-petal {
+  position: absolute;
+  display: block;
+  line-height: 0;
+  opacity: 0;
+  animation: invPetalFly var(--petal-duration, 1.15s) ease-out var(--petal-delay, 0.72s) forwards;
+  will-change: transform, opacity;
+}
+
+.inv-opening-petal svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@keyframes invPetalFly {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg) scale(0.6);
+  }
+  14% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--petal-dx), var(--petal-dy)) rotate(var(--petal-rot)) scale(1);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .inv-reveal.is-animating {
-    animation: none;
-    clip-path: none;
+  .inv-opening,
+  .inv-opening-flap,
+  .inv-opening-letter,
+  .inv-opening-seal-half,
+  .inv-opening-petal,
+  .inv-reveal.is-waiting {
+    animation: none !important;
   }
 }
 

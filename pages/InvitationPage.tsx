@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { EnvelopeScene } from '../components/invitation/EnvelopeScene';
-import { InvitationLanding, type RevealOrigin } from '../components/invitation/InvitationLanding';
+import { InvitationLanding } from '../components/invitation/InvitationLanding';
+import { InvitationOpening } from '../components/invitation/InvitationOpening';
 import { InvitationMusicButton } from '../components/invitation/InvitationMusicButton';
 import { PhotoCarousel } from '../components/invitation/PhotoCarousel';
 import { InvitationCountdown } from '../components/invitation/InvitationCountdown';
@@ -211,12 +212,9 @@ const InvitationPage: React.FC = () => {
   const reducedMotion = useReducedMotion();
   const queryOpened = new URLSearchParams(location.search).get('open') === '1';
   const [opened, setOpened] = useState(queryOpened);
-  const [revealing, setRevealing] = useState(false);
-  const [revealOrigin, setRevealOrigin] = useState({ x: '50%', y: '38%' });
+  const [opening, setOpening] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const revealLayerRef = useRef<HTMLDivElement>(null);
-  const revealTimer = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     document.title = `${INVITATION.coupleName} · 電子喜帖`;
@@ -239,31 +237,7 @@ const InvitationPage: React.FC = () => {
   }, [opened]);
 
   useEffect(() => {
-    if (!revealing || !revealLayerRef.current) return;
-    const el = revealLayerRef.current;
-    const origin = `${revealOrigin.x} ${revealOrigin.y}`;
-    const clearClip = () => {
-      el.style.clipPath = 'none';
-    };
-    el.style.clipPath = `circle(0px at ${origin})`;
-    const animation = el.animate(
-      [
-        { clipPath: `circle(0px at ${origin})` },
-        { clipPath: `circle(150vmax at ${origin})` },
-      ],
-      { duration: 1200, easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)', fill: 'forwards' }
-    );
-    animation.onfinish = clearClip;
     return () => {
-      animation.onfinish = null;
-      animation.cancel();
-      clearClip();
-    };
-  }, [revealing, revealOrigin]);
-
-  useEffect(() => {
-    return () => {
-      if (revealTimer.current) window.clearTimeout(revealTimer.current);
       const audio = audioRef.current;
       if (audio) {
         audio.pause();
@@ -273,13 +247,13 @@ const InvitationPage: React.FC = () => {
     };
   }, []);
 
-  const markOpened = () => {
+  const markOpened = useCallback(() => {
+    setOpening(false);
     setOpened(true);
-    setRevealing(false);
     const search = new URLSearchParams(location.search);
     search.set('open', '1');
     navigate({ pathname: location.pathname, search: `?${search.toString()}` }, { replace: true });
-  };
+  }, [location.pathname, location.search, navigate]);
 
   const ensureAudio = () => {
     if (!audioRef.current) {
@@ -292,13 +266,25 @@ const InvitationPage: React.FC = () => {
     return audioRef.current;
   };
 
-  const startMusic = () => {
+  const unlockAudio = () => {
     const audio = ensureAudio();
+    audio.muted = true;
+    void audio.play().catch(() => undefined);
+  };
+
+  const startMusic = useCallback(() => {
+    const audio = ensureAudio();
+    audio.muted = false;
+    audio.currentTime = 0;
     const play = audio.play();
     if (play) {
       play.then(() => setMusicPlaying(true)).catch(() => setMusicPlaying(false));
     }
-  };
+  }, []);
+
+  const handleLetterStart = useCallback(() => {
+    startMusic();
+  }, [startMusic]);
 
   const toggleMusic = () => {
     const audio = ensureAudio();
@@ -310,32 +296,29 @@ const InvitationPage: React.FC = () => {
     }
   };
 
-  const handleOpen = (origin: RevealOrigin) => {
-    startMusic();
-    if (opened) return;
-
+  const handleOpen = () => {
+    if (opened || opening) return;
+    unlockAudio();
     if (reducedMotion) {
+      startMusic();
       markOpened();
       return;
     }
-
-    setRevealOrigin({ x: `${Math.round(origin.x)}px`, y: `${Math.round(origin.y)}px` });
-    setRevealing(true);
-    revealTimer.current = window.setTimeout(markOpened, 1250);
+    setOpening(true);
   };
 
   const pageStyle = {
     '--inv-paper-image': `url(${invitationThemeAsset('paper.webp')})`,
-    '--inv-reveal-x': revealOrigin.x,
-    '--inv-reveal-y': revealOrigin.y,
   } as React.CSSProperties;
 
   return (
-    <div className={`invitation-page${revealing ? ' is-revealing' : ''}${opened ? ' is-opened' : ''}`} style={pageStyle}>
-      {!opened && <InvitationLanding onOpen={handleOpen} />}
-
-      {(opened || revealing) && (
-        <div ref={revealLayerRef} className={`inv-reveal${revealing ? ' is-animating' : ' is-done'}`}>
+    <div className={`invitation-page${opening ? ' is-opening' : ''}${opened ? ' is-opened' : ''}`} style={pageStyle}>
+      {!opened && !opening && <InvitationLanding onOpen={handleOpen} />}
+      {opening && !opened && (
+        <InvitationOpening onLetterStart={handleLetterStart} onDone={markOpened} />
+      )}
+      {(opened || opening) && (
+        <div className={`inv-reveal${opened ? ' is-done' : ' is-waiting'}`}>
           <PageContent musicPlaying={musicPlaying} onToggleMusic={toggleMusic} />
         </div>
       )}

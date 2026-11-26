@@ -90,6 +90,12 @@ export const preloadInvitationPortraits = () => {
   });
 };
 
+export const preloadInvitationOpening = () => {
+  ['envelope-pocket.webp', 'envelope-flap.webp', 'wax-seal.webp'].forEach((file) => {
+    preloadImage(invitationThemeAsset(file));
+  });
+};
+
 const prefersSaveData = () =>
   typeof navigator !== 'undefined' &&
   'connection' in navigator &&
