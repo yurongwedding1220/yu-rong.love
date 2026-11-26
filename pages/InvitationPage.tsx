@@ -16,12 +16,7 @@ import {
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import '../styles/invitation.css';
 
-type PageContentProps = {
-  musicPlaying: boolean;
-  onToggleMusic: () => void;
-};
-
-const PageContent: React.FC<PageContentProps> = ({ musicPlaying, onToggleMusic }) => {
+const PageContent: React.FC = () => {
   return (
     <main className="inv-shell">
       <header className="inv-header">
@@ -92,7 +87,6 @@ const PageContent: React.FC<PageContentProps> = ({ musicPlaying, onToggleMusic }
             </div>
           </div>
 
-          <InvitationMusicButton playing={musicPlaying} onToggle={onToggleMusic} />
         </div>
       </section>
 
@@ -319,9 +313,10 @@ const InvitationPage: React.FC = () => {
       )}
       {(opened || opening) && (
         <div className={`inv-reveal${opened ? ' is-done' : ' is-waiting'}`}>
-          <PageContent musicPlaying={musicPlaying} onToggleMusic={toggleMusic} />
+          <PageContent />
         </div>
       )}
+      {opened && <InvitationMusicButton playing={musicPlaying} onToggle={toggleMusic} />}
     </div>
   );
 };

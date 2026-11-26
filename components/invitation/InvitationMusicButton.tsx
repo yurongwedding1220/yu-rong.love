@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 
 type Props = {
   playing: boolean;
@@ -6,7 +7,9 @@ type Props = {
 };
 
 export const InvitationMusicButton: React.FC<Props> = ({ playing, onToggle }) => {
-  return (
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <button
       type="button"
       className="inv-music-btn"
@@ -23,6 +26,7 @@ export const InvitationMusicButton: React.FC<Props> = ({ playing, onToggle }) =>
           <path d="M8 5.5v13l11-6.5L8 5.5Z" fill="currentColor" />
         </svg>
       )}
-    </button>
+    </button>,
+    document.body
   );
 };

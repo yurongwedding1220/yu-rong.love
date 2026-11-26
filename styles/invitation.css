@@ -984,23 +984,26 @@ button.inv-cover-heart:focus-visible {
 }
 
 .inv-music-btn {
-  position: absolute;
-  right: 14px;
-  top: 58%;
-  z-index: 3;
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  z-index: 90;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 48px;
   height: 48px;
   padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(0, 34, 76, 0.14);
   border-radius: 999px;
-  background: rgba(247, 245, 238, 0.18);
-  color: var(--inv-paper);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28);
+  background: rgba(247, 245, 238, 0.92);
+  color: var(--inv-navy);
+  box-shadow: 0 8px 22px rgba(0, 17, 40, 0.18);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  appearance: none;
+  -webkit-appearance: none;
+  touch-action: manipulation;
   cursor: pointer;
 }
 
@@ -1011,6 +1014,24 @@ button.inv-cover-heart:focus-visible {
 
 .inv-music-btn:hover {
   transform: scale(1.05);
+}
+
+body:has(.inv-lightbox) .inv-music-btn {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.inv-music-btn:focus-visible {
+  outline: 2px solid var(--inv-navy);
+  outline-offset: 3px;
+}
+
+@media (min-width: 768px) {
+  .inv-music-btn {
+    right: max(24px, env(safe-area-inset-right, 0px));
+    bottom: max(24px, env(safe-area-inset-bottom, 0px));
+  }
 }
 
 /* ---------- section decorations ---------- */
