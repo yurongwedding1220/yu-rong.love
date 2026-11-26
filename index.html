@@ -28,7 +28,7 @@
     <meta property="twitter:image" content="https://yurongwedding1220.github.io/yu-rong.love/og-image.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Serif+TC:wght@300;400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Serif+TC:wght@300;400;500;700&family=Inter:wght@300;400;500&family=Viaoda+Libre&family=The+Nautigal:wght@400;700&family=Ms+Madi&display=swap" rel="stylesheet">
     <style>
       :root {
         --bg-color: #f4e8d8;
@@ -597,6 +597,9 @@
             if (path.startsWith(basePath)) {
               path = path.slice(basePath.length);
             }
+
+            // 正規化重複斜線（例如 /yu-rong.love//invitation）
+            path = path.replace(/\/{2,}/g, '/');
             
             // 如果路徑存在且不是根路徑，則更新瀏覽器歷史記錄
             if (path && path !== '/' && path !== '/index.html') {

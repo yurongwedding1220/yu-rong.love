@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "upload:wedding-gallery": "node scripts/upload-wedding-gallery.mjs"
+    "upload:wedding-gallery": "node scripts/upload-wedding-gallery.mjs",
+    "upload:invitation-gallery": "node scripts/upload-invitation-gallery.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",

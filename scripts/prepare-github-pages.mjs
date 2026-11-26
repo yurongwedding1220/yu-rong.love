@@ -12,6 +12,12 @@ const ROUTE_OG = {
     url: `${SITE_BASE}/rsvp`,
     image: `${SITE_BASE}/og-image.png`,
   },
+  invitation: {
+    title: '政憲 & 幸容 · 電子喜帖',
+    description: '誠摯邀請您蒞臨我們的婚禮。2026年12月20日（日）12:00，斗六緻麗伯爵酒店 12F 皇家宴。',
+    url: `${SITE_BASE}/invitation`,
+    image: `${SITE_BASE}/og-image.png`,
+  },
 };
 
 function applyRouteMeta(html, og) {
