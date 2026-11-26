@@ -35,6 +35,17 @@ function upsertMetaDescription(html, description) {
   return html.replace('</title>', `</title>\n    <meta name="description" content="${description}" />`);
 }
 
+function upsertProperty(html, property, content) {
+  const pattern = new RegExp(`(<meta property="${property}" content=")[^"]*(")`);
+  if (pattern.test(html)) {
+    return html.replace(pattern, `$1${content}$2`);
+  }
+  return html.replace(
+    /(<meta property="og:image" content="[^"]*" \/>)/,
+    `$1\n    <meta property="${property}" content="${content}" />`,
+  );
+}
+
 function applyRouteMeta(html, og) {
   let next = html
     .replace(/<title>[^<]*<\/title>/, `<title>${og.title}</title>`)
@@ -47,6 +58,10 @@ function applyRouteMeta(html, og) {
     .replace(/(<meta property="twitter:image" content=")[^"]*(")/, `$1${og.image}$2`);
 
   next = upsertMetaDescription(next, og.description);
+  next = upsertProperty(next, 'og:image:width', og.imageWidth ?? '1200');
+  next = upsertProperty(next, 'og:image:height', og.imageHeight ?? '630');
+  next = upsertProperty(next, 'og:image:type', 'image/png');
+  next = upsertProperty(next, 'og:locale', 'zh_TW');
 
   if (og.fonts) {
     next = next.replace(/href="https:\/\/fonts\.googleapis\.com\/css2\?[^"]*"/, `href="${og.fonts}"`);
