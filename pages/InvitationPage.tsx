@@ -13,10 +13,16 @@ import {
   invitationAsset,
   invitationThemeAsset,
 } from '../data/invitation';
+import { useCastleParallax } from '../hooks/useCastleParallax';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+import { useScrollReveal } from '../hooks/useScrollReveal';
+import { playPaperCue } from '../utils/playPaperCue';
 import '../styles/invitation.css';
 
-const PageContent: React.FC = () => {
+const PageContent: React.FC<{ motionOn: boolean }> = ({ motionOn }) => {
+  useScrollReveal(motionOn);
+  useCastleParallax(motionOn);
+
   return (
     <main className="inv-shell">
       <header className="inv-header">
@@ -47,7 +53,7 @@ const PageContent: React.FC = () => {
         </div>
       </header>
 
-      <section className="inv-invite-section">
+      <section className="inv-invite-section inv-reveal-item">
         <span className="inv-floating-flower inv-floating-flower--invite-left" aria-hidden="true">
           <img src={invitationThemeAsset('flower3-decoration.webp')} alt="" />
         </span>
@@ -90,7 +96,7 @@ const PageContent: React.FC = () => {
         </div>
       </section>
 
-      <section className="inv-album-section">
+      <section className="inv-album-section inv-reveal-item">
         <span className="inv-floating-flower inv-floating-flower--album-left" aria-hidden="true">
           <img src={invitationThemeAsset('flower3-decoration.webp')} alt="" />
         </span>
@@ -102,7 +108,7 @@ const PageContent: React.FC = () => {
         <PhotoCarousel photos={INVITATION.album} />
       </section>
 
-      <section className="inv-info-section">
+      <section className="inv-info-section inv-reveal-item">
         <span className="inv-floating-flower inv-floating-flower--info-left" aria-hidden="true">
           <img src={invitationThemeAsset('flower4-decoration.webp')} alt="" />
         </span>
@@ -152,7 +158,7 @@ const PageContent: React.FC = () => {
         </div>
       </section>
 
-      <section className="inv-location-section">
+      <section className="inv-location-section inv-reveal-item">
         <h2 className="inv-section-title">婚宴地點</h2>
         <p className="inv-location-address">{INVITATION.venueAddress}</p>
 
@@ -171,7 +177,7 @@ const PageContent: React.FC = () => {
         </a>
       </section>
 
-      <section className="inv-dress-section">
+      <section className="inv-dress-section inv-reveal-item">
         <h2 className="inv-section-title">服裝規範</h2>
         <p className="inv-dress-code">{INVITATION.dressCode}</p>
         <div className="inv-swatches" aria-label={INVITATION.dressCode}>
@@ -187,7 +193,18 @@ const PageContent: React.FC = () => {
         </div>
       </section>
 
-      <footer className="inv-footer">
+      <footer className="inv-footer inv-reveal-item">
+        <img
+          src={invitationThemeAsset('wax-seal.webp')}
+          alt=""
+          aria-hidden="true"
+          className="inv-footer-seal"
+        />
+        <p className="inv-footer-names">
+          <span>{INVITATION.groom}</span>
+          <span className="inv-footer-amp" aria-hidden="true">&amp;</span>
+          <span>{INVITATION.bride}</span>
+        </p>
         <p className="inv-footer-thanks">您的蒞臨是我們最大的榮幸！</p>
         <img
           src={invitationThemeAsset('goldenline3-decoration.webp')}
@@ -207,8 +224,10 @@ const InvitationPage: React.FC = () => {
   const queryOpened = new URLSearchParams(location.search).get('open') === '1';
   const [opened, setOpened] = useState(queryOpened);
   const [opening, setOpening] = useState(false);
+  const [justOpened, setJustOpened] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const fromCeremonyRef = useRef(false);
 
   useEffect(() => {
     document.title = `${INVITATION.coupleName} · 電子喜帖`;
@@ -242,8 +261,14 @@ const InvitationPage: React.FC = () => {
   }, []);
 
   const markOpened = useCallback(() => {
+    const fromCeremony = fromCeremonyRef.current;
+    fromCeremonyRef.current = false;
     setOpening(false);
     setOpened(true);
+    if (fromCeremony) {
+      setJustOpened(true);
+      window.setTimeout(() => setJustOpened(false), 1200);
+    }
     const search = new URLSearchParams(location.search);
     search.set('open', '1');
     navigate({ pathname: location.pathname, search: `?${search.toString()}` }, { replace: true });
@@ -293,11 +318,15 @@ const InvitationPage: React.FC = () => {
   const handleOpen = () => {
     if (opened || opening) return;
     unlockAudio();
+    if (!reducedMotion) {
+      playPaperCue();
+    }
     if (reducedMotion) {
       startMusic();
       markOpened();
       return;
     }
+    fromCeremonyRef.current = true;
     setOpening(true);
   };
 
@@ -306,14 +335,17 @@ const InvitationPage: React.FC = () => {
   } as React.CSSProperties;
 
   return (
-    <div className={`invitation-page${opening ? ' is-opening' : ''}${opened ? ' is-opened' : ''}`} style={pageStyle}>
+    <div
+      className={`invitation-page${opening ? ' is-opening' : ''}${opened ? ' is-opened' : ''}${justOpened ? ' is-just-opened' : ''}`}
+      style={pageStyle}
+    >
       {!opened && !opening && <InvitationLanding onOpen={handleOpen} />}
       {opening && !opened && (
         <InvitationOpening onLetterStart={handleLetterStart} onDone={markOpened} />
       )}
       {(opened || opening) && (
         <div className={`inv-reveal${opened ? ' is-done' : ' is-waiting'}`}>
-          <PageContent />
+          <PageContent motionOn={!reducedMotion && (opened || opening)} />
         </div>
       )}
       {opened && <InvitationMusicButton playing={musicPlaying} onToggle={toggleMusic} />}

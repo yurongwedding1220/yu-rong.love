@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { INVITATION, invitationThemeAsset } from '../../data/invitation';
 
 type Props = {
@@ -7,7 +7,8 @@ type Props = {
 };
 
 export const OPENING_LETTER_START_MS = 700;
-export const OPENING_TOTAL_MS = 2000;
+export const OPENING_HANDOFF_MS = 1400;
+export const OPENING_TOTAL_MS = 2400;
 
 const PETAL_COUNT = 16;
 
@@ -46,22 +47,52 @@ export const InvitationOpening: React.FC<Props> = ({ onLetterStart, onDone }) =>
     []
   );
 
+  const rootRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const letterTimer = window.setTimeout(onLetterStart, OPENING_LETTER_START_MS);
+
+    const handoffTimer = window.setTimeout(() => {
+      const stage = stageRef.current;
+      const hero = document.querySelector<HTMLElement>('.inv-envelope-scene');
+      const root = rootRef.current;
+      if (stage && hero) {
+        const from = stage.getBoundingClientRect();
+        const to = hero.getBoundingClientRect();
+        if (from.width > 0 && to.width > 0) {
+          const dx = to.left + to.width / 2 - (from.left + from.width / 2);
+          const dy = to.top + to.height / 2 - (from.top + from.height / 2);
+          const scale = to.width / from.width;
+          // Move the pocket toward the hero, but fade it immediately so the
+          // letter crossfades into the already-mounted page (avoids flashing
+          // the pocket's rose seal over the hero heart seal).
+          stage.style.transition =
+            'transform 0.7s cubic-bezier(0.22, 0.8, 0.28, 1), opacity 0.18s ease';
+          stage.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
+          stage.style.opacity = '0';
+        }
+      }
+      root?.classList.add('is-handing-off');
+    }, OPENING_HANDOFF_MS);
+
     const doneTimer = window.setTimeout(onDone, OPENING_TOTAL_MS);
     return () => {
       window.clearTimeout(letterTimer);
+      window.clearTimeout(handoffTimer);
       window.clearTimeout(doneTimer);
     };
   }, [onLetterStart, onDone]);
 
   return (
     <div
+      ref={rootRef}
       className="inv-opening"
       role="img"
       aria-label="喜帖開啟中"
       style={{ '--inv-flap-mask': `url(${invitationThemeAsset('envelope-flap.webp')})` } as React.CSSProperties}
     >
+      <div className="inv-opening-veil" />
       <div className="inv-opening-letter">
         <div className="inv-opening-letter-face">
           <p className="inv-opening-letter-names">
@@ -75,7 +106,7 @@ export const InvitationOpening: React.FC<Props> = ({ onLetterStart, onDone }) =>
         </div>
       </div>
 
-      <div className="inv-opening-stage">
+      <div ref={stageRef} className="inv-opening-stage">
         <div className="inv-opening-3d">
           <div className="inv-opening-body">
             <img
