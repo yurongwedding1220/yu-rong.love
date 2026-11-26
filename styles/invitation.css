@@ -303,11 +303,19 @@ button.inv-cover-heart:focus-visible {
 .inv-cover-kicker {
   position: relative;
   z-index: 1;
+  max-width: 16em;
   margin: 14px 0 0;
   color: var(--inv-ink);
   font-size: 15px;
   letter-spacing: 0.28em;
   text-indent: 0.28em;
+  line-height: 1.7;
+}
+
+.inv-cover-guest {
+  letter-spacing: 0.12em;
+  text-indent: 0;
+  font-weight: 500;
 }
 
 .inv-open-btn {
@@ -1697,14 +1705,59 @@ body:has(.inv-lightbox) .inv-music-btn {
   font-weight: 700;
 }
 
-.inv-calendar-link {
+.inv-calendar-actions {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-top: 13px;
+}
+
+.inv-calendar-link,
+.inv-calendar-toggle {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--inv-paper);
+  font: inherit;
   font-size: 13px;
   letter-spacing: 0.08em;
   text-decoration: underline;
   text-underline-offset: 4px;
   opacity: 0.9;
+  cursor: pointer;
+}
+
+.inv-calendar-menu {
+  display: flex;
+  flex-direction: column;
+  width: 168px;
+  margin-top: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 34, 76, 0.1);
+  border-radius: 12px;
+  background: var(--inv-paper);
+  box-shadow: 0 12px 28px rgba(0, 8, 24, 0.22);
+}
+
+.inv-calendar-choice {
+  display: block;
+  padding: 11px 16px;
+  color: var(--inv-navy);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-decoration: none;
+}
+
+.inv-calendar-choice + .inv-calendar-choice {
+  border-top: 1px solid rgba(0, 34, 76, 0.1);
+}
+
+.inv-calendar-choice:hover,
+.inv-calendar-choice:focus-visible {
+  background: rgba(0, 34, 76, 0.06);
 }
 
 /* ---------- location ---------- */

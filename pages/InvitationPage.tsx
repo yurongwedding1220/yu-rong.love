@@ -7,6 +7,7 @@ import { InvitationMusicButton } from '../components/invitation/InvitationMusicB
 import { PhotoCarousel } from '../components/invitation/PhotoCarousel';
 import { InvitationCountdown } from '../components/invitation/InvitationCountdown';
 import { InvitationCalendar } from '../components/invitation/InvitationCalendar';
+import { InvitationAddToCalendar } from '../components/invitation/InvitationAddToCalendar';
 import { InvitationMap } from '../components/invitation/InvitationMap';
 import {
   INVITATION,
@@ -17,6 +18,7 @@ import { useCastleParallax } from '../hooks/useCastleParallax';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { playPaperCue } from '../utils/playPaperCue';
+import { parseGuestName } from '../utils/guestName';
 import '../styles/invitation.css';
 
 const PageContent: React.FC<{ motionOn: boolean }> = ({ motionOn }) => {
@@ -145,14 +147,7 @@ const PageContent: React.FC<{ motionOn: boolean }> = ({ motionOn }) => {
 
             <div className="inv-calendar-block">
               <InvitationCalendar />
-              <a
-                className="inv-calendar-link"
-                href={INVITATION.calendarUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                添加到日曆
-              </a>
+              <InvitationAddToCalendar />
             </div>
           </div>
         </div>
@@ -221,7 +216,9 @@ const InvitationPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const reducedMotion = useReducedMotion();
-  const queryOpened = new URLSearchParams(location.search).get('open') === '1';
+  const searchParams = new URLSearchParams(location.search);
+  const queryOpened = searchParams.get('open') === '1';
+  const guestName = parseGuestName(searchParams.get('to'));
   const [opened, setOpened] = useState(queryOpened);
   const [opening, setOpening] = useState(false);
   const [justOpened, setJustOpened] = useState(false);
@@ -339,7 +336,7 @@ const InvitationPage: React.FC = () => {
       className={`invitation-page${opening ? ' is-opening' : ''}${opened ? ' is-opened' : ''}${justOpened ? ' is-just-opened' : ''}`}
       style={pageStyle}
     >
-      {!opened && !opening && <InvitationLanding onOpen={handleOpen} />}
+      {!opened && !opening && <InvitationLanding onOpen={handleOpen} guestName={guestName} />}
       {opening && !opened && (
         <InvitationOpening onLetterStart={handleLetterStart} onDone={markOpened} />
       )}
