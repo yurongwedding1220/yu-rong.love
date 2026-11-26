@@ -3,6 +3,7 @@ import { INVITATION, invitationThemeAsset, preloadInvitationOpening, preloadInvi
 
 type Props = {
   onOpen: () => void;
+  guestName?: string | null;
 };
 
 const MOTIFS: Array<{ top: string; left?: string; right?: string; size: number; rotate: number; opacity: number }> = [
@@ -31,7 +32,7 @@ const FlowerMotif: React.FC<{ size: number }> = ({ size }) => (
   </svg>
 );
 
-export const InvitationLanding: React.FC<Props> = ({ onOpen }) => {
+export const InvitationLanding: React.FC<Props> = ({ onOpen, guestName }) => {
   useEffect(() => {
     preloadInvitationPortraits();
     preloadInvitationOpening();
@@ -104,7 +105,16 @@ export const InvitationLanding: React.FC<Props> = ({ onOpen }) => {
         </div>
 
         <p className="inv-cover-date">{INVITATION.dateLabel}</p>
-        <p className="inv-cover-kicker">誠摯邀請</p>
+        <p className="inv-cover-kicker">
+          {guestName ? (
+            <>
+              誠摯邀請 <span className="inv-cover-guest">{guestName}</span>
+            </>
+          ) : (
+            '誠摯邀請'
+          )}
+        </p>
+
 
         <button type="button" className="inv-open-btn" onClick={onOpen}>
           <span>開啟喜帖</span>

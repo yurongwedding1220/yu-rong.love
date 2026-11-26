@@ -1,0 +1,4 @@
+# 每行一位賓客姓名，產生專屬喜帖連結：
+#   node scripts/make-invite-links.mjs scripts/guest-names.example.txt
+王小明
+李小華
