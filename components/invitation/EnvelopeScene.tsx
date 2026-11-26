@@ -27,9 +27,9 @@ export const EnvelopeScene: React.FC<Props> = ({ variant = 'hero' }) => {
       <div className="inv-scene-photo inv-scene-photo--groom">
         <div className="inv-scene-photo-frame">
           <img
-            src={cloudinaryImage(INVITATION.portraits.groom, isLanding ? 900 : 700)}
+            src={cloudinaryImage(INVITATION.portraits.groom, 900)}
             alt={`${INVITATION.groom}的照片`}
-            loading={isLanding ? 'eager' : 'lazy'}
+            loading="eager"
             decoding="async"
           />
         </div>
@@ -38,9 +38,9 @@ export const EnvelopeScene: React.FC<Props> = ({ variant = 'hero' }) => {
       <div className="inv-scene-photo inv-scene-photo--bride">
         <div className="inv-scene-photo-frame">
           <img
-            src={cloudinaryImage(INVITATION.portraits.bride, isLanding ? 900 : 700)}
+            src={cloudinaryImage(INVITATION.portraits.bride, 900)}
             alt={`${INVITATION.bride}的照片`}
-            loading={isLanding ? 'eager' : 'lazy'}
+            loading="eager"
             decoding="async"
           />
         </div>

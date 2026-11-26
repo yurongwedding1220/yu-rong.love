@@ -8,6 +8,7 @@ import { InvitationCountdown } from '../components/invitation/InvitationCountdow
 import { InvitationCalendar } from '../components/invitation/InvitationCalendar';
 import {
   INVITATION,
+  cloudinaryImage,
   invitationAsset,
   invitationThemeAsset,
   preloadInvitationAlbum,
@@ -223,6 +224,7 @@ const InvitationPage: React.FC = () => {
   const [revealOrigin, setRevealOrigin] = useState({ x: '50%', y: '38%' });
   const [musicPlaying, setMusicPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const revealLayerRef = useRef<HTMLDivElement>(null);
   const revealTimer = useRef<number | undefined>(undefined);
 
   useEffect(() => {
@@ -240,11 +242,33 @@ const InvitationPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    [INVITATION.portraits.groom, INVITATION.portraits.bride].forEach((id) => {
+      const image = new Image();
+      image.src = cloudinaryImage(id, 900);
+    });
+    preloadInvitationAlbum();
+  }, []);
+
+  useEffect(() => {
     if (opened) {
       window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
-      preloadInvitationAlbum();
     }
   }, [opened]);
+
+  useEffect(() => {
+    if (!revealing || !revealLayerRef.current) return;
+    const el = revealLayerRef.current;
+    const origin = `${revealOrigin.x} ${revealOrigin.y}`;
+    el.style.clipPath = `circle(0px at ${origin})`;
+    const animation = el.animate(
+      [
+        { clipPath: `circle(0px at ${origin})` },
+        { clipPath: `circle(150vmax at ${origin})` },
+      ],
+      { duration: 950, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
+    );
+    return () => animation.cancel();
+  }, [revealing, revealOrigin]);
 
   useEffect(() => {
     return () => {
@@ -313,7 +337,7 @@ const InvitationPage: React.FC = () => {
       {!opened && <InvitationLanding onOpen={handleOpen} />}
 
       {(opened || revealing) && (
-        <div className={`inv-reveal${revealing ? ' is-animating' : ' is-done'}`}>
+        <div ref={revealLayerRef} className={`inv-reveal${revealing ? ' is-animating' : ' is-done'}`}>
           <PageContent musicPlaying={musicPlaying} onToggleMusic={toggleMusic} />
         </div>
       )}

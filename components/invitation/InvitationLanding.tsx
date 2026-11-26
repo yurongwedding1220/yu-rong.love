@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { INVITATION, invitationThemeAsset } from '../../data/invitation';
+import React, { useEffect, useRef } from 'react';
+import { INVITATION, cloudinaryImage, invitationThemeAsset } from '../../data/invitation';
 
 export type RevealOrigin = {
   x: number;
@@ -39,6 +39,13 @@ const FlowerMotif: React.FC<{ size: number }> = ({ size }) => (
 export const InvitationLanding: React.FC<Props> = ({ onOpen }) => {
   const heartRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    [INVITATION.portraits.groom, INVITATION.portraits.bride].forEach((id) => {
+      const image = new Image();
+      image.src = cloudinaryImage(id, 900);
+    });
+  }, []);
+
   const handleOpen = () => {
     const rect = heartRef.current?.getBoundingClientRect();
     const origin = rect
@@ -73,6 +80,12 @@ export const InvitationLanding: React.FC<Props> = ({ onOpen }) => {
           alt=""
           aria-hidden="true"
           className="inv-cover-flower inv-cover-flower--tl"
+        />
+        <img
+          src={invitationThemeAsset('flower-background.webp')}
+          alt=""
+          aria-hidden="true"
+          className="inv-cover-flower inv-cover-flower--tr"
         />
         <img
           src={invitationThemeAsset('flower2-decoration.webp')}
