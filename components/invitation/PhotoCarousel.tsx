@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import { cloudinaryImage, cloudinaryPortrait } from '../../data/invitation';
+import { cloudinaryImage, cloudinaryPortrait, preloadInvitationAlbum } from '../../data/invitation';
 
 type Photo = {
   id: string;
@@ -48,6 +47,40 @@ const getCardStyle = (offset: number): React.CSSProperties => {
   };
 };
 
+const LightboxPhoto: React.FC<{ src: string; alt: string }> = ({ src, alt }) => {
+  const [shownSrc, setShownSrc] = useState(src);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const image = new Image();
+    const markReady = () => {
+      if (cancelled) return;
+      setShownSrc(src);
+      setReady(true);
+    };
+    setReady(false);
+    image.onload = markReady;
+    image.onerror = markReady;
+    image.src = src;
+    if (image.complete && image.naturalWidth > 0) {
+      markReady();
+    }
+    return () => {
+      cancelled = true;
+    };
+  }, [src]);
+
+  return (
+    <img
+      src={shownSrc}
+      alt={alt}
+      className={ready ? 'is-ready' : ''}
+      draggable={false}
+    />
+  );
+};
+
 export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
   const [position, setPosition] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -58,6 +91,20 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
 
   const go = useCallback((delta: number) => {
     setPosition((current) => current + delta);
+  }, []);
+
+  const goTo = useCallback((index: number) => {
+    setPosition((current) => {
+      const currentIndex = ((current % total) + total) % total;
+      let delta = index - currentIndex;
+      if (delta > total / 2) delta -= total;
+      if (delta < -total / 2) delta += total;
+      return current + delta;
+    });
+  }, [total]);
+
+  useEffect(() => {
+    preloadInvitationAlbum();
   }, []);
 
   useEffect(() => {
@@ -97,71 +144,84 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
 
   const lightbox = lightboxOpen
     ? createPortal(
-        <AnimatePresence>
-          <motion.div
-            className="inv-lightbox"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+        <div
+          className="inv-lightbox"
+          onClick={() => setLightboxOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="婚紗照相簿"
+        >
+          <p className="inv-lightbox-counter">
+            {activeIndex + 1} <span>/</span> {total}
+          </p>
+
+          <button
+            type="button"
+            className="inv-lightbox-close"
             onClick={() => setLightboxOpen(false)}
-            role="dialog"
-            aria-modal="true"
-            aria-label="婚紗照相簿"
+            aria-label="關閉"
           >
-            <button
-              type="button"
-              className="inv-lightbox-close"
-              onClick={() => setLightboxOpen(false)}
-              aria-label="關閉"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" />
-              </svg>
-            </button>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
 
-            <div className="inv-lightbox-stage" onClick={(event) => event.stopPropagation()}>
-              <motion.img
-                key={activePhoto.id}
-                src={cloudinaryImage(activePhoto.publicId, 1800)}
-                alt={activePhoto.alt}
-                initial={{ opacity: 0, scale: 0.97 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.35 }}
-              />
-            </div>
+          <div className="inv-lightbox-stage" onClick={(event) => event.stopPropagation()}>
+            <LightboxPhoto
+              src={cloudinaryImage(activePhoto.publicId, 1800)}
+              alt={activePhoto.alt}
+            />
+          </div>
 
-            <button
-              type="button"
-              className="inv-lightbox-arrow inv-lightbox-arrow--prev"
-              onClick={(event) => {
-                event.stopPropagation();
-                go(-1);
-              }}
-              aria-label="上一張"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              className="inv-lightbox-arrow inv-lightbox-arrow--next"
-              onClick={(event) => {
-                event.stopPropagation();
-                go(1);
-              }}
-              aria-label="下一張"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
+          <button
+            type="button"
+            className="inv-lightbox-arrow inv-lightbox-arrow--prev"
+            onClick={(event) => {
+              event.stopPropagation();
+              go(-1);
+            }}
+            aria-label="上一張"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="inv-lightbox-arrow inv-lightbox-arrow--next"
+            onClick={(event) => {
+              event.stopPropagation();
+              go(1);
+            }}
+            aria-label="下一張"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
 
-            <p className="inv-lightbox-counter">
-              {activeIndex + 1} <span>/</span> {total}
-            </p>
-          </motion.div>
-        </AnimatePresence>,
+          <div
+            className="inv-lightbox-thumbs"
+            onClick={(event) => event.stopPropagation()}
+          >
+            {photos.map((photo, index) => (
+              <button
+                type="button"
+                key={photo.id}
+                className={`inv-lightbox-thumb${index === activeIndex ? ' is-active' : ''}`}
+                onClick={() => goTo(index)}
+                aria-label={`第 ${index + 1} 張照片`}
+                aria-current={index === activeIndex ? 'true' : undefined}
+              >
+                <img
+                  src={cloudinaryPortrait(photo.publicId, 200)}
+                  alt=""
+                  draggable={false}
+                />
+              </button>
+            ))}
+          </div>
+        </div>,
         document.body
       )
     : null;
@@ -214,7 +274,7 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
                 <img
                   src={cloudinaryPortrait(photo.publicId, isActive ? 1200 : 700)}
                   alt={photo.alt}
-                  loading={Math.abs(offset) <= 1 ? 'eager' : 'lazy'}
+                  loading="eager"
                   decoding="async"
                   draggable={false}
                 />

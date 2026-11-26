@@ -1,22 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import { InvitationLanding } from '../components/invitation/InvitationLanding';
+import React, { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { EnvelopeScene } from '../components/invitation/EnvelopeScene';
+import { InvitationLanding, type RevealOrigin } from '../components/invitation/InvitationLanding';
+import { InvitationMusicButton } from '../components/invitation/InvitationMusicButton';
 import { PhotoCarousel } from '../components/invitation/PhotoCarousel';
 import { InvitationCountdown } from '../components/invitation/InvitationCountdown';
 import { InvitationCalendar } from '../components/invitation/InvitationCalendar';
-import { INVITATION, invitationThemeAsset } from '../data/invitation';
+import {
+  INVITATION,
+  invitationAsset,
+  invitationThemeAsset,
+  preloadInvitationAlbum,
+} from '../data/invitation';
 import '../styles/invitation.css';
 
-const PageContent: React.FC = () => {
+type PageContentProps = {
+  musicPlaying: boolean;
+  onToggleMusic: () => void;
+};
+
+const PageContent: React.FC<PageContentProps> = ({ musicPlaying, onToggleMusic }) => {
   return (
-    <motion.main
-      className="inv-shell"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-    >
+    <main className="inv-shell">
       <header className="inv-header">
         <img
           src={invitationThemeAsset('castle-background.webp')}
@@ -43,7 +48,6 @@ const PageContent: React.FC = () => {
           </span>
           <span>{INVITATION.bride}</span>
         </div>
-        <p className="inv-hero-date">{INVITATION.dateLabel}</p>
       </header>
 
       <section className="inv-invite-section">
@@ -57,8 +61,23 @@ const PageContent: React.FC = () => {
         <div className="inv-navy-card inv-invite-card">
           <div className="inv-card-paper" aria-hidden="true" />
           <div className="inv-card-content">
-            <p className="inv-invite-kicker">誠摯邀請</p>
-            <div className="inv-invite-names">
+            <div className="inv-parents">
+              <div className="inv-parents-side">
+                <p className="inv-parents-honorific">{INVITATION.parents.groom.honorific}</p>
+                {INVITATION.parents.groom.names.map((name) => (
+                  <p className="inv-parents-name" key={name}>{name}</p>
+                ))}
+              </div>
+              <span className="inv-parents-divider" aria-hidden="true" />
+              <div className="inv-parents-side">
+                <p className="inv-parents-honorific">{INVITATION.parents.bride.honorific}</p>
+                {INVITATION.parents.bride.names.map((name) => (
+                  <p className="inv-parents-name" key={name}>{name}</p>
+                ))}
+              </div>
+            </div>
+
+            <div className="inv-invite-couple">
               <div className="inv-invite-person">
                 <span className="inv-invite-name">{INVITATION.groom}</span>
                 <span className="inv-invite-role">新郎</span>
@@ -69,8 +88,9 @@ const PageContent: React.FC = () => {
                 <span className="inv-invite-role">新娘</span>
               </div>
             </div>
-            <p className="inv-invite-lead">與我們一同見證這一天</p>
           </div>
+
+          <InvitationMusicButton playing={musicPlaying} onToggle={onToggleMusic} />
         </div>
       </section>
 
@@ -138,9 +158,6 @@ const PageContent: React.FC = () => {
 
       <section className="inv-location-section">
         <h2 className="inv-section-title">婚宴地點</h2>
-        <p className="inv-location-venue">
-          {INVITATION.venueName} · {INVITATION.venueHall}
-        </p>
         <p className="inv-location-address">{INVITATION.venueAddress}</p>
 
         <iframe
@@ -176,45 +193,37 @@ const PageContent: React.FC = () => {
                 style={{ backgroundColor: color.hex }}
                 aria-hidden="true"
               />
-              <span className="inv-swatch-name">{color.name}</span>
             </div>
           ))}
         </div>
-        <p className="inv-dress-hint">歡迎穿著與婚禮色系呼應的服裝，與我們一起留下美好畫面。</p>
       </section>
 
       <footer className="inv-footer">
+        <p className="inv-footer-thanks">您的蒞臨是我們最大的榮幸！</p>
         <img
           src={invitationThemeAsset('goldenline3-decoration.webp')}
           alt=""
           aria-hidden="true"
           className="inv-footer-line"
         />
-        <p className="inv-footer-thanks">您的蒞臨是我們最大的榮幸！</p>
-        <p className="inv-footer-heart" aria-hidden="true">♡</p>
-
-        <div className="inv-footer-actions">
-          <Link className="inv-footer-button inv-footer-button--primary" to="/rsvp">
-            確認出席
-          </Link>
-          <Link className="inv-footer-button" to="/">
-            回到官網
-          </Link>
-        </div>
-
-        <p className="inv-footer-signature">
-          {INVITATION.groom} &amp; {INVITATION.bride} · 2026.12.20
-        </p>
       </footer>
-    </motion.main>
+    </main>
   );
 };
+
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const InvitationPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const queryOpened = new URLSearchParams(location.search).get('open') === '1';
   const [opened, setOpened] = useState(queryOpened);
+  const [revealing, setRevealing] = useState(false);
+  const [revealOrigin, setRevealOrigin] = useState({ x: '50%', y: '38%' });
+  const [musicPlaying, setMusicPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const revealTimer = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     document.title = `${INVITATION.coupleName} · 電子喜帖`;
@@ -231,29 +240,83 @@ const InvitationPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (opened) window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+    if (opened) {
+      window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+      preloadInvitationAlbum();
+    }
   }, [opened]);
 
-  const handleOpen = () => {
+  useEffect(() => {
+    return () => {
+      if (revealTimer.current) window.clearTimeout(revealTimer.current);
+    };
+  }, []);
+
+  const markOpened = () => {
     setOpened(true);
+    setRevealing(false);
     const search = new URLSearchParams(location.search);
     search.set('open', '1');
     navigate({ pathname: location.pathname, search: `?${search.toString()}` }, { replace: true });
   };
 
+  const startMusic = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const play = audio.play();
+    if (play) {
+      play.then(() => setMusicPlaying(true)).catch(() => setMusicPlaying(false));
+    }
+  };
+
+  const toggleMusic = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audio.paused) {
+      startMusic();
+    } else {
+      audio.pause();
+      setMusicPlaying(false);
+    }
+  };
+
+  const handleOpen = (origin: RevealOrigin) => {
+    startMusic();
+    if (opened) return;
+
+    if (prefersReducedMotion()) {
+      markOpened();
+      return;
+    }
+
+    setRevealOrigin({ x: `${Math.round(origin.x)}px`, y: `${Math.round(origin.y)}px` });
+    setRevealing(true);
+    revealTimer.current = window.setTimeout(markOpened, 980);
+  };
+
   const pageStyle = {
     '--inv-paper-image': `url(${invitationThemeAsset('paper.webp')})`,
+    '--inv-reveal-x': revealOrigin.x,
+    '--inv-reveal-y': revealOrigin.y,
   } as React.CSSProperties;
 
   return (
-    <div className="invitation-page" style={pageStyle}>
-      <AnimatePresence mode="wait">
-        {opened ? (
-          <PageContent key="content" />
-        ) : (
-          <InvitationLanding key="landing" onOpen={handleOpen} />
-        )}
-      </AnimatePresence>
+    <div className={`invitation-page${revealing ? ' is-revealing' : ''}${opened ? ' is-opened' : ''}`} style={pageStyle}>
+      <audio
+        ref={audioRef}
+        src={invitationAsset('perfect-ed-sheeran.mp3')}
+        loop
+        preload="auto"
+        playsInline
+      />
+
+      {!opened && <InvitationLanding onOpen={handleOpen} />}
+
+      {(opened || revealing) && (
+        <div className={`inv-reveal${revealing ? ' is-animating' : ' is-done'}`}>
+          <PageContent musicPlaying={musicPlaying} onToggleMusic={toggleMusic} />
+        </div>
+      )}
     </div>
   );
 };

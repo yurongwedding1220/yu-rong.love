@@ -18,12 +18,10 @@ const calculateTimeLeft = (): TimeLeft => {
   return {
     days: Math.floor(difference / (1000 * 60 * 60 * 24)),
     hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-    minutes: Math.floor((difference / (1000 * 60)) % 60),
+    minutes: Math.floor((difference / 1000 / 60) % 60),
     seconds: Math.floor((difference / 1000) % 60),
   };
 };
-
-const pad = (value: number) => String(value).padStart(2, '0');
 
 export const InvitationCountdown: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft);
@@ -35,24 +33,11 @@ export const InvitationCountdown: React.FC = () => {
     return () => window.clearInterval(timer);
   }, []);
 
-  const units = [
-    { value: timeLeft.days, label: '天' },
-    { value: timeLeft.hours, label: '小時' },
-    { value: timeLeft.minutes, label: '分' },
-    { value: timeLeft.seconds, label: '秒' },
-  ];
+  const label = `${timeLeft.days} 天 ${timeLeft.hours} 時 ${timeLeft.minutes} 分 ${timeLeft.seconds} 秒`;
 
   return (
-    <div className="inv-countdown" aria-label="婚禮倒數計時">
-      {units.map((unit, index) => (
-        <React.Fragment key={unit.label}>
-          {index > 0 && <span className="inv-countdown-sep" aria-hidden="true">:</span>}
-          <div className="inv-countdown-unit">
-            <span className="inv-countdown-value">{pad(unit.value)}</span>
-            <span className="inv-countdown-label">{unit.label}</span>
-          </div>
-        </React.Fragment>
-      ))}
-    </div>
+    <p className="inv-countdown" aria-label="婚禮倒數計時">
+      {label}
+    </p>
   );
 };
