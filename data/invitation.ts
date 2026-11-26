@@ -58,19 +58,11 @@ export const cloudinaryImage = (publicId: string, width = 1200) =>
 export const cloudinaryPortrait = (publicId: string, width = 900) =>
   `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/f_auto,q_auto,c_fill,g_auto,ar_2:3,w_${width}/${publicId}`;
 
-/** Envelope hero portraits. c_thumb+z is ignored on these assets, so we use
- *  c_crop+g_face+z. Zoom is milder than a raw head-to-chest still, because the
- *  envelope covers the bottom of the 3:4 frame; values were picked in that
- *  hero so hair stays in the rotated window and faces read clearly larger. */
-const HERO_FACE_ZOOM: Record<string, string> = {
-  [`${ALBUM_FOLDER}/portrait-groom`]: '0.80',
-  [`${ALBUM_FOLDER}/portrait-bride`]: '0.90',
-};
-
-export const cloudinaryHeroPortrait = (publicId: string, width = 900) => {
-  const zoom = HERO_FACE_ZOOM[publicId] ?? '0.80';
-  return `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/f_auto,q_auto,c_crop,g_face,z_${zoom},ar_3:4/c_fill,g_center,ar_3:4,w_${width}/${publicId}`;
-};
+/** Envelope hero portraits: head-to-waist / head-to-bouquet framing that keeps
+ *  the groom's face clear of the overlapping bride photo. c_thumb+z is ignored
+ *  on these assets, so we use c_crop+g_face+z (0.40 matched the approved frame). */
+export const cloudinaryHeroPortrait = (publicId: string, width = 900) =>
+  `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/f_auto,q_auto,c_crop,g_face,z_0.40,ar_3:4/c_fill,g_center,ar_3:4,w_${width}/${publicId}`;
 
 export const cloudinarySrcSet = (
   builder: (publicId: string, width: number) => string,
