@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const MIN_SCALE = 1;
 const MAX_SCALE = 4;
@@ -181,6 +181,40 @@ export function useLightboxZoom(enabled: boolean) {
     [enabled, offset, scale]
   );
 
+  const handleDoubleClick = useCallback(
+    (event: React.MouseEvent) => {
+      if (!enabled) return;
+      event.preventDefault();
+      if (scale > 1.01) {
+        setScale(1);
+        setOffset({ x: 0, y: 0 });
+        return;
+      }
+      setScale(DOUBLE_TAP_SCALE);
+      setOffset({ x: 0, y: 0 });
+    },
+    [enabled, scale]
+  );
+
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!enabled || !element) return undefined;
+
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      const intensity = event.ctrlKey || event.metaKey ? 0.016 : 0.0024;
+      const factor = Math.exp(-event.deltaY * intensity);
+      setScale((previous) => {
+        const next = clamp(previous * factor, MIN_SCALE, MAX_SCALE);
+        setOffset((current) => clampOffset(current, next));
+        return next;
+      });
+    };
+
+    element.addEventListener('wheel', onWheel, { passive: false });
+    return () => element.removeEventListener('wheel', onWheel);
+  }, [clampOffset, enabled]);
+
   return {
     scale,
     offset,
@@ -190,5 +224,6 @@ export function useLightboxZoom(enabled: boolean) {
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
+    handleDoubleClick,
   };
 }

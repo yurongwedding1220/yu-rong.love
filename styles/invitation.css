@@ -1334,8 +1334,19 @@ body:has(.inv-lightbox) .inv-music-btn {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   max-width: 86vw;
+  height: calc(100svh - 200px);
   max-height: calc(100svh - 200px);
+  overflow: hidden;
+  touch-action: none;
+}
+
+.inv-lightbox-zoom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;
 }
 
 .inv-lightbox-stage img {
@@ -1353,6 +1364,50 @@ body:has(.inv-lightbox) .inv-music-btn {
 
 .inv-lightbox-stage img.is-ready {
   opacity: 1;
+}
+
+.inv-lightbox-download,
+.inv-lightbox-reset {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: rgba(255, 255, 255, 0.92);
+  color: #222;
+  cursor: pointer;
+}
+
+.inv-lightbox-download {
+  top: 16px;
+  right: 64px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+}
+
+.inv-lightbox-download svg {
+  width: 18px;
+  height: 18px;
+}
+
+.inv-lightbox-download:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.inv-lightbox-reset {
+  top: 18px;
+  left: 50%;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  transform: translateX(-50%);
 }
 
 .inv-lightbox-close {
@@ -2049,6 +2104,11 @@ body:has(.inv-lightbox) .inv-music-btn {
 
   .inv-carousel-card {
     transition-duration: 0.01ms !important;
+  }
+
+  .inv-lightbox-stage img,
+  .inv-lightbox-zoom {
+    transition: none !important;
   }
 
   .inv-reveal-item,

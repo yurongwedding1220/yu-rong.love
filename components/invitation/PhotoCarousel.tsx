@@ -1,13 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
-import {
-  cloudinaryImage,
-  cloudinaryPortrait,
-  cloudinarySrcSet,
-  invitationLightboxWidth,
-  preloadInvitationNeighbors,
-} from '../../data/invitation';
+import { cloudinaryPortrait, cloudinarySrcSet, preloadInvitationNeighbors } from '../../data/invitation';
+import { InvitationLightbox } from './InvitationLightbox';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
+import { useModalHistory } from '../../hooks/useModalHistory';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 type Photo = {
@@ -22,9 +17,7 @@ type Props = {
 
 const VISIBLE_SLOTS = 3;
 const CAROUSEL_WIDTHS = [400, 700, 1200] as const;
-const LIGHTBOX_WIDTHS = [1200, 1800] as const;
 const CAROUSEL_SIZES = '(max-width: 767px) 80vw, 420px';
-const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 const getOffset = (index: number, position: number, length: number) => {
   const raw = index - position;
@@ -75,59 +68,18 @@ const getCardStyle = (offset: number, reducedMotion: boolean): React.CSSProperti
   };
 };
 
-const LightboxPhoto: React.FC<{ src: string; srcSet: string; alt: string }> = ({ src, srcSet, alt }) => {
-  const [shownSrc, setShownSrc] = useState(src);
-  const [shownSrcSet, setShownSrcSet] = useState(srcSet);
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    const image = new Image();
-    const markReady = () => {
-      if (cancelled) return;
-      setShownSrc(src);
-      setShownSrcSet(srcSet);
-      setReady(true);
-    };
-    setReady(false);
-    image.onload = markReady;
-    image.onerror = markReady;
-    image.srcset = srcSet;
-    image.src = src;
-    if (image.complete && image.naturalWidth > 0) {
-      markReady();
-    }
-    return () => {
-      cancelled = true;
-    };
-  }, [src, srcSet]);
-
-  return (
-    <img
-      src={shownSrc}
-      srcSet={shownSrcSet}
-      sizes="100vw"
-      alt={alt}
-      className={ready ? 'is-ready' : ''}
-      draggable={false}
-    />
-  );
-};
-
 export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
   const [position, setPosition] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
-  const lightboxRef = useRef<HTMLDivElement>(null);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   const reducedMotion = useReducedMotion();
   const total = photos.length;
   const activeIndex = ((position % total) + total) % total;
-  const activePhoto = photos[activeIndex];
-  const lightboxWidth = invitationLightboxWidth();
+  const closeLightbox = useCallback(() => setLightboxOpen(false), []);
 
   useBodyScrollLock(lightboxOpen);
+  useModalHistory(lightboxOpen, closeLightbox);
 
   const go = useCallback((delta: number) => {
     setPosition((current) => current + delta);
@@ -152,40 +104,16 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
     preloadInvitationNeighbors(activeIndex, { includeLightbox: lightboxOpen });
   }, [activeIndex, lightboxOpen]);
 
+  const wasLightboxOpen = useRef(false);
   useEffect(() => {
-    if (!lightboxOpen) return;
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setLightboxOpen(false);
-      if (event.key === 'ArrowLeft') setPosition((current) => current - 1);
-      if (event.key === 'ArrowRight') setPosition((current) => current + 1);
-
-      if (event.key !== 'Tab') return;
-      const root = lightboxRef.current;
-      if (!root) return;
-      const list = Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
-        (element) => !element.hasAttribute('disabled') && element.getAttribute('aria-hidden') !== 'true'
-      );
-      if (list.length === 0) return;
-      const first = list[0];
-      const last = list[list.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-
-    window.addEventListener('keydown', onKeyDown);
-    const focusTimer = window.setTimeout(() => closeButtonRef.current?.focus(), 0);
-
-    return () => {
-      window.removeEventListener('keydown', onKeyDown);
-      window.clearTimeout(focusTimer);
+    if (lightboxOpen) {
+      wasLightboxOpen.current = true;
+      return;
+    }
+    if (wasLightboxOpen.current) {
       triggerRef.current?.focus();
-    };
+      wasLightboxOpen.current = false;
+    }
   }, [lightboxOpen]);
 
   const handleTouchStart = (event: React.TouchEvent) => {
@@ -204,94 +132,6 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
       go(dx < 0 ? 1 : -1);
     }
   };
-
-  const lightbox = lightboxOpen
-    ? createPortal(
-        <div
-          ref={lightboxRef}
-          className="inv-lightbox"
-          onClick={() => setLightboxOpen(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-label="婚紗照相簿"
-        >
-          <p className="inv-lightbox-counter">
-            {activeIndex + 1} <span>/</span> {total}
-          </p>
-
-          <button
-            ref={closeButtonRef}
-            type="button"
-            className="inv-lightbox-close"
-            onClick={() => setLightboxOpen(false)}
-            aria-label="關閉"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          </button>
-
-          <div className="inv-lightbox-stage" onClick={(event) => event.stopPropagation()}>
-            <LightboxPhoto
-              src={cloudinaryImage(activePhoto.publicId, lightboxWidth)}
-              srcSet={cloudinarySrcSet(cloudinaryImage, activePhoto.publicId, LIGHTBOX_WIDTHS)}
-              alt={activePhoto.alt}
-            />
-          </div>
-
-          <button
-            type="button"
-            className="inv-lightbox-arrow inv-lightbox-arrow--prev"
-            onClick={(event) => {
-              event.stopPropagation();
-              go(-1);
-            }}
-            aria-label="上一張"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            className="inv-lightbox-arrow inv-lightbox-arrow--next"
-            onClick={(event) => {
-              event.stopPropagation();
-              go(1);
-            }}
-            aria-label="下一張"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-
-          <div
-            className="inv-lightbox-thumbs"
-            onClick={(event) => event.stopPropagation()}
-          >
-            {photos.map((photo, index) => (
-              <button
-                type="button"
-                key={photo.id}
-                className={`inv-lightbox-thumb${index === activeIndex ? ' is-active' : ''}`}
-                onClick={() => goTo(index)}
-                aria-label={`第 ${index + 1} 張照片`}
-                aria-current={index === activeIndex ? 'true' : undefined}
-              >
-                <img
-                  src={cloudinaryPortrait(photo.publicId, 200)}
-                  alt=""
-                  loading="lazy"
-                  draggable={false}
-                />
-              </button>
-            ))}
-          </div>
-        </div>,
-        document.body
-      )
-    : null;
 
   return (
     <div className="inv-album">
@@ -369,7 +209,16 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
         {activeIndex + 1} <span>/</span> {total}
       </p>
 
-      {lightbox}
+      {lightboxOpen && (
+        <InvitationLightbox
+          photos={photos}
+          activeIndex={activeIndex}
+          reducedMotion={reducedMotion}
+          onClose={closeLightbox}
+          onGo={go}
+          onGoTo={goTo}
+        />
+      )}
     </div>
   );
 };
