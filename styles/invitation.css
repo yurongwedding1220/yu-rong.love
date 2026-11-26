@@ -37,7 +37,16 @@
   background-position: center;
   background-repeat: repeat;
   mix-blend-mode: multiply;
-  opacity: 0.5;
+  opacity: 0.58;
+}
+
+.invitation-page::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 18%, transparent 46%, rgba(0, 21, 49, 0.08) 100%);
 }
 
 /* 喜帖使用自己的紙紋背景，關閉全站雜訊與漸層圖層 */
@@ -95,7 +104,7 @@ body:has(.invitation-page) .bg-grid-fixed {
   font-family: var(--inv-font-body);
   font-size: 20px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-align: center;
 }
 
@@ -340,7 +349,7 @@ button.inv-cover-heart:focus-visible {
   pointer-events: none;
   opacity: 0;
   background: var(--inv-cream);
-  animation: invOpeningPageIn 0.4s ease-out 1.6s forwards;
+  animation: invOpeningPageIn 0.7s ease-out 1.35s forwards;
 }
 
 .inv-reveal.is-done {
@@ -365,9 +374,17 @@ button.inv-cover-heart:focus-visible {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: transparent;
+  pointer-events: none;
+}
+
+.inv-opening-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   background:
     radial-gradient(circle at 50% 30%, #06356a 0%, var(--inv-navy) 42%, var(--inv-navy-deep) 100%);
-  animation: invOpeningFadeOut 0.35s ease-in 1.65s forwards;
+  animation: invOpeningFadeOut 0.7s ease 1.4s forwards;
 }
 
 @keyframes invOpeningFadeOut {
@@ -380,6 +397,18 @@ button.inv-cover-heart:focus-visible {
   z-index: 3;
   width: min(78vw, 320px);
   aspect-ratio: 851 / 984;
+  transform-origin: center center;
+}
+
+.inv-opening.is-handing-off .inv-opening-letter {
+  opacity: 0;
+  transition: opacity 0.65s ease;
+}
+
+.inv-opening.is-handing-off .inv-opening-petals,
+.inv-opening.is-handing-off .inv-opening-stage {
+  opacity: 0;
+  transition: opacity 0.18s ease;
 }
 
 .inv-opening-3d {
@@ -488,7 +517,7 @@ button.inv-cover-heart:focus-visible {
   text-align: center;
   color: var(--inv-navy);
   opacity: 0.95;
-  animation: invLetterFaceOut 0.35s ease-in 1.55s forwards;
+  animation: invLetterFaceOut 0.4s ease-in 1.3s forwards;
 }
 
 @keyframes invLetterFaceOut {
@@ -658,6 +687,7 @@ button.inv-cover-heart:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .inv-opening,
+  .inv-opening-veil,
   .inv-opening-flap,
   .inv-opening-letter,
   .inv-opening-seal-half,
@@ -746,7 +776,7 @@ button.inv-cover-heart:focus-visible {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 20%;
+  object-position: center center;
 }
 
 @media (min-width: 768px) {
@@ -800,7 +830,7 @@ button.inv-cover-heart:focus-visible {
   left: 50%;
   width: 212%;
   max-width: none;
-  transform: translateX(-50%) scaleX(-1);
+  transform: translateX(-50%) scaleX(-1) translateY(var(--inv-castle-y, 0px));
   opacity: 0.18;
   pointer-events: none;
   user-select: none;
@@ -811,7 +841,7 @@ button.inv-cover-heart:focus-visible {
   z-index: 1;
   width: 64.2%;
   max-width: 300px;
-  margin-top: clamp(52px, 14vw, 96px);
+  margin-top: clamp(44px, 12vw, 84px);
 }
 
 @media (min-width: 768px) {
@@ -832,14 +862,14 @@ button.inv-cover-heart:focus-visible {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: clamp(38px, 9vw, 66px);
+  margin-top: clamp(26px, 6.5vw, 48px);
   color: var(--inv-navy);
   line-height: 0.95;
 }
 
 .inv-couple-names > span:not(.inv-amp) {
   font-family: var(--inv-font-display);
-  font-size: clamp(42px, 12vw, 64px);
+  font-size: clamp(46px, 13vw, 70px);
   letter-spacing: 0.12em;
 }
 
@@ -873,7 +903,9 @@ button.inv-cover-heart:focus-visible {
   border-radius: 13px;
   background: var(--inv-navy);
   color: var(--inv-paper);
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.25);
+  box-shadow:
+    4px 8px 20px rgba(0, 8, 24, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
   text-align: center;
 }
 
@@ -1169,12 +1201,13 @@ body:has(.inv-lightbox) .inv-music-btn {
   overflow: hidden;
   border-radius: 16px;
   background: #e4ded4;
-  box-shadow: 0 24px 55px rgba(0, 34, 76, 0.25), 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 20px 48px rgba(0, 34, 76, 0.2), 0 8px 20px rgba(0, 0, 0, 0.12);
   outline: none;
   cursor: pointer;
   transition:
-    transform 1.1s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 1.25s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 1.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 1.25s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 
@@ -1187,11 +1220,15 @@ body:has(.inv-lightbox) .inv-music-btn {
   pointer-events: none;
 }
 
+.inv-carousel-card.is-active {
+  box-shadow: 0 30px 68px rgba(0, 34, 76, 0.34), 0 12px 26px rgba(0, 0, 0, 0.16);
+}
+
 .inv-carousel-card.is-active:focus-visible {
   box-shadow:
     0 0 0 3px rgba(236, 228, 216, 0.9),
     0 0 0 6px rgba(0, 34, 76, 0.4),
-    0 24px 55px rgba(0, 34, 76, 0.25);
+    0 30px 68px rgba(0, 34, 76, 0.34);
 }
 
 .inv-carousel-card img {
@@ -1515,6 +1552,10 @@ body:has(.inv-lightbox) .inv-music-btn {
 }
 
 .inv-countdown {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
   margin: 12px 0 0;
   color: var(--inv-paper);
   font-family: Baskerville, 'Playfair Display', 'Times New Roman', 'Noto Serif TC', serif;
@@ -1522,6 +1563,42 @@ body:has(.inv-lightbox) .inv-music-btn {
   font-weight: 300;
   letter-spacing: 0.06em;
   font-variant-numeric: tabular-nums;
+}
+
+.inv-count-unit {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.inv-count-digit-wrap {
+  display: inline-block;
+  overflow: hidden;
+  min-width: 1.7em;
+  height: 1.3em;
+  line-height: 1.3em;
+  text-align: right;
+}
+
+.inv-count-digit {
+  display: block;
+  animation: invDigitFlip 0.42s cubic-bezier(0.22, 0.8, 0.28, 1);
+}
+
+.inv-count-label {
+  opacity: 0.82;
+  font-size: 0.92em;
+}
+
+@keyframes invDigitFlip {
+  from {
+    opacity: 0;
+    transform: translateY(50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .inv-calendar-block {
@@ -1600,7 +1677,7 @@ body:has(.inv-lightbox) .inv-music-btn {
   justify-content: center;
   width: 28px;
   height: 26px;
-  animation: invHeartPulse 2.6s ease-in-out infinite;
+  animation: invHeartPulse 2.8s ease-in-out infinite;
 }
 
 .inv-calendar-heart svg {
@@ -1651,16 +1728,26 @@ body:has(.inv-lightbox) .inv-music-btn {
   letter-spacing: 0.02em;
 }
 
-.inv-map {
+.inv-map-frame {
   width: 100%;
   max-width: 560px;
-  height: 268px;
   margin-top: 20px;
-  border: 1px solid rgba(0, 34, 76, 0.14);
-  border-radius: 15px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 34, 76, 0.12);
+  border-radius: 16px;
+  background: var(--inv-paper);
+  box-shadow:
+    0 18px 40px rgba(0, 34, 76, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+}
+
+.inv-map {
+  display: block;
+  width: 100%;
+  height: 268px;
+  margin: 0;
+  border: 0;
   background: #e8e2d8;
-  box-shadow: 0 18px 40px rgba(0, 34, 76, 0.1);
-  filter: saturate(0.86) contrast(0.98);
 }
 
 @media (min-width: 768px) {
@@ -1742,8 +1829,36 @@ body:has(.inv-lightbox) .inv-music-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 8px 24px 36px;
+  padding: 20px 24px 64px;
   text-align: center;
+}
+
+.inv-footer-seal {
+  display: block;
+  width: 44px;
+  height: auto;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 4px 8px rgba(0, 34, 76, 0.22));
+}
+
+.inv-footer-names {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 0 14px;
+  color: var(--inv-navy);
+  font-family: var(--inv-font-display);
+  font-size: clamp(28px, 8vw, 40px);
+  letter-spacing: 0.12em;
+  line-height: 0.95;
+}
+
+.inv-footer-amp {
+  margin: 2px 0;
+  font-family: var(--inv-font-script);
+  font-size: 0.58em;
+  letter-spacing: 0;
+  opacity: 0.5;
 }
 
 .inv-footer-thanks {
@@ -1813,11 +1928,38 @@ body:has(.inv-lightbox) .inv-music-btn {
 @keyframes invFloat {
   0%,
   100% {
-    transform: translateY(0);
+    transform: translateY(0) rotate(0deg);
   }
   50% {
-    transform: translateY(-8px);
+    transform: translateY(-7px) rotate(0.7deg);
   }
+}
+
+@keyframes invPortraitIn {
+  from {
+    transform: translateY(10px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.invitation-page.is-opening .inv-scene-photo,
+.invitation-page.is-just-opened .inv-scene-photo {
+  animation: invPortraitIn 0.85s cubic-bezier(0.22, 0.8, 0.28, 1) 0.15s both;
+}
+
+.inv-reveal-item {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.inv-reveal-item.is-visible {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 0.8, 0.28, 1);
 }
 
 @keyframes invShine {
@@ -1836,7 +1978,7 @@ body:has(.inv-lightbox) .inv-music-btn {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.07);
+    transform: scale(1.06);
   }
 }
 
@@ -1845,11 +1987,25 @@ body:has(.inv-lightbox) .inv-music-btn {
   .inv-scene-flower--right img,
   .inv-floating-flower img,
   .inv-calendar-heart,
-  .inv-open-btn-shine {
+  .inv-open-btn-shine,
+  .inv-count-digit,
+  .invitation-page.is-opening .inv-scene-photo,
+  .invitation-page.is-just-opened .inv-scene-photo {
     animation: none !important;
   }
 
   .inv-carousel-card {
     transition-duration: 0.01ms !important;
+  }
+
+  .inv-reveal-item,
+  .inv-reveal-item.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .inv-header-castle {
+    transform: translateX(-50%) scaleX(-1) !important;
   }
 }

@@ -24,7 +24,7 @@ export const InvitationMap: React.FC = () => {
   }, []);
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className="inv-map-frame">
       {showMap ? (
         <iframe
           className="inv-map"
