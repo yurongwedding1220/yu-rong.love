@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { INVITATION, cloudinaryImage, invitationThemeAsset } from '../../data/invitation';
+import { INVITATION, invitationThemeAsset, preloadInvitationPortraits } from '../../data/invitation';
 
 export type RevealOrigin = {
   x: number;
@@ -40,10 +40,7 @@ export const InvitationLanding: React.FC<Props> = ({ onOpen }) => {
   const heartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    [INVITATION.portraits.groom, INVITATION.portraits.bride].forEach((id) => {
-      const image = new Image();
-      image.src = cloudinaryImage(id, 900);
-    });
+    preloadInvitationPortraits();
   }, []);
 
   const handleOpen = () => {

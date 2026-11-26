@@ -8,6 +8,7 @@
     "dev": "vite",
     "typecheck": "tsc --noEmit",
     "generate:og-image": "node scripts/generate-og-image.mjs",
+    "generate:invitation-og-image": "node scripts/generate-invitation-og-image.mjs",
     "build": "tsc --noEmit && vite build && node scripts/prepare-github-pages.mjs",
     "preview": "vite preview",
     "predeploy": "npm run build",

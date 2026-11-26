@@ -5,23 +5,38 @@ const dist = resolve('dist');
 const indexPath = resolve(dist, 'index.html');
 const SITE_BASE = 'https://yurongwedding1220.github.io/yu-rong.love';
 
+const HOME_FONTS =
+  'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Serif+TC:wght@300;400;500;700&family=Inter:wght@300;400;500&family=Viaoda+Libre&family=The+Nautigal:wght@400;700&family=Ms+Madi&display=swap';
+
+const INVITATION_FONTS =
+  'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Noto+Serif+TC:wght@300;400;500;700&family=Viaoda+Libre&family=The+Nautigal:wght@400;700&display=swap';
+
 const ROUTE_OG = {
   rsvp: {
     title: '政憲 & 幸容 · 確認登船',
     description: '誠邀您確認出席，與我們一同見證靠岸的這一天。',
     url: `${SITE_BASE}/rsvp`,
     image: `${SITE_BASE}/og-image.png`,
+    fonts: HOME_FONTS,
   },
   invitation: {
     title: '政憲 & 幸容 · 電子喜帖',
     description: '誠摯邀請您蒞臨我們的婚禮。2026年12月20日（日）12:00，斗六緻麗伯爵酒店 12F 皇家宴。',
     url: `${SITE_BASE}/invitation`,
-    image: `${SITE_BASE}/og-image.png`,
+    image: `${SITE_BASE}/invitation-og-image.png`,
+    fonts: INVITATION_FONTS,
   },
 };
 
+function upsertMetaDescription(html, description) {
+  if (/<meta name="description"/.test(html)) {
+    return html.replace(/(<meta name="description" content=")[^"]*(")/, `$1${description}$2`);
+  }
+  return html.replace('</title>', `</title>\n    <meta name="description" content="${description}" />`);
+}
+
 function applyRouteMeta(html, og) {
-  return html
+  let next = html
     .replace(/<title>[^<]*<\/title>/, `<title>${og.title}</title>`)
     .replace(/(<meta property="og:url" content=")[^"]*(")/, `$1${og.url}$2`)
     .replace(/(<meta property="og:title" content=")[^"]*(")/, `$1${og.title}$2`)
@@ -30,6 +45,14 @@ function applyRouteMeta(html, og) {
     .replace(/(<meta property="twitter:title" content=")[^"]*(")/, `$1${og.title}$2`)
     .replace(/(<meta property="twitter:description" content=")[^"]*(")/, `$1${og.description}$2`)
     .replace(/(<meta property="twitter:image" content=")[^"]*(")/, `$1${og.image}$2`);
+
+  next = upsertMetaDescription(next, og.description);
+
+  if (og.fonts) {
+    next = next.replace(/href="https:\/\/fonts\.googleapis\.com\/css2\?[^"]*"/, `href="${og.fonts}"`);
+  }
+
+  return next;
 }
 
 const baseHtml = await readFile(indexPath, 'utf8');

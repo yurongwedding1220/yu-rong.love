@@ -58,20 +58,67 @@ export const cloudinaryImage = (publicId: string, width = 1200) =>
 export const cloudinaryPortrait = (publicId: string, width = 900) =>
   `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/f_auto,q_auto,c_fill,g_auto,ar_2:3,w_${width}/${publicId}`;
 
+/** Envelope hero portraits: tighter face crop, leave a little headroom. */
+export const cloudinaryHeroPortrait = (publicId: string, width = 900) =>
+  `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/f_auto,q_auto,c_thumb,g_face,z_0.55,ar_3:4,w_${width}/${publicId}`;
+
+export const cloudinarySrcSet = (
+  builder: (publicId: string, width: number) => string,
+  publicId: string,
+  widths: readonly number[]
+) => widths.map((width) => `${builder(publicId, width)} ${width}w`).join(', ');
+
 export const invitationThemeAsset = (file: string) =>
   `${import.meta.env.BASE_URL}invitation/theme/${file}`;
 
 export const invitationAsset = (file: string) =>
   `${import.meta.env.BASE_URL}invitation/${file}`;
 
-export const preloadInvitationAlbum = () => {
-  if (typeof window === 'undefined') return;
-  INVITATION.album.forEach((photo) => {
-    const thumb = new Image();
-    thumb.src = cloudinaryPortrait(photo.publicId, 700);
-    const active = new Image();
-    active.src = cloudinaryPortrait(photo.publicId, 1200);
-    const full = new Image();
-    full.src = cloudinaryImage(photo.publicId, 1800);
+const preloadCache = new Set<string>();
+
+export const preloadImage = (url: string) => {
+  if (typeof window === 'undefined' || preloadCache.has(url)) return;
+  preloadCache.add(url);
+  const image = new Image();
+  image.decoding = 'async';
+  image.src = url;
+};
+
+export const preloadInvitationPortraits = () => {
+  [INVITATION.portraits.groom, INVITATION.portraits.bride].forEach((id) => {
+    preloadImage(cloudinaryHeroPortrait(id, 900));
   });
+};
+
+const prefersSaveData = () =>
+  typeof navigator !== 'undefined' &&
+  'connection' in navigator &&
+  Boolean((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData);
+
+export const invitationLightboxWidth = () => {
+  if (typeof window === 'undefined') return 1800;
+  const cssWidth = window.innerWidth || 1200;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  return cssWidth * dpr <= 1200 ? 1200 : 1800;
+};
+
+export const preloadInvitationNeighbors = (
+  index: number,
+  options?: { includeLightbox?: boolean }
+) => {
+  if (typeof window === 'undefined') return;
+  const total = INVITATION.album.length;
+  if (total === 0) return;
+
+  const radius = prefersSaveData() ? 1 : 1;
+  const lightboxWidth = invitationLightboxWidth();
+
+  for (let delta = -radius; delta <= radius; delta += 1) {
+    const photoIndex = ((index + delta) % total + total) % total;
+    const photo = INVITATION.album[photoIndex];
+    preloadImage(cloudinaryPortrait(photo.publicId, delta === 0 ? 1200 : 700));
+    if (options?.includeLightbox) {
+      preloadImage(cloudinaryImage(photo.publicId, lightboxWidth));
+    }
+  }
 };

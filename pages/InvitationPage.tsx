@@ -6,13 +6,13 @@ import { InvitationMusicButton } from '../components/invitation/InvitationMusicB
 import { PhotoCarousel } from '../components/invitation/PhotoCarousel';
 import { InvitationCountdown } from '../components/invitation/InvitationCountdown';
 import { InvitationCalendar } from '../components/invitation/InvitationCalendar';
+import { InvitationMap } from '../components/invitation/InvitationMap';
 import {
   INVITATION,
-  cloudinaryImage,
   invitationAsset,
   invitationThemeAsset,
-  preloadInvitationAlbum,
 } from '../data/invitation';
+import { useReducedMotion } from '../hooks/useReducedMotion';
 import '../styles/invitation.css';
 
 type PageContentProps = {
@@ -161,14 +161,7 @@ const PageContent: React.FC<PageContentProps> = ({ musicPlaying, onToggleMusic }
         <h2 className="inv-section-title">婚宴地點</h2>
         <p className="inv-location-address">{INVITATION.venueAddress}</p>
 
-        <iframe
-          className="inv-map"
-          title="婚宴地點地圖"
-          src={INVITATION.mapEmbedUrl}
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          allowFullScreen
-        />
+        <InvitationMap />
 
         <a
           className="inv-route-link"
@@ -212,18 +205,16 @@ const PageContent: React.FC<PageContentProps> = ({ musicPlaying, onToggleMusic }
   );
 };
 
-const prefersReducedMotion = () =>
-  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
 const InvitationPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const reducedMotion = useReducedMotion();
   const queryOpened = new URLSearchParams(location.search).get('open') === '1';
   const [opened, setOpened] = useState(queryOpened);
   const [revealing, setRevealing] = useState(false);
   const [revealOrigin, setRevealOrigin] = useState({ x: '50%', y: '38%' });
   const [musicPlaying, setMusicPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const revealLayerRef = useRef<HTMLDivElement>(null);
   const revealTimer = useRef<number | undefined>(undefined);
 
@@ -239,14 +230,6 @@ const InvitationPage: React.FC = () => {
     return () => {
       document.title = '政憲 & 幸容 婚禮邀請函';
     };
-  }, []);
-
-  useEffect(() => {
-    [INVITATION.portraits.groom, INVITATION.portraits.bride].forEach((id) => {
-      const image = new Image();
-      image.src = cloudinaryImage(id, 900);
-    });
-    preloadInvitationAlbum();
   }, []);
 
   useEffect(() => {
@@ -281,6 +264,12 @@ const InvitationPage: React.FC = () => {
   useEffect(() => {
     return () => {
       if (revealTimer.current) window.clearTimeout(revealTimer.current);
+      const audio = audioRef.current;
+      if (audio) {
+        audio.pause();
+        audio.src = '';
+        audioRef.current = null;
+      }
     };
   }, []);
 
@@ -292,9 +281,19 @@ const InvitationPage: React.FC = () => {
     navigate({ pathname: location.pathname, search: `?${search.toString()}` }, { replace: true });
   };
 
+  const ensureAudio = () => {
+    if (!audioRef.current) {
+      const audio = new Audio(invitationAsset('perfect-ed-sheeran.m4a'));
+      audio.loop = true;
+      audio.preload = 'auto';
+      audio.setAttribute('playsinline', '');
+      audioRef.current = audio;
+    }
+    return audioRef.current;
+  };
+
   const startMusic = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
+    const audio = ensureAudio();
     const play = audio.play();
     if (play) {
       play.then(() => setMusicPlaying(true)).catch(() => setMusicPlaying(false));
@@ -302,8 +301,7 @@ const InvitationPage: React.FC = () => {
   };
 
   const toggleMusic = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
+    const audio = ensureAudio();
     if (audio.paused) {
       startMusic();
     } else {
@@ -316,7 +314,7 @@ const InvitationPage: React.FC = () => {
     startMusic();
     if (opened) return;
 
-    if (prefersReducedMotion()) {
+    if (reducedMotion) {
       markOpened();
       return;
     }
@@ -334,14 +332,6 @@ const InvitationPage: React.FC = () => {
 
   return (
     <div className={`invitation-page${revealing ? ' is-revealing' : ''}${opened ? ' is-opened' : ''}`} style={pageStyle}>
-      <audio
-        ref={audioRef}
-        src={invitationAsset('perfect-ed-sheeran.mp3')}
-        loop
-        preload="auto"
-        playsInline
-      />
-
       {!opened && <InvitationLanding onOpen={handleOpen} />}
 
       {(opened || revealing) && (

@@ -1,13 +1,19 @@
 import React from 'react';
-import { cloudinaryImage, INVITATION, invitationThemeAsset } from '../../data/invitation';
+import {
+  INVITATION,
+  cloudinaryHeroPortrait,
+  cloudinarySrcSet,
+  invitationThemeAsset,
+} from '../../data/invitation';
 
 type Props = {
   variant?: 'landing' | 'hero';
 };
 
-export const EnvelopeScene: React.FC<Props> = ({ variant = 'hero' }) => {
-  const isLanding = variant === 'landing';
+const HERO_WIDTHS = [600, 900, 1200] as const;
+const HERO_SIZES = '(max-width: 767px) 70vw, 240px';
 
+export const EnvelopeScene: React.FC<Props> = ({ variant = 'hero' }) => {
   return (
     <div className={`inv-envelope-scene inv-envelope-scene--${variant}`}>
       <img
@@ -27,7 +33,9 @@ export const EnvelopeScene: React.FC<Props> = ({ variant = 'hero' }) => {
       <div className="inv-scene-photo inv-scene-photo--groom">
         <div className="inv-scene-photo-frame">
           <img
-            src={cloudinaryImage(INVITATION.portraits.groom, 900)}
+            src={cloudinaryHeroPortrait(INVITATION.portraits.groom, 900)}
+            srcSet={cloudinarySrcSet(cloudinaryHeroPortrait, INVITATION.portraits.groom, HERO_WIDTHS)}
+            sizes={HERO_SIZES}
             alt={`${INVITATION.groom}的照片`}
             loading="eager"
             decoding="async"
@@ -38,7 +46,9 @@ export const EnvelopeScene: React.FC<Props> = ({ variant = 'hero' }) => {
       <div className="inv-scene-photo inv-scene-photo--bride">
         <div className="inv-scene-photo-frame">
           <img
-            src={cloudinaryImage(INVITATION.portraits.bride, 900)}
+            src={cloudinaryHeroPortrait(INVITATION.portraits.bride, 900)}
+            srcSet={cloudinarySrcSet(cloudinaryHeroPortrait, INVITATION.portraits.bride, HERO_WIDTHS)}
+            sizes={HERO_SIZES}
             alt={`${INVITATION.bride}的照片`}
             loading="eager"
             decoding="async"

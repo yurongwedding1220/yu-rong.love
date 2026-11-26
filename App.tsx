@@ -1,3 +1,5 @@
+import './styles/site';
+import { VisitCounterProvider } from './components/VisitCounterProvider';
 import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -227,6 +229,7 @@ function App() {
   ];
 
   return (
+    <VisitCounterProvider>
     <ScrollJourneyProvider>
     <main
       id="main-content"
@@ -507,6 +510,7 @@ function App() {
 
     </main>
     </ScrollJourneyProvider>
+    </VisitCounterProvider>
   );
 }
 

@@ -1,6 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { cloudinaryImage, cloudinaryPortrait, preloadInvitationAlbum } from '../../data/invitation';
+import {
+  cloudinaryImage,
+  cloudinaryPortrait,
+  cloudinarySrcSet,
+  invitationLightboxWidth,
+  preloadInvitationNeighbors,
+} from '../../data/invitation';
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 type Photo = {
   id: string;
@@ -13,15 +21,35 @@ type Props = {
 };
 
 const VISIBLE_SLOTS = 3;
+const CAROUSEL_WIDTHS = [400, 700, 1200] as const;
+const LIGHTBOX_WIDTHS = [1200, 1800] as const;
+const CAROUSEL_SIZES = '(max-width: 767px) 80vw, 420px';
+const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 const getOffset = (index: number, position: number, length: number) => {
   const raw = index - position;
   return ((raw + length / 2) % length + length) % length - length / 2;
 };
 
-const getCardStyle = (offset: number): React.CSSProperties => {
+const getCardStyle = (offset: number, reducedMotion: boolean): React.CSSProperties => {
   const distance = Math.abs(offset);
   const direction = Math.sign(offset);
+
+  if (reducedMotion) {
+    if (distance !== 0) {
+      return {
+        transform: `translateX(${direction * 110}%)`,
+        opacity: 0,
+        zIndex: 0,
+        pointerEvents: 'none',
+      };
+    }
+    return {
+      transform: 'translateX(0%)',
+      opacity: 1,
+      zIndex: 100,
+    };
+  }
 
   if (distance > VISIBLE_SLOTS) {
     return {
@@ -47,8 +75,9 @@ const getCardStyle = (offset: number): React.CSSProperties => {
   };
 };
 
-const LightboxPhoto: React.FC<{ src: string; alt: string }> = ({ src, alt }) => {
+const LightboxPhoto: React.FC<{ src: string; srcSet: string; alt: string }> = ({ src, srcSet, alt }) => {
   const [shownSrc, setShownSrc] = useState(src);
+  const [shownSrcSet, setShownSrcSet] = useState(srcSet);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -57,11 +86,13 @@ const LightboxPhoto: React.FC<{ src: string; alt: string }> = ({ src, alt }) => 
     const markReady = () => {
       if (cancelled) return;
       setShownSrc(src);
+      setShownSrcSet(srcSet);
       setReady(true);
     };
     setReady(false);
     image.onload = markReady;
     image.onerror = markReady;
+    image.srcset = srcSet;
     image.src = src;
     if (image.complete && image.naturalWidth > 0) {
       markReady();
@@ -69,11 +100,13 @@ const LightboxPhoto: React.FC<{ src: string; alt: string }> = ({ src, alt }) => 
     return () => {
       cancelled = true;
     };
-  }, [src]);
+  }, [src, srcSet]);
 
   return (
     <img
       src={shownSrc}
+      srcSet={shownSrcSet}
+      sizes="100vw"
       alt={alt}
       className={ready ? 'is-ready' : ''}
       draggable={false}
@@ -85,9 +118,16 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
   const [position, setPosition] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const lightboxRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
+  const reducedMotion = useReducedMotion();
   const total = photos.length;
   const activeIndex = ((position % total) + total) % total;
   const activePhoto = photos[activeIndex];
+  const lightboxWidth = invitationLightboxWidth();
+
+  useBodyScrollLock(lightboxOpen);
 
   const go = useCallback((delta: number) => {
     setPosition((current) => current + delta);
@@ -103,9 +143,14 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
     });
   }, [total]);
 
-  useEffect(() => {
-    preloadInvitationAlbum();
+  const openLightbox = useCallback((eventTarget?: EventTarget | null) => {
+    triggerRef.current = (eventTarget as HTMLElement) ?? (document.activeElement as HTMLElement);
+    setLightboxOpen(true);
   }, []);
+
+  useEffect(() => {
+    preloadInvitationNeighbors(activeIndex, { includeLightbox: lightboxOpen });
+  }, [activeIndex, lightboxOpen]);
 
   useEffect(() => {
     if (!lightboxOpen) return;
@@ -114,14 +159,32 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
       if (event.key === 'Escape') setLightboxOpen(false);
       if (event.key === 'ArrowLeft') setPosition((current) => current - 1);
       if (event.key === 'ArrowRight') setPosition((current) => current + 1);
+
+      if (event.key !== 'Tab') return;
+      const root = lightboxRef.current;
+      if (!root) return;
+      const list = Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+        (element) => !element.hasAttribute('disabled') && element.getAttribute('aria-hidden') !== 'true'
+      );
+      if (list.length === 0) return;
+      const first = list[0];
+      const last = list[list.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
     window.addEventListener('keydown', onKeyDown);
+    const focusTimer = window.setTimeout(() => closeButtonRef.current?.focus(), 0);
+
     return () => {
-      document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', onKeyDown);
+      window.clearTimeout(focusTimer);
+      triggerRef.current?.focus();
     };
   }, [lightboxOpen]);
 
@@ -145,6 +208,7 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
   const lightbox = lightboxOpen
     ? createPortal(
         <div
+          ref={lightboxRef}
           className="inv-lightbox"
           onClick={() => setLightboxOpen(false)}
           role="dialog"
@@ -156,6 +220,7 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
           </p>
 
           <button
+            ref={closeButtonRef}
             type="button"
             className="inv-lightbox-close"
             onClick={() => setLightboxOpen(false)}
@@ -168,7 +233,8 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
 
           <div className="inv-lightbox-stage" onClick={(event) => event.stopPropagation()}>
             <LightboxPhoto
-              src={cloudinaryImage(activePhoto.publicId, 1800)}
+              src={cloudinaryImage(activePhoto.publicId, lightboxWidth)}
+              srcSet={cloudinarySrcSet(cloudinaryImage, activePhoto.publicId, LIGHTBOX_WIDTHS)}
               alt={activePhoto.alt}
             />
           </div>
@@ -216,6 +282,7 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
                 <img
                   src={cloudinaryPortrait(photo.publicId, 200)}
                   alt=""
+                  loading="lazy"
                   draggable={false}
                 />
               </button>
@@ -248,15 +315,16 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
           {photos.map((photo, index) => {
             const offset = getOffset(index, position, total);
             const isActive = offset === 0;
+            const nearby = Math.abs(offset) <= 1;
 
             return (
               <div
                 key={photo.id}
                 className={`inv-carousel-card${isActive ? ' is-active' : ''}`}
-                style={getCardStyle(offset)}
-                onClick={() => {
+                style={getCardStyle(offset, reducedMotion)}
+                onClick={(event) => {
                   if (isActive) {
-                    setLightboxOpen(true);
+                    openLightbox(event.currentTarget);
                   } else if (Math.abs(offset) <= VISIBLE_SLOTS) {
                     go(offset);
                   }
@@ -267,14 +335,16 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
                 onKeyDown={(event) => {
                   if (isActive && (event.key === 'Enter' || event.key === ' ')) {
                     event.preventDefault();
-                    setLightboxOpen(true);
+                    openLightbox(event.currentTarget);
                   }
                 }}
               >
                 <img
                   src={cloudinaryPortrait(photo.publicId, isActive ? 1200 : 700)}
+                  srcSet={cloudinarySrcSet(cloudinaryPortrait, photo.publicId, CAROUSEL_WIDTHS)}
+                  sizes={CAROUSEL_SIZES}
                   alt={photo.alt}
-                  loading="eager"
+                  loading={nearby ? 'eager' : 'lazy'}
                   decoding="async"
                   draggable={false}
                 />
