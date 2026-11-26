@@ -329,6 +329,7 @@ body:has(.invitation-page) .bg-grid-fixed {
 .inv-reveal.is-done {
   position: relative;
   z-index: 1;
+  clip-path: none !important;
 }
 
 @keyframes invCircleReveal {

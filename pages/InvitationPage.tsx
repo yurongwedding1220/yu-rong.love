@@ -259,15 +259,23 @@ const InvitationPage: React.FC = () => {
     if (!revealing || !revealLayerRef.current) return;
     const el = revealLayerRef.current;
     const origin = `${revealOrigin.x} ${revealOrigin.y}`;
+    const clearClip = () => {
+      el.style.clipPath = 'none';
+    };
     el.style.clipPath = `circle(0px at ${origin})`;
     const animation = el.animate(
       [
         { clipPath: `circle(0px at ${origin})` },
         { clipPath: `circle(150vmax at ${origin})` },
       ],
-      { duration: 950, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' }
+      { duration: 1200, easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)', fill: 'forwards' }
     );
-    return () => animation.cancel();
+    animation.onfinish = clearClip;
+    return () => {
+      animation.onfinish = null;
+      animation.cancel();
+      clearClip();
+    };
   }, [revealing, revealOrigin]);
 
   useEffect(() => {
@@ -315,7 +323,7 @@ const InvitationPage: React.FC = () => {
 
     setRevealOrigin({ x: `${Math.round(origin.x)}px`, y: `${Math.round(origin.y)}px` });
     setRevealing(true);
-    revealTimer.current = window.setTimeout(markOpened, 980);
+    revealTimer.current = window.setTimeout(markOpened, 1250);
   };
 
   const pageStyle = {
