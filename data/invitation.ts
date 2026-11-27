@@ -33,9 +33,36 @@ export const INVITATION = {
     '&location=%E9%9B%B2%E6%9E%97%E7%B8%A3%E6%96%97%E5%85%AD%E5%B8%82%E4%BF%A1%E7%BE%A9%E9%87%8C%E4%B8%AD%E5%B1%B1%E8%B7%AF6%E8%99%9F12%E6%A8%93%20%E7%9A%87%E5%AE%B6%E5%AE%B412F',
   dressCode: '天空藍、奶茶、白色',
   dressColors: [
-    { name: '天空藍', hex: '#87ceeb' },
-    { name: '奶茶', hex: '#ecdcc2' },
-    { name: '白色', hex: '#ffffff' },
+    {
+      id: 'skyblue' as const,
+      name: '天空藍',
+      hex: '#87ceeb',
+      outfits: [
+        { file: 'dress/skyblue-1.webp', alt: '天空藍穿搭一：新娘粉藍色短袖洋裝，新郎淺藍色外套與米色長褲' },
+        { file: 'dress/skyblue-2.webp', alt: '天空藍穿搭二：新娘藍色細肩帶洋裝搭配米色外套，新郎淺藍西裝與領帶' },
+        { file: 'dress/skyblue-3.webp', alt: '天空藍穿搭三：新娘白襯衫與藍裙，新郎淺藍Polo衫與白色長褲' },
+      ],
+    },
+    {
+      id: 'milktea' as const,
+      name: '奶茶',
+      hex: '#ecdcc2',
+      outfits: [
+        { file: 'dress/milktea-1.webp', alt: '奶茶穿搭一：新娘奶茶色短袖洋裝，新郎棕色外套與米色長褲' },
+        { file: 'dress/milktea-2.webp', alt: '奶茶穿搭二：新娘奶茶色削肩洋裝，新郎奶茶三件式西裝' },
+        { file: 'dress/milktea-3.webp', alt: '奶茶穿搭三：新娘米色針織上衣與奶茶裙，新郎米色開襟外套與長褲' },
+      ],
+    },
+    {
+      id: 'white' as const,
+      name: '白色',
+      hex: '#ffffff',
+      outfits: [
+        { file: 'dress/white-1.webp', alt: '白色穿搭一：新娘白襯衫與米色長裙，新郎米白外套與淺灰長褲' },
+        { file: 'dress/white-2.webp', alt: '白色穿搭二：新娘白色蕾絲上衣與藍裙，新郎白色禮服外套與黑色長褲' },
+        { file: 'dress/white-3.webp', alt: '白色穿搭三：新娘白襯衫與米色寬褲，新郎白襯衫與淺藍長褲' },
+      ],
+    },
   ],
   parents: {
     groom: { honorific: '男方主婚人', names: ['尤吉棟', '葉秋錦'] as const },

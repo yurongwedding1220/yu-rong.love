@@ -9,6 +9,7 @@ import { InvitationCountdown } from '../components/invitation/InvitationCountdow
 import { InvitationCalendar } from '../components/invitation/InvitationCalendar';
 import { InvitationAddToCalendar } from '../components/invitation/InvitationAddToCalendar';
 import { InvitationMap } from '../components/invitation/InvitationMap';
+import { DressPreview } from '../components/invitation/DressPreview';
 import {
   INVITATION,
   invitationAsset,
@@ -221,17 +222,7 @@ const PageContent: React.FC<{ motionOn: boolean; lite: boolean }> = ({ motionOn,
       <section className="inv-dress-section inv-reveal-item inv-reveal-item--soft">
         <h2 className="inv-section-title">服裝規範</h2>
         <p className="inv-dress-code">{INVITATION.dressCode}</p>
-        <div className="inv-swatches" aria-label={INVITATION.dressCode}>
-          {INVITATION.dressColors.map((color) => (
-            <div className="inv-swatch" key={color.name}>
-              <span
-                className="inv-swatch-dot"
-                style={{ backgroundColor: color.hex }}
-                aria-hidden="true"
-              />
-            </div>
-          ))}
-        </div>
+        <DressPreview />
       </section>
 
       <footer className="inv-footer inv-reveal-item inv-reveal-item--close">

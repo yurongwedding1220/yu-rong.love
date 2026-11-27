@@ -2035,6 +2035,13 @@ body:has(.inv-lightbox) .inv-music-btn {
   letter-spacing: 0.06em;
 }
 
+.inv-dress-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 .inv-swatches {
   display: flex;
   justify-content: center;
@@ -2046,20 +2053,208 @@ body:has(.inv-lightbox) .inv-music-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
 }
 
 .inv-swatch-dot {
   display: block;
   width: 46px;
   height: 46px;
-  border: 1px solid rgba(0, 34, 76, 0.12);
+  border: 1px solid rgba(0, 34, 76, 0.16);
   border-radius: 999px;
+  background: var(--swatch-color, #fff);
+  box-shadow: 0 0 0 0 transparent;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.inv-swatch-name {
+  color: var(--inv-ink);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
+.inv-swatch.is-active .inv-swatch-dot {
+  box-shadow:
+    0 0 0 3px var(--inv-cream),
+    0 0 0 5px var(--inv-gold);
+}
+
+.inv-swatch:focus-visible .inv-swatch-dot {
+  box-shadow:
+    0 0 0 3px var(--inv-cream),
+    0 0 0 5px var(--inv-navy);
+}
+
+.inv-swatch-hint {
+  margin: 10px 0 0;
+  color: var(--inv-ink-soft);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  animation: invSwatchHint 1.8s ease-in-out infinite;
+}
+
+@keyframes invSwatchHint {
+  0%, 100% { opacity: 0.55; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-2px); }
+}
+
+.inv-dress-preview-title {
+  margin: 28px 0 0;
+  color: var(--inv-navy);
+  font-family: var(--inv-font-body);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.inv-dress-preview-lead {
+  max-width: 20em;
+  margin: 8px 0 0;
+  color: var(--inv-ink);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  line-height: 1.7;
+}
+
+.inv-dress-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 420px;
+  margin-top: 8px;
+  touch-action: pan-y;
+}
+
+.inv-dress-viewport {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.inv-dress-track {
+  display: flex;
+  width: 100%;
+  transition: transform 0.5s cubic-bezier(0.22, 0.8, 0.28, 1);
+  animation: invDressFade 0.45s ease;
+}
+
+@keyframes invDressFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.inv-dress-slide {
+  position: relative;
+  flex: 0 0 100%;
+  margin: 0;
+  padding: 12px 8px 28px;
+}
+
+.inv-dress-slide img {
+  display: block;
+  width: 100%;
+  height: auto;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.inv-dress-shadow {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0, 34, 76, 0.16) 0%, rgba(0, 34, 76, 0) 72%);
+  pointer-events: none;
+}
+
+.inv-dress-arrow {
+  position: absolute;
+  top: 46%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(247, 245, 238, 0.92);
+  color: var(--inv-navy);
+  box-shadow: 0 2px 10px rgba(0, 34, 76, 0.12);
+  cursor: pointer;
+}
+
+.inv-dress-arrow svg {
+  width: 16px;
+  height: 16px;
+}
+
+.inv-dress-arrow--prev { left: 0; }
+.inv-dress-arrow--next { right: 0; }
+
+.inv-dress-arrow:focus-visible {
+  outline: 2px solid var(--inv-gold);
+  outline-offset: 2px;
+}
+
+.inv-dress-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.inv-dress-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0, 34, 76, 0.2);
+  cursor: pointer;
+}
+
+.inv-dress-dot.is-active {
+  background: var(--inv-navy);
 }
 
 @media (min-width: 768px) {
   .inv-swatch-dot {
     width: 52px;
     height: 52px;
+  }
+
+  .inv-dress-stage {
+    max-width: 480px;
+    margin-top: 12px;
+  }
+}
+
+.inv-dress-stage.is-static .inv-dress-track {
+  transition: none;
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inv-dress-track,
+  .inv-swatch-dot,
+  .inv-swatch-hint {
+    animation: none !important;
+    transition: none !important;
   }
 }
 
