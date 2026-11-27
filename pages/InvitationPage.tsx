@@ -170,6 +170,22 @@ const PageContent: React.FC<{ motionOn: boolean }> = ({ motionOn }) => {
           </svg>
           路線導航
         </a>
+
+        <div className="inv-parking">
+          <h3 className="inv-parking-title">{INVITATION.parking.title}</h3>
+          <a
+            className="inv-route-link inv-parking-link"
+            href={INVITATION.parking.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <rect x="4.5" y="3.5" width="15" height="17" rx="2.5" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 16.5V7.5h4.2a3 3 0 010 6H9" />
+            </svg>
+            {INVITATION.parking.name}
+          </a>
+        </div>
       </section>
 
       <section className="inv-dress-section inv-reveal-item">

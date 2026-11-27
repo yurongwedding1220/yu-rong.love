@@ -38,8 +38,13 @@ export const INVITATION = {
     { name: '白色', hex: '#ffffff' },
   ],
   parents: {
-    groom: { honorific: '先生與女士', names: ['尤吉棟', '葉秋錦'] as const },
-    bride: { honorific: '先生與女士', names: ['李周安', '陳素貞'] as const },
+    groom: { honorific: '男方主婚人', names: ['尤吉棟', '葉秋錦'] as const },
+    bride: { honorific: '女方主婚人', names: ['李周安', '陳素貞'] as const },
+  },
+  parking: {
+    title: '停車資訊',
+    name: '俥亭停車-斗六停三立體停車場',
+    url: 'https://maps.app.goo.gl/hCDt6FEp9TwzvC5AA',
   },
   portraits: {
     groom: `${ALBUM_FOLDER}/portrait-groom`,
