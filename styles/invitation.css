@@ -357,7 +357,7 @@ button.inv-cover-heart:focus-visible {
   pointer-events: none;
   opacity: 0;
   background: var(--inv-cream);
-  animation: invOpeningPageIn 0.7s ease-out 1.35s forwards;
+  animation: invOpeningPageIn 0.75s ease-out 1.5s forwards;
 }
 
 .inv-reveal.is-done {
@@ -392,12 +392,24 @@ button.inv-cover-heart:focus-visible {
   z-index: 0;
   background:
     radial-gradient(circle at 50% 30%, #06356a 0%, var(--inv-navy) 42%, var(--inv-navy-deep) 100%);
-  animation: invOpeningFadeOut 0.7s ease 1.4s forwards;
+  animation: invOpeningFadeOut 0.75s ease 1.55s forwards;
 }
 
 @keyframes invOpeningFadeOut {
   from { opacity: 1; }
   to { opacity: 0; pointer-events: none; }
+}
+
+.inv-opening-world {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1400px;
+  perspective-origin: 50% 42%;
+  transform-style: preserve-3d;
 }
 
 .inv-opening-stage {
@@ -406,6 +418,7 @@ button.inv-cover-heart:focus-visible {
   width: min(78vw, 320px);
   aspect-ratio: 851 / 984;
   transform-origin: center center;
+  transform-style: preserve-3d;
 }
 
 .inv-opening.is-handing-off .inv-opening-letter {
@@ -423,7 +436,7 @@ button.inv-cover-heart:focus-visible {
   position: absolute;
   inset: 0;
   z-index: 1;
-  perspective: 1100px;
+  perspective: 1200px;
   transform-style: preserve-3d;
 }
 
@@ -466,34 +479,34 @@ button.inv-cover-heart:focus-visible {
   box-shadow: 0 20px 50px rgba(0, 8, 24, 0.28);
   border-radius: 18px;
   transform-origin: center center;
-  transform: translate(-50%, -50%) translateY(6vh) scale(0.28);
-  animation: invLetterOut 1.25s cubic-bezier(0.22, 0.8, 0.28, 1) 0.7s forwards;
+  transform: translate(-50%, -50%) translateY(8vh) translateZ(-40px) rotateX(8deg) scale(0.26);
+  animation: invLetterOut 1.35s cubic-bezier(0.22, 0.8, 0.28, 1) 0.75s forwards;
   will-change: transform, border-radius, z-index;
 }
 
 @media (min-width: 768px) {
   .inv-opening-letter {
-    transform: translate(-50%, -50%) translateY(4vh) scale(0.22);
+    transform: translate(-50%, -50%) translateY(6vh) translateZ(-40px) rotateX(6deg) scale(0.2);
   }
 }
 
 @keyframes invLetterOut {
   0% {
     z-index: 1;
-    transform: translate(-50%, -50%) translateY(6vh) scale(0.28);
+    transform: translate(-50%, -50%) translateY(8vh) translateZ(-40px) rotateX(8deg) scale(0.26);
     border-radius: 18px;
   }
-  12% {
+  14% {
     z-index: 6;
   }
-  40% {
+  42% {
     z-index: 6;
-    transform: translate(-50%, -50%) translateY(-16vh) scale(0.5);
+    transform: translate(-50%, -50%) translateY(-15vh) translateZ(80px) rotateX(0deg) scale(0.5);
     border-radius: 14px;
   }
   100% {
     z-index: 6;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -50%) translateZ(0) rotateX(0deg) scale(1);
     border-radius: 0;
   }
 }
@@ -502,20 +515,20 @@ button.inv-cover-heart:focus-visible {
   @keyframes invLetterOut {
     0% {
       z-index: 1;
-      transform: translate(-50%, -50%) translateY(4vh) scale(0.22);
+      transform: translate(-50%, -50%) translateY(6vh) translateZ(-40px) rotateX(6deg) scale(0.2);
       border-radius: 18px;
     }
-    12% {
+    14% {
       z-index: 6;
     }
-    40% {
+    42% {
       z-index: 6;
-      transform: translate(-50%, -50%) translateY(-14vh) scale(0.42);
+      transform: translate(-50%, -50%) translateY(-13vh) translateZ(90px) rotateX(0deg) scale(0.42);
       border-radius: 14px;
     }
     100% {
       z-index: 6;
-      transform: translate(-50%, -50%) scale(1);
+      transform: translate(-50%, -50%) translateZ(0) rotateX(0deg) scale(1);
       border-radius: 0;
     }
   }
@@ -525,7 +538,7 @@ button.inv-cover-heart:focus-visible {
   text-align: center;
   color: var(--inv-navy);
   opacity: 0.95;
-  animation: invLetterFaceOut 0.4s ease-in 1.3s forwards;
+  animation: invLetterFaceOut 0.4s ease-in 1.45s forwards;
 }
 
 @keyframes invLetterFaceOut {
@@ -569,13 +582,13 @@ button.inv-cover-heart:focus-visible {
   transform-origin: 50% 100%;
   transform-style: preserve-3d;
   transform: rotateX(180deg);
-  animation: invFlapOpen 0.6s cubic-bezier(0.22, 0.7, 0.3, 1) 0.32s forwards;
+  animation: invFlapOpen 0.82s cubic-bezier(0.22, 0.7, 0.3, 1) 0.32s forwards;
   will-change: transform;
 }
 
 @keyframes invFlapOpen {
   from { transform: rotateX(180deg); }
-  to { transform: rotateX(0deg); }
+  to { transform: rotateX(-36deg); }
 }
 
 .inv-opening-flap-face {
@@ -693,6 +706,32 @@ button.inv-cover-heart:focus-visible {
   }
 }
 
+.inv-opening-flap-face--front::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 248, 230, 0.2) 0%, transparent 42%, rgba(0, 10, 30, 0.22) 100%);
+  pointer-events: none;
+}
+
+.inv-opening-skip {
+  position: absolute;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 20;
+  margin: 0;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(247, 245, 238, 0.88);
+  color: var(--inv-navy);
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .inv-opening,
   .inv-opening-veil,
@@ -735,8 +774,14 @@ button.inv-cover-heart:focus-visible {
   z-index: 15;
   display: block;
   width: 57.6%;
-  filter: drop-shadow(3px 4px 3px rgba(0, 0, 0, 0.28));
   pointer-events: none;
+  transform: translate3d(0, var(--floral-y, 0px), 0);
+}
+
+.inv-scene-flower--left img {
+  display: block;
+  width: 100%;
+  animation: invSway 11s ease-in-out infinite;
 }
 
 .inv-scene-photo {
@@ -810,14 +855,14 @@ button.inv-cover-heart:focus-visible {
   z-index: 35;
   display: block;
   width: 50.5%;
-  filter: drop-shadow(3px 4px 3px rgba(0, 0, 0, 0.28));
   pointer-events: none;
+  transform: translate3d(0, var(--floral-y, 0px), 0);
 }
 
 .inv-scene-flower--right img {
   display: block;
   width: 100%;
-  animation: invFloat 5s ease-in-out infinite;
+  animation: invSway 13s ease-in-out 0.6s infinite;
 }
 
 /* ---------- content hero ---------- */
@@ -1083,13 +1128,34 @@ body:has(.inv-lightbox) .inv-music-btn {
   z-index: 2;
   display: block;
   pointer-events: none;
-  filter: drop-shadow(3px 4px 3px rgba(0, 0, 0, 0.26));
+  transform: translate3d(0, var(--floral-y, 0px), 0);
 }
 
 .inv-floating-flower img {
   display: block;
   width: 100%;
-  animation: invFloat 6s ease-in-out infinite;
+  animation: invSway 12s ease-in-out infinite;
+}
+
+.inv-floral-bloom {
+  transform-origin: 50% 80%;
+  opacity: 0.72;
+  transform: translate3d(0, var(--floral-y, 0px), 0) scale(0.88);
+}
+
+.inv-floral-bloom.is-bloomed {
+  opacity: 1;
+  transform: translate3d(0, var(--floral-y, 0px), 0) scale(1);
+  transition:
+    opacity 1.15s ease,
+    transform 1.25s cubic-bezier(0.22, 0.8, 0.28, 1);
+}
+
+.inv-floating-flower.is-offscreen img,
+.inv-scene-flower.is-offscreen img,
+.inv-hero-envelope.is-offscreen .inv-scene-photo,
+.inv-footer-petals.is-offscreen .inv-footer-petal {
+  animation-play-state: paused;
 }
 
 .inv-floating-flower--invite-left {
@@ -1204,20 +1270,31 @@ body:has(.inv-lightbox) .inv-music-btn {
   position: absolute;
   top: 50%;
   left: 50%;
-  height: 92%;
-  aspect-ratio: 2 / 3;
+  height: 88%;
+  aspect-ratio: 2 / 3.18;
   translate: -50% -50%;
   overflow: hidden;
-  border-radius: 16px;
-  background: #e4ded4;
-  box-shadow: 0 20px 48px rgba(0, 34, 76, 0.2), 0 8px 20px rgba(0, 0, 0, 0.12);
+  border-radius: 3px;
+  padding: 9px 9px 26px;
+  background: #f6f1e8;
+  box-shadow:
+    0 16px 36px rgba(0, 34, 76, 0.18),
+    0 4px 10px rgba(0, 0, 0, 0.08);
   outline: none;
   cursor: pointer;
+  box-sizing: border-box;
   transition:
-    transform 1.25s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 1.25s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 1.25s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.7s cubic-bezier(0.22, 0.8, 0.28, 1),
+    opacity 0.7s cubic-bezier(0.22, 0.8, 0.28, 1),
+    box-shadow 0.7s cubic-bezier(0.22, 0.8, 0.28, 1);
   will-change: transform;
+}
+
+.inv-polaroid-frame {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #e4ded4;
 }
 
 .inv-carousel-card::after {
@@ -1225,12 +1302,14 @@ body:has(.inv-lightbox) .inv-music-btn {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
   pointer-events: none;
 }
 
 .inv-carousel-card.is-active {
-  box-shadow: 0 30px 68px rgba(0, 34, 76, 0.34), 0 12px 26px rgba(0, 0, 0, 0.16);
+  box-shadow:
+    0 22px 48px rgba(0, 34, 76, 0.26),
+    0 8px 18px rgba(0, 0, 0, 0.12);
 }
 
 .inv-carousel-card.is-active:focus-visible {
@@ -1326,9 +1405,15 @@ body:has(.inv-lightbox) .inv-music-btn {
   align-items: center;
   justify-content: center;
   padding: 56px 24px 110px;
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.78);
+}
+
+@media (min-width: 768px) {
+  .invitation-page:not(.is-lite) .inv-lightbox {
+    background: rgba(0, 0, 0, 0.62);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
 }
 
 .inv-lightbox-stage {
@@ -1543,9 +1628,38 @@ body:has(.inv-lightbox) .inv-music-btn {
 }
 
 .inv-info-day {
+  position: relative;
   font-size: 50px;
   line-height: 0.95;
   font-variant-numeric: tabular-nums;
+}
+
+.inv-info-day::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.35em;
+  height: 1.35em;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 162, 74, 0.42) 0%, rgba(201, 162, 74, 0) 72%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.inv-info-day-mark {
+  position: absolute;
+  top: -0.12em;
+  right: -0.62em;
+  width: 0.38em;
+  height: 0.34em;
+  color: var(--inv-gold);
+}
+
+.inv-info-day-mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .inv-info-divider {
@@ -1616,14 +1730,17 @@ body:has(.inv-lightbox) .inv-music-btn {
   display: inline-block;
   overflow: hidden;
   min-width: 1.7em;
-  height: 1.3em;
-  line-height: 1.3em;
+  height: 1.35em;
+  line-height: 1.35em;
   text-align: right;
+  perspective: 280px;
 }
 
 .inv-count-digit {
   display: block;
-  animation: invDigitFlip 0.42s cubic-bezier(0.22, 0.8, 0.28, 1);
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
+  animation: invDigitFlip 0.55s cubic-bezier(0.22, 0.7, 0.3, 1);
 }
 
 .inv-count-label {
@@ -1633,12 +1750,12 @@ body:has(.inv-lightbox) .inv-music-btn {
 
 @keyframes invDigitFlip {
   from {
-    opacity: 0;
-    transform: translateY(50%);
+    opacity: 0.35;
+    transform: rotateX(-80deg);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: rotateX(0deg);
   }
 }
 
@@ -1721,6 +1838,15 @@ body:has(.inv-lightbox) .inv-music-btn {
   animation: invHeartPulse 2.8s ease-in-out infinite;
 }
 
+.inv-calendar-heart::before {
+  content: '';
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 162, 74, 0.5) 0%, rgba(201, 162, 74, 0) 70%);
+  pointer-events: none;
+}
+
 .inv-calendar-heart svg {
   position: absolute;
   inset: 0;
@@ -1741,9 +1867,10 @@ body:has(.inv-lightbox) .inv-music-btn {
 .inv-calendar-actions {
   position: relative;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 13px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 22px;
+  margin-top: 16px;
 }
 
 .inv-calendar-link,
@@ -1825,6 +1952,7 @@ body:has(.inv-lightbox) .inv-music-btn {
   box-shadow:
     0 18px 40px rgba(0, 34, 76, 0.12),
     inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+  transform-origin: 50% 100%;
 }
 
 .inv-map {
@@ -1943,11 +2071,66 @@ body:has(.inv-lightbox) .inv-music-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px 24px 64px;
+  overflow: hidden;
+  padding: 48px 24px 72px;
   text-align: center;
 }
 
+.inv-floating-flower--footer-left {
+  top: 8%;
+  left: -22%;
+  width: 42%;
+  z-index: 0;
+}
+
+.inv-floating-flower--footer-right {
+  right: -18%;
+  bottom: 4%;
+  left: auto;
+  width: 38%;
+  z-index: 0;
+}
+
+.inv-footer-petals {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.inv-footer-petal {
+  position: absolute;
+  top: -8%;
+  display: block;
+  line-height: 0;
+  opacity: 0;
+  animation: invClosePetal linear infinite;
+}
+
+.inv-footer-petal svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@keyframes invClosePetal {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  12% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--petal-dx, 0px), 118%, 0) rotate(var(--petal-rot, 80deg));
+  }
+}
+
 .inv-footer-seal {
+  position: relative;
+  z-index: 2;
   display: block;
   width: 44px;
   height: auto;
@@ -1956,6 +2139,8 @@ body:has(.inv-lightbox) .inv-music-btn {
 }
 
 .inv-footer-names {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1976,6 +2161,8 @@ body:has(.inv-lightbox) .inv-music-btn {
 }
 
 .inv-footer-thanks {
+  position: relative;
+  z-index: 2;
   margin: 0;
   color: var(--inv-navy);
   font-size: 11px;
@@ -1983,7 +2170,19 @@ body:has(.inv-lightbox) .inv-music-btn {
   letter-spacing: 0.08em;
 }
 
+.inv-footer-wish {
+  position: relative;
+  z-index: 2;
+  margin: 10px 0 0;
+  color: var(--inv-ink-soft);
+  font-family: var(--inv-font-display);
+  font-size: 15px;
+  letter-spacing: 0.18em;
+}
+
 .inv-footer-line {
+  position: relative;
+  z-index: 2;
   display: block;
   width: 45px;
   max-width: none;
@@ -2049,6 +2248,27 @@ body:has(.inv-lightbox) .inv-music-btn {
   }
 }
 
+@keyframes invSway {
+  0%,
+  100% {
+    transform: rotate(-1.1deg) translate3d(-1px, 0, 0);
+  }
+  50% {
+    transform: rotate(1.2deg) translate3d(1px, -3px, 0);
+  }
+}
+
+@keyframes invCloseFade {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 @keyframes invPortraitIn {
   from {
     transform: translateY(10px);
@@ -2076,6 +2296,56 @@ body:has(.inv-lightbox) .inv-music-btn {
     transform 0.7s cubic-bezier(0.22, 0.8, 0.28, 1);
 }
 
+.inv-reveal-item--soft {
+  transform: translateY(10px);
+}
+
+.inv-reveal-item--soft.is-visible {
+  transition-duration: 0.95s;
+}
+
+.inv-reveal-item--flip {
+  transform: perspective(920px) rotateX(8deg) translateY(24px);
+  transform-origin: 50% 86%;
+}
+
+.inv-reveal-item--flip.is-visible {
+  transform: perspective(920px) rotateX(0deg) translateY(0);
+  transition-duration: 0.95s;
+}
+
+.inv-reveal-item--rise {
+  transform: perspective(1000px) rotateX(7deg) translateY(32px) scale(0.98);
+  transform-origin: 50% 80%;
+}
+
+.inv-reveal-item--rise.is-visible {
+  transform: perspective(1000px) rotateX(0deg) translateY(0) scale(1);
+  transition-duration: 1.05s;
+}
+
+.inv-reveal-item--close {
+  transform: none;
+}
+
+.inv-reveal-item--close .inv-footer-names,
+.inv-reveal-item--close .inv-footer-thanks,
+.inv-reveal-item--close .inv-footer-wish {
+  opacity: 0;
+}
+
+.inv-reveal-item--close.is-visible .inv-footer-names {
+  animation: invCloseFade 1.1s ease 0.2s forwards;
+}
+
+.inv-reveal-item--close.is-visible .inv-footer-thanks {
+  animation: invCloseFade 1.05s ease 0.55s forwards;
+}
+
+.inv-reveal-item--close.is-visible .inv-footer-wish {
+  animation: invCloseFade 1.15s ease 0.85s forwards;
+}
+
 @keyframes invShine {
   0% {
     left: -60%;
@@ -2099,13 +2369,32 @@ body:has(.inv-lightbox) .inv-music-btn {
 @media (prefers-reduced-motion: reduce) {
   .inv-scene-photo,
   .inv-scene-flower--right img,
+  .inv-scene-flower--left img,
   .inv-floating-flower img,
+  .inv-footer-petal,
   .inv-calendar-heart,
   .inv-open-btn-shine,
   .inv-count-digit,
+  .inv-opening-skip,
   .invitation-page.is-opening .inv-scene-photo,
-  .invitation-page.is-just-opened .inv-scene-photo {
+  .invitation-page.is-just-opened .inv-scene-photo,
+  .inv-reveal-item--close.is-visible .inv-footer-names,
+  .inv-reveal-item--close.is-visible .inv-footer-thanks,
+  .inv-reveal-item--close.is-visible .inv-footer-wish {
     animation: none !important;
+  }
+
+  .inv-floral-bloom,
+  .inv-floral-bloom.is-bloomed {
+    opacity: 1;
+    transform: translate3d(0, var(--floral-y, 0px), 0);
+    transition: none;
+  }
+
+  .inv-reveal-item--close .inv-footer-names,
+  .inv-reveal-item--close .inv-footer-thanks,
+  .inv-reveal-item--close .inv-footer-wish {
+    opacity: 1;
   }
 
   .inv-carousel-card {
@@ -2127,4 +2416,45 @@ body:has(.inv-lightbox) .inv-music-btn {
   .inv-header-castle {
     transform: translateX(-50%) scaleX(-1) !important;
   }
+}
+
+
+/* ---------- lite / low-end path ---------- */
+
+.invitation-page.is-lite .inv-scene-flower--left,
+.invitation-page.is-lite .inv-scene-flower--right,
+.invitation-page.is-lite .inv-floating-flower,
+.invitation-page.is-lite .inv-opening-body,
+.invitation-page.is-lite .inv-opening-flap-face,
+.invitation-page.is-lite .inv-opening-seal {
+  filter: none;
+}
+
+.invitation-page.is-lite .inv-scene-photo {
+  will-change: auto;
+}
+
+.invitation-page.is-low .inv-floating-flower img,
+.invitation-page.is-low .inv-scene-flower img,
+.invitation-page.is-low .inv-footer-petal,
+.invitation-page.is-low .inv-calendar-heart,
+.invitation-page.is-low .inv-scene-photo {
+  animation: none !important;
+}
+
+.invitation-page.is-low .inv-floral-bloom,
+.invitation-page.is-low .inv-floral-bloom.is-bloomed {
+  opacity: 1;
+  transform: translate3d(0, var(--floral-y, 0px), 0);
+  transition: none;
+}
+
+.invitation-page.is-low .inv-reveal-item--flip,
+.invitation-page.is-low .inv-reveal-item--rise {
+  transform: translateY(16px);
+}
+
+.invitation-page.is-low .inv-reveal-item--flip.is-visible,
+.invitation-page.is-low .inv-reveal-item--rise.is-visible {
+  transform: none;
 }

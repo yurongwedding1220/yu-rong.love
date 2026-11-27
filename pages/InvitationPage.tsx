@@ -14,16 +14,39 @@ import {
   invitationAsset,
   invitationThemeAsset,
 } from '../data/invitation';
-import { useCastleParallax } from '../hooks/useCastleParallax';
+import { useInvitationAmbient } from '../hooks/useInvitationAmbient';
+import { usePerfMode } from '../hooks/usePerfMode';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import { playPaperCue } from '../utils/playPaperCue';
 import { parseGuestName } from '../utils/guestName';
 import '../styles/invitation.css';
 
-const PageContent: React.FC<{ motionOn: boolean }> = ({ motionOn }) => {
+const FOOTER_PETALS = [
+  { left: '8%', delay: '0s', duration: '9.5s', size: 12, color: '#9eb4d4', dx: '8vw', rot: '80deg' },
+  { left: '22%', delay: '1.6s', duration: '11s', size: 9, color: '#c5d4e8', dx: '-6vw', rot: '-70deg' },
+  { left: '38%', delay: '3.2s', duration: '10s', size: 14, color: '#7a98be', dx: '10vw', rot: '110deg' },
+  { left: '58%', delay: '0.8s', duration: '12s', size: 11, color: '#9eb4d4', dx: '-8vw', rot: '-95deg' },
+  { left: '74%', delay: '2.4s', duration: '9.8s', size: 13, color: '#c5d4e8', dx: '5vw', rot: '60deg' },
+  { left: '88%', delay: '4s', duration: '11.4s', size: 10, color: '#7a98be', dx: '-10vw', rot: '-120deg' },
+] as const;
+
+const FooterPetal: React.FC = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <g fill="currentColor">
+      <circle cx="12" cy="12" r="2.1" />
+      <ellipse cx="12" cy="5.6" rx="3.1" ry="5.4" />
+      <ellipse cx="12" cy="5.6" rx="3.1" ry="5.4" transform="rotate(72 12 12)" />
+      <ellipse cx="12" cy="5.6" rx="3.1" ry="5.4" transform="rotate(144 12 12)" />
+      <ellipse cx="12" cy="5.6" rx="3.1" ry="5.4" transform="rotate(216 12 12)" />
+      <ellipse cx="12" cy="5.6" rx="3.1" ry="5.4" transform="rotate(288 12 12)" />
+    </g>
+  </svg>
+);
+
+const PageContent: React.FC<{ motionOn: boolean; lite: boolean }> = ({ motionOn, lite }) => {
   useScrollReveal(motionOn);
-  useCastleParallax(motionOn);
+  useInvitationAmbient(motionOn, lite);
 
   return (
     <main className="inv-shell">
@@ -42,7 +65,7 @@ const PageContent: React.FC<{ motionOn: boolean }> = ({ motionOn }) => {
         />
         <p className="inv-eyebrow">{INVITATION.eyebrow}</p>
 
-        <div className="inv-hero-envelope">
+        <div className="inv-hero-envelope" data-anim-pause>
           <EnvelopeScene />
         </div>
 
@@ -56,10 +79,10 @@ const PageContent: React.FC<{ motionOn: boolean }> = ({ motionOn }) => {
       </header>
 
       <section className="inv-invite-section inv-reveal-item">
-        <span className="inv-floating-flower inv-floating-flower--invite-left" aria-hidden="true">
+        <span className="inv-floating-flower inv-floating-flower--invite-left inv-floral-bloom" data-floral-depth="1.2" aria-hidden="true">
           <img src={invitationThemeAsset('flower3-decoration.webp')} alt="" />
         </span>
-        <span className="inv-floating-flower inv-floating-flower--invite-right" aria-hidden="true">
+        <span className="inv-floating-flower inv-floating-flower--invite-right inv-floral-bloom" data-floral-depth="0.55" aria-hidden="true">
           <img src={invitationThemeAsset('flower2-decoration.webp')} alt="" />
         </span>
 
@@ -98,11 +121,11 @@ const PageContent: React.FC<{ motionOn: boolean }> = ({ motionOn }) => {
         </div>
       </section>
 
-      <section className="inv-album-section inv-reveal-item">
-        <span className="inv-floating-flower inv-floating-flower--album-left" aria-hidden="true">
+      <section className="inv-album-section inv-reveal-item inv-reveal-item--soft">
+        <span className="inv-floating-flower inv-floating-flower--album-left inv-floral-bloom" data-floral-depth="0.9" aria-hidden="true">
           <img src={invitationThemeAsset('flower3-decoration.webp')} alt="" />
         </span>
-        <span className="inv-floating-flower inv-floating-flower--album-right" aria-hidden="true">
+        <span className="inv-floating-flower inv-floating-flower--album-right inv-floral-bloom" data-floral-depth="-0.5" aria-hidden="true">
           <img src={invitationThemeAsset('flower2-decoration.webp')} alt="" />
         </span>
 
@@ -110,11 +133,11 @@ const PageContent: React.FC<{ motionOn: boolean }> = ({ motionOn }) => {
         <PhotoCarousel photos={INVITATION.album} />
       </section>
 
-      <section className="inv-info-section inv-reveal-item">
-        <span className="inv-floating-flower inv-floating-flower--info-left" aria-hidden="true">
+      <section className="inv-info-section inv-reveal-item inv-reveal-item--flip">
+        <span className="inv-floating-flower inv-floating-flower--info-left inv-floral-bloom" data-floral-depth="1.05" aria-hidden="true">
           <img src={invitationThemeAsset('flower4-decoration.webp')} alt="" />
         </span>
-        <span className="inv-floating-flower inv-floating-flower--info-right" aria-hidden="true">
+        <span className="inv-floating-flower inv-floating-flower--info-right inv-floral-bloom" data-floral-depth="0.45" aria-hidden="true">
           <img src={invitationThemeAsset('flower5-decoration.webp')} alt="" />
         </span>
 
@@ -130,7 +153,14 @@ const PageContent: React.FC<{ motionOn: boolean }> = ({ motionOn }) => {
             </div>
 
             <div className="inv-info-date">
-              <span className="inv-info-day">{INVITATION.day}</span>
+              <span className="inv-info-day">
+                <span className="inv-info-day-mark" aria-hidden="true">
+                  <svg viewBox="0 0 24 22">
+                    <path fill="currentColor" d="M12 21C12 21 1.5 13.5 1.5 7.5C1.5 4.46 3.96 2 7 2C8.76 2 10.35 2.81 11.4 4.09L12 4.8L12.6 4.09C13.65 2.81 15.24 2 17 2C20.04 2 22.5 4.46 22.5 7.5C22.5 13.5 12 21 12 21Z" />
+                  </svg>
+                </span>
+                {INVITATION.day}
+              </span>
               <span className="inv-info-divider" aria-hidden="true" />
               <div className="inv-info-month">
                 <span>{INVITATION.month}月</span>
@@ -153,7 +183,7 @@ const PageContent: React.FC<{ motionOn: boolean }> = ({ motionOn }) => {
         </div>
       </section>
 
-      <section className="inv-location-section inv-reveal-item">
+      <section className="inv-location-section inv-reveal-item inv-reveal-item--rise">
         <h2 className="inv-section-title">婚宴地點</h2>
         <p className="inv-location-address">{INVITATION.venueAddress}</p>
 
@@ -188,7 +218,7 @@ const PageContent: React.FC<{ motionOn: boolean }> = ({ motionOn }) => {
         </div>
       </section>
 
-      <section className="inv-dress-section inv-reveal-item">
+      <section className="inv-dress-section inv-reveal-item inv-reveal-item--soft">
         <h2 className="inv-section-title">服裝規範</h2>
         <p className="inv-dress-code">{INVITATION.dressCode}</p>
         <div className="inv-swatches" aria-label={INVITATION.dressCode}>
@@ -204,7 +234,34 @@ const PageContent: React.FC<{ motionOn: boolean }> = ({ motionOn }) => {
         </div>
       </section>
 
-      <footer className="inv-footer inv-reveal-item">
+      <footer className="inv-footer inv-reveal-item inv-reveal-item--close">
+        <span className="inv-floating-flower inv-floating-flower--footer-left inv-floral-bloom" data-floral-depth="1.1" aria-hidden="true">
+          <img src={invitationThemeAsset('flower3-decoration.webp')} alt="" />
+        </span>
+        <span className="inv-floating-flower inv-floating-flower--footer-right inv-floral-bloom" data-floral-depth="0.6" aria-hidden="true">
+          <img src={invitationThemeAsset('flower2-decoration.webp')} alt="" />
+        </span>
+
+        <div className="inv-footer-petals" data-anim-pause aria-hidden="true">
+          {(lite ? FOOTER_PETALS.slice(0, 4) : FOOTER_PETALS).map((petal, index) => (
+            <span
+              key={index}
+              className="inv-footer-petal"
+              style={{
+                left: petal.left,
+                width: petal.size,
+                color: petal.color,
+                animationDelay: petal.delay,
+                animationDuration: petal.duration,
+                ['--petal-dx']: petal.dx,
+                ['--petal-rot']: petal.rot,
+              } as React.CSSProperties}
+            >
+              <FooterPetal />
+            </span>
+          ))}
+        </div>
+
         <img
           src={invitationThemeAsset('wax-seal.webp')}
           alt=""
@@ -217,6 +274,7 @@ const PageContent: React.FC<{ motionOn: boolean }> = ({ motionOn }) => {
           <span>{INVITATION.bride}</span>
         </p>
         <p className="inv-footer-thanks">您的蒞臨是我們最大的榮幸！</p>
+        <p className="inv-footer-wish">期待與您相見</p>
         <img
           src={invitationThemeAsset('goldenline3-decoration.webp')}
           alt=""
@@ -232,6 +290,9 @@ const InvitationPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const reducedMotion = useReducedMotion();
+  const perfMode = usePerfMode();
+  const lite = perfMode !== 'high';
+  const lowPerf = perfMode === 'low';
   const searchParams = new URLSearchParams(location.search);
   const queryOpened = searchParams.get('open') === '1';
   const guestName = parseGuestName(searchParams.get('to'));
@@ -318,6 +379,17 @@ const InvitationPage: React.FC = () => {
     startMusic();
   }, [startMusic]);
 
+  const handleSkipOpening = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio || audio.paused) {
+      startMusic();
+    } else {
+      audio.muted = false;
+      setMusicPlaying(true);
+    }
+    markOpened();
+  }, [markOpened, startMusic]);
+
   const toggleMusic = () => {
     const audio = ensureAudio();
     if (audio.paused) {
@@ -349,16 +421,16 @@ const InvitationPage: React.FC = () => {
 
   return (
     <div
-      className={`invitation-page${opening ? ' is-opening' : ''}${opened ? ' is-opened' : ''}${justOpened ? ' is-just-opened' : ''}`}
+      className={`invitation-page${opening ? ' is-opening' : ''}${opened ? ' is-opened' : ''}${justOpened ? ' is-just-opened' : ''}${lite ? ' is-lite' : ''}${lowPerf ? ' is-low' : ''}`}
       style={pageStyle}
     >
       {!opened && !opening && <InvitationLanding onOpen={handleOpen} guestName={guestName} />}
       {opening && !opened && (
-        <InvitationOpening onLetterStart={handleLetterStart} onDone={markOpened} />
+        <InvitationOpening onLetterStart={handleLetterStart} onDone={markOpened} onSkip={handleSkipOpening} lite={lite} />
       )}
       {(opened || opening) && (
         <div className={`inv-reveal${opened ? ' is-done' : ' is-waiting'}`}>
-          <PageContent motionOn={!reducedMotion && (opened || opening)} />
+          <PageContent motionOn={!reducedMotion && (opened || opening)} lite={lite} />
         </div>
       )}
       {opened && <InvitationMusicButton playing={musicPlaying} onToggle={toggleMusic} />}

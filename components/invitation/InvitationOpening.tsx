@@ -4,13 +4,16 @@ import { INVITATION, invitationThemeAsset } from '../../data/invitation';
 type Props = {
   onLetterStart: () => void;
   onDone: () => void;
+  onSkip: () => void;
+  lite?: boolean;
 };
 
-export const OPENING_LETTER_START_MS = 700;
-export const OPENING_HANDOFF_MS = 1400;
-export const OPENING_TOTAL_MS = 2400;
+export const OPENING_LETTER_START_MS = 750;
+export const OPENING_HANDOFF_MS = 1550;
+export const OPENING_TOTAL_MS = 2600;
 
 const PETAL_COUNT = 16;
+const PETAL_COUNT_LITE = 8;
 
 const Petal: React.FC = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -25,10 +28,10 @@ const Petal: React.FC = () => (
   </svg>
 );
 
-export const InvitationOpening: React.FC<Props> = ({ onLetterStart, onDone }) => {
+export const InvitationOpening: React.FC<Props> = ({ onLetterStart, onDone, onSkip, lite = false }) => {
   const petals = useMemo(
     () =>
-      Array.from({ length: PETAL_COUNT }, (_, index) => {
+      Array.from({ length: lite ? PETAL_COUNT_LITE : PETAL_COUNT }, (_, index) => {
         const angle = (Math.PI * 2 * (index + 0.15)) / PETAL_COUNT + (index % 3) * 0.18;
         const distance = 42 + (index % 5) * 10;
         return {
@@ -44,7 +47,7 @@ export const InvitationOpening: React.FC<Props> = ({ onLetterStart, onDone }) =>
           color: index % 3 === 0 ? '#9eb4d4' : index % 3 === 1 ? '#c5d4e8' : '#7a98be',
         };
       }),
-    []
+    [lite]
   );
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -93,6 +96,7 @@ export const InvitationOpening: React.FC<Props> = ({ onLetterStart, onDone }) =>
       style={{ '--inv-flap-mask': `url(${invitationThemeAsset('envelope-flap.webp')})` } as React.CSSProperties}
     >
       <div className="inv-opening-veil" />
+      <div className="inv-opening-world">
       <div className="inv-opening-letter">
         <div className="inv-opening-letter-face">
           <p className="inv-opening-letter-names">
@@ -139,6 +143,7 @@ export const InvitationOpening: React.FC<Props> = ({ onLetterStart, onDone }) =>
           </span>
         </div>
       </div>
+      </div>
 
       <div className="inv-opening-petals" aria-hidden="true">
         {petals.map((petal) => (
@@ -163,6 +168,10 @@ export const InvitationOpening: React.FC<Props> = ({ onLetterStart, onDone }) =>
           </span>
         ))}
       </div>
+
+      <button type="button" className="inv-opening-skip" onClick={onSkip}>
+        略過
+      </button>
     </div>
   );
 };

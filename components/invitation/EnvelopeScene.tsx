@@ -16,12 +16,16 @@ const HERO_SIZES = '(max-width: 767px) 70vw, 240px';
 export const EnvelopeScene: React.FC<Props> = ({ variant = 'hero' }) => {
   return (
     <div className={`inv-envelope-scene inv-envelope-scene--${variant}`}>
-      <img
-        src={invitationThemeAsset('flower-background.webp')}
-        alt=""
+      <span
+        className="inv-scene-flower inv-scene-flower--left inv-floral-bloom"
+        data-floral-depth="-0.7"
         aria-hidden="true"
-        className="inv-scene-flower inv-scene-flower--left"
-      />
+      >
+        <img
+          src={invitationThemeAsset('flower-background.webp')}
+          alt=""
+        />
+      </span>
 
       <img
         src={invitationThemeAsset('envelope-background.webp')}
@@ -63,8 +67,12 @@ export const EnvelopeScene: React.FC<Props> = ({ variant = 'hero' }) => {
         className="inv-scene-cover"
       />
 
-      <span className="inv-scene-flower inv-scene-flower--right">
-        <img src={invitationThemeAsset('flower2-decoration.webp')} alt="" aria-hidden="true" />
+      <span
+        className="inv-scene-flower inv-scene-flower--right inv-floral-bloom"
+        data-floral-depth="1.15"
+        aria-hidden="true"
+      >
+        <img src={invitationThemeAsset('flower2-decoration.webp')} alt="" />
       </span>
     </div>
   );

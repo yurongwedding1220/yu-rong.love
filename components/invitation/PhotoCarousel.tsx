@@ -24,9 +24,20 @@ const getOffset = (index: number, position: number, length: number) => {
   return ((raw + length / 2) % length + length) % length - length / 2;
 };
 
-const getCardStyle = (offset: number, reducedMotion: boolean): React.CSSProperties => {
+const tiltFor = (index: number, offset: number) => {
+  const base = ((index * 37) % 11) - 5;
+  if (offset === 0) return base * 0.42;
+  return base + Math.sign(offset) * (Math.abs(offset) * 6.5);
+};
+
+const getCardStyle = (
+  offset: number,
+  reducedMotion: boolean,
+  index: number
+): React.CSSProperties => {
   const distance = Math.abs(offset);
   const direction = Math.sign(offset);
+  const tilt = tiltFor(index, offset);
 
   if (reducedMotion) {
     if (distance !== 0) {
@@ -38,7 +49,7 @@ const getCardStyle = (offset: number, reducedMotion: boolean): React.CSSProperti
       };
     }
     return {
-      transform: 'translateX(0%)',
+      transform: 'translateX(0%) rotate(0deg)',
       opacity: 1,
       zIndex: 100,
     };
@@ -46,7 +57,7 @@ const getCardStyle = (offset: number, reducedMotion: boolean): React.CSSProperti
 
   if (distance > VISIBLE_SLOTS) {
     return {
-      transform: `translateX(${direction * 180}%) translateZ(-450px) rotateY(${direction * 135}deg) scale(0.7)`,
+      transform: `translateX(${direction * 92}%) translateZ(-160px) rotate(${tilt + direction * 10}deg) scale(0.78)`,
       opacity: 0,
       zIndex: 0,
       pointerEvents: 'none',
@@ -55,15 +66,18 @@ const getCardStyle = (offset: number, reducedMotion: boolean): React.CSSProperti
 
   if (distance === 0) {
     return {
-      transform: 'translateX(0%) translateZ(0px) rotateY(0deg) scale(1)',
+      transform: `translateX(0%) translateZ(36px) rotate(${tilt}deg) scale(1)`,
       opacity: 1,
       zIndex: 100,
     };
   }
 
+  const slide = direction * (22 + (distance - 1) * 16);
+  const depth = -36 * distance;
+  const scale = distance === 1 ? 0.92 : 0.84;
   return {
-    transform: `translateX(${direction * distance * 60}%) translateZ(${-distance * 150}px) rotateY(${direction * distance * 45}deg) scale(${distance === 1 ? 0.85 : 0.7})`,
-    opacity: distance === 1 ? 0.75 : distance === 2 ? 0.5 : 0.3,
+    transform: `translateX(${slide}%) translateZ(${depth}px) rotate(${tilt}deg) scale(${scale})`,
+    opacity: 1,
     zIndex: 100 - distance,
   };
 };
@@ -136,7 +150,7 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
   return (
     <div className="inv-album">
       <div
-        className="inv-carousel"
+        className="inv-carousel inv-carousel--polaroid"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
@@ -161,7 +175,7 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
               <div
                 key={photo.id}
                 className={`inv-carousel-card${isActive ? ' is-active' : ''}`}
-                style={getCardStyle(offset, reducedMotion)}
+                style={getCardStyle(offset, reducedMotion, index)}
                 onClick={(event) => {
                   if (isActive) {
                     openLightbox(event.currentTarget);
@@ -179,15 +193,17 @@ export const PhotoCarousel: React.FC<Props> = ({ photos }) => {
                   }
                 }}
               >
-                <img
-                  src={cloudinaryPortrait(photo.publicId, isActive ? 1200 : 700)}
-                  srcSet={cloudinarySrcSet(cloudinaryPortrait, photo.publicId, CAROUSEL_WIDTHS)}
-                  sizes={CAROUSEL_SIZES}
-                  alt={photo.alt}
-                  loading={nearby ? 'eager' : 'lazy'}
-                  decoding="async"
-                  draggable={false}
-                />
+                <div className="inv-polaroid-frame">
+                  <img
+                    src={cloudinaryPortrait(photo.publicId, isActive ? 1200 : 700)}
+                    srcSet={cloudinarySrcSet(cloudinaryPortrait, photo.publicId, CAROUSEL_WIDTHS)}
+                    sizes={CAROUSEL_SIZES}
+                    alt={photo.alt}
+                    loading={nearby ? 'eager' : 'lazy'}
+                    decoding="async"
+                    draggable={false}
+                  />
+                </div>
               </div>
             );
           })}
