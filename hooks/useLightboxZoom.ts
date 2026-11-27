@@ -31,6 +31,7 @@ export function useLightboxZoom(enabled: boolean) {
     startOffset: { x: 0, y: 0 },
     startTouch: { x: 0, y: 0 },
     lastTapAt: 0,
+    lastTouchToggleAt: 0,
   });
 
   const clampOffset = useCallback(
@@ -150,14 +151,10 @@ export function useLightboxZoom(enabled: boolean) {
 
         if (Math.abs(dx) < 12 && Math.abs(dy) < 12) {
           if (now - gesture.lastTapAt < DOUBLE_TAP_MS) {
-            if (scale > 1.01) {
-              setScale(1);
-              setOffset({ x: 0, y: 0 });
-            } else {
-              setScale(DOUBLE_TAP_SCALE);
-              setOffset({ x: 0, y: 0 });
-            }
+            setScale((previous) => (previous > 1.01 ? 1 : DOUBLE_TAP_SCALE));
+            setOffset({ x: 0, y: 0 });
             gesture.lastTapAt = 0;
+            gesture.lastTouchToggleAt = now;
             gesture.mode = 'idle';
             return;
           }
@@ -185,15 +182,13 @@ export function useLightboxZoom(enabled: boolean) {
     (event: React.MouseEvent) => {
       if (!enabled) return;
       event.preventDefault();
-      if (scale > 1.01) {
-        setScale(1);
-        setOffset({ x: 0, y: 0 });
-        return;
-      }
-      setScale(DOUBLE_TAP_SCALE);
+      // Mobile browsers synthesize a dblclick after a double-tap. The touch
+      // detector already toggled zoom; ignore that follow-up click.
+      if (Date.now() - gestureRef.current.lastTouchToggleAt < 500) return;
+      setScale((previous) => (previous > 1.01 ? 1 : DOUBLE_TAP_SCALE));
       setOffset({ x: 0, y: 0 });
     },
-    [enabled, scale]
+    [enabled]
   );
 
   useEffect(() => {

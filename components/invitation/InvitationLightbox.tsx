@@ -77,7 +77,6 @@ export const InvitationLightbox: React.FC<Props> = ({
   const lightboxRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const thumbsRef = useRef<HTMLDivElement>(null);
-  const [downloading, setDownloading] = useState(false);
   const total = photos.length;
   const activePhoto = photos[activeIndex];
   const lightboxWidth = invitationLightboxWidth();
@@ -172,26 +171,6 @@ export const InvitationLightbox: React.FC<Props> = ({
     close();
   };
 
-  const handleDownload = async () => {
-    if (downloading) return;
-    setDownloading(true);
-    const url = cloudinaryImage(activePhoto.publicId, 2000);
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const href = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = href;
-      link.download = `zhengxian-xingrong-${activePhoto.id}.jpg`;
-      link.click();
-      URL.revokeObjectURL(href);
-    } catch {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    } finally {
-      setDownloading(false);
-    }
-  };
-
   return createPortal(
     <div
       ref={lightboxRef}
@@ -217,21 +196,6 @@ export const InvitationLightbox: React.FC<Props> = ({
           還原
         </button>
       )}
-
-      <button
-        type="button"
-        className="inv-lightbox-download"
-        onClick={(event) => {
-          event.stopPropagation();
-          void handleDownload();
-        }}
-        disabled={downloading}
-        aria-label="下載照片"
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14" />
-        </svg>
-      </button>
 
       <button
         ref={closeButtonRef}
