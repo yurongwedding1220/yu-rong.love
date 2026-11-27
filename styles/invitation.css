@@ -2153,15 +2153,20 @@ body:has(.inv-lightbox) .inv-music-btn {
 
 .inv-dress-slide {
   position: relative;
+  box-sizing: border-box;
   flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
   margin: 0;
-  padding: 12px 8px 28px;
+  padding: 8px 0 22px;
 }
 
 .inv-dress-slide img {
   display: block;
-  width: 100%;
+  width: 72%;
   height: auto;
+  margin: 0 auto;
   position: relative;
   z-index: 1;
   pointer-events: none;
@@ -2170,12 +2175,13 @@ body:has(.inv-lightbox) .inv-music-btn {
 
 .inv-dress-shadow {
   position: absolute;
-  left: 18%;
-  right: 18%;
-  bottom: 18px;
-  height: 18px;
+  left: 50%;
+  bottom: 14px;
+  width: 50%;
+  height: 16px;
   border-radius: 50%;
   background: radial-gradient(ellipse at center, rgba(0, 34, 76, 0.16) 0%, rgba(0, 34, 76, 0) 72%);
+  transform: translateX(-50%);
   pointer-events: none;
 }
 
