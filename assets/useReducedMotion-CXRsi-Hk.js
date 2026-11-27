@@ -1,1 +1,0 @@
-import{r as d}from"./vendor-react-VZsfJx-4.js";function o(){const[r,n]=d.useState(()=>typeof window<"u"?window.matchMedia("(prefers-reduced-motion: reduce)").matches:!1);return d.useEffect(()=>{const e=window.matchMedia("(prefers-reduced-motion: reduce)"),t=()=>n(e.matches);return t(),e.addEventListener("change",t),()=>e.removeEventListener("change",t)},[]),r}export{o as u};
